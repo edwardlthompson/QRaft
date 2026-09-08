@@ -518,7 +518,8 @@ jobs:
 
   android-release:
     name: Android - assembleRelease
-    if: hashFiles('examples/android/gradlew') != ''
+    # Job-level if cannot use hashFiles (step context only); android-only
+    # product always has examples/android/gradlew.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
