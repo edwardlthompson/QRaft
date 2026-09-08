@@ -100,6 +100,11 @@ trap restore EXIT
 
 echo "=== About feature gate verification ==="
 
+if [ ! -d "$ROOT/examples/web/src" ]; then
+  echo "SKIP: examples/web pruned — About lego gate is web-centric; android About covered by stack tests"
+  exit 0
+fi
+
 echo "1/4 Gate with About feature present..."
 bash scripts/feature-gate.sh --stack web --step about-with
 
