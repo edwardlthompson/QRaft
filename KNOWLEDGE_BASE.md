@@ -171,3 +171,20 @@
 | **Cause** | Node 25+ enables a global Web Storage stub without `--localstorage-file`; jsdom skips installing real Storage and the stub shadows it |
 | **Fix** | Vitest `setupFiles: ["src/test/setup-localStorage.ts"]` installs in-memory Storage when `getItem` is missing |
 | **Prevention** | Keep the setup file; do not rely on Node’s experimental `localStorage` in browser-unit tests |
+### KB-021 — Job-level `hashFiles` kills the whole CI workflow
+
+| Field | Detail |
+|-------|--------|
+| **Symptom** | CI run completes in ~0s with name `.github/workflows/ci.yml`, empty jobs, no logs |
+| **Cause** | `hashFiles(...)` is only valid in **step** `if:` contexts; using it on a **job** `if:` fails workflow validation |
+| **Fix** | Remove job-level `hashFiles` (e.g. `android-release`); gate with stack/path outputs or always run when the stack is present |
+| **Prevention** | actionlint / validate-bootstrap before push; never copy step-only functions into job `if` |
+
+### KB-022 — Product Android ship vs template Release Please
+
+| Field | Detail |
+|-------|--------|
+| **Symptom** | Release Please opens `chore(main): release 1.1.1` while app/CHANGELOG are `0.1.0`; tag gate rejects `v0.1.0` vs `.template-version` `1.1.0` |
+| **Cause** | Child product still ships template RP config that bumps `.template-version` / `TEMPLATE_INDEX`; sync gates require those to match the RP manifest |
+| **Fix** | Keep template baseline at `1.1.0`; close template-style RP PRs; publish product `v0.1.0` GitHub Release + APK; upload SBOM/OpenVEX manually when Release workflow tag-gate fails |
+| **Prevention** | Retarget product `release-please-config.json` / tag-gate for app semver (tracked follow-up); skip upgrade-sim when `branding/product.json` `mode=product` |

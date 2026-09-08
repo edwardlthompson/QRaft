@@ -7,8 +7,8 @@
 
 | Layer | Technology | Version | Notes |
 |-------|-----------|---------|-------|
-| Platform | Multi-stack template (Web, Python, Android, Node, optional Lightroom/Rust/Go) | 1.1.0 | Template maintainer repo |
-| License | MIT | - | Pure FOSS |
+| Platform | Android (QRaft product; template baseline 1.1.0) | app 0.1.0 | examples/android multi-module |
+| License | Apache-2.0 | - | Pure FOSS; F-Droid-friendly |
 | Distribution | GitHub Releases + GitHub Pages demo | - | F-Droid/Winget stubs for child repos |
 ## Active Modules
 
@@ -34,7 +34,7 @@
 
 ### Project Purpose
 
-FOSS coding-agent bootstrap template: labeled BUILD_PLAN sprints, Golden Path examples, CI guardrails, workspace memory, and design-system cohesion across Web and Android.
+QRaft: offline F-Droid-friendly Android QR crafting (widgets, lock-screen Glance, wallpapers). Bootstrapped from agent-project-bootstrap; android-only prune.
 
 ### Key Constraints
 

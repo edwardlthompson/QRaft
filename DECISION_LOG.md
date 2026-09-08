@@ -23,6 +23,14 @@
 
 ## Entries
 
+### 2026-09-08 — QRaft first public ship (v0.1.0)
+- **Status:** Accepted
+- **Context:** Product child of agent-project-bootstrap; android-only, Apache-2.0, offline. `/ship` needed green CI, a GitHub Release, and a signed sideload APK.
+- **Decision:** Publish product release tag `v0.1.0` with signed `app-release.apk` + manual SBOM/OpenVEX. Keep `.template-version` / Release Please manifest at template `1.1.0`. Close RP `1.1.1` and Dependabot Kotlin `2.4.x` PRs. Gate pruned web/node CI jobs; skip product upgrade-sim.
+- **Alternatives considered:** Merge Release Please 1.1.1 (rejected: conflates template and app semver). Sync all version files to 0.1.0 (rejected: breaks upstream template update checker).
+- **Consequences:** Release workflow tag-gate still expects `v` + `.template-version`; product tags need manual SBOM until RP/tag-gate are retargeted. Sideload uses local upload keystore (gitignored).
+
+
 ### 2026-09-01 — M47 wrap-up: Cline first-run and stack nav
 - **Status:** Accepted
 - **Context:** First-time users need autonomous help without paid keys. Golden Path Settings/About/Feedback must remember where you were and pop **one** Back without leaving the PWA or Activity.
