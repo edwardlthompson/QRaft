@@ -1,0 +1,3 @@
+QR Code generator library (Java) — MIT License
+Copyright (c) Project Nayuki
+https://www.nayuki.io/page/qr-code-generator-library

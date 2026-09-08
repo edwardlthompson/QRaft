@@ -1,0 +1,39 @@
+{
+  "mode": "product",
+  "name": "QRaft",
+  "short_name": "QRaft",
+  "tagline": "Craft custom QR codes for widgets, lock-screen glance panels, and full-screen wallpapers.",
+  "pitch": "QRaft is a free, open-source Android app (LineageOS / AOSP first) that generates highly customized QR codes, shows them as home and lock-screen widgets, and can set a device-fitted QR wallpaper — 100% offline and F-Droid-friendly.",
+  "features": [
+    "Nayuki-backed QR matrix encode (versions 1–40, ECC L/M/Q/H)",
+    "Custom module and finder styling on top of a single boolean matrix",
+    "Jetpack Glance widgets for home and LineageOS lock-screen panels",
+    "Wallpaper engine with DisplayMetrics and zoom safe-zone padding",
+    "Zero INTERNET permission — all data stays on-device"
+  ],
+  "quick_start": [
+    "Use JDK 17+ and an Android SDK; export SOURCE_DATE_EPOCH=1700000000.",
+    "cd examples/android && ./gradlew :core-qr:test :app:assembleDebug",
+    "Follow docs/START_HERE.md; first-time walk docs/help/TOUR.md (Cursor: /tour)."
+  ],
+  "install": "Android SDK Platform 35+ and JDK 17+. See examples/android/README.md and modules/android/MODULE.md.",
+  "usage": "Encode payloads in :core-qr, style in :render, pin via :widget, set wallpaper via :wallpaper. Profiles land in :data. Use /build and /verify from docs/help/BATCH_COMMANDS.md.",
+  "urls": {
+    "docs": "docs/START_HERE.md",
+    "contributing": "CONTRIBUTING.md",
+    "security": "SECURITY.md",
+    "license": "LICENSE",
+    "design": "docs/DESIGN_GUIDE.md",
+    "branding": "branding/BRANDING.md",
+    "github_repo": "edwardlthompson/QRaft"
+  },
+  "badge": {
+    "primary": "1B6B4A",
+    "secondary": "2C4A6E",
+    "license": "2ea043",
+    "foss": "656d76"
+  },
+  "stacks": [
+    "android"
+  ]
+}
