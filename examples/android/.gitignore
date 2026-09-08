@@ -1,0 +1,4 @@
+
+# Local sideload upload keystore (never commit)
+qraft-upload.jks
+keystore.properties

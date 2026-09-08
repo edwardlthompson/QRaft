@@ -3,6 +3,16 @@
 # See docs/UPGRADING_FROM_TEMPLATE.md for the human/agent merge playbook.
 set -euo pipefail
 
+# Product child repos are not the template under test.
+if [ -f branding/product.json ]; then
+  mode="$(python3 -c "import json; print(json.load(open('branding/product.json')).get('mode',''))" 2>/dev/null || true)"
+  if [ "$mode" = "product" ]; then
+    echo "SKIP: simulate-template-upgrade (branding/product.json mode=product)"
+    exit 0
+  fi
+fi
+
+
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WORKDIR="$(mktemp -d)"
 trap 'rm -rf "$WORKDIR"' EXIT
