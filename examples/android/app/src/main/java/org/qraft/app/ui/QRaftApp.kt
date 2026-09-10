@@ -16,6 +16,7 @@ import org.qraft.app.BuildConfig
 import org.qraft.app.R
 import org.qraft.app.crashcapture.PendingCrashStore
 import org.qraft.app.feedback.FeedbackPrefs
+import org.qraft.app.settings.ProductPrefs
 import org.qraft.app.about.ReleaseTagFetcher
 import org.qraft.app.about.AppUpdatePreferences
 import org.qraft.app.about.AppUpdates
@@ -34,6 +35,7 @@ import org.qraft.app.ui.theme.ThemeMode
 import org.qraft.app.ui.theme.ThemePreferences
 import org.qraft.app.ui.theme.next
 import kotlinx.coroutines.CoroutineScope
+import org.qraft.app.ui.chrome.QRaftScreen
 import org.qraft.app.ui.theme.QRaftTheme
 import kotlinx.coroutines.launch
 
@@ -60,7 +62,9 @@ fun QRaftApp(
     }
     val scrollRef = remember { mutableMapOf<GpRoute, Int>() }
     val feedbackPrefs = remember { FeedbackPrefs(context) }
+    val productPrefs = remember { ProductPrefs(context) }
     var saveCrashes by remember { mutableStateOf(feedbackPrefs.saveCrashes()) }
+    var nudgePrompts by remember { mutableStateOf(productPrefs.nudgePrompts()) }
     var updateStatus by remember { mutableStateOf(context.getString(R.string.about_update_current)) }
     var launchPrompt by remember { mutableStateOf<AppUpdates.LaunchPrompt?>(null) }
     val donations = remember { DonationsLoader.load(context) }
@@ -89,9 +93,11 @@ fun QRaftApp(
 
     LaunchedEffect(Unit) {
         navPrefs.write(nav)
-        val prompt = AppUpdates.onLaunch(context, appVersion)
-        launchPrompt = prompt
-        if (prompt != null) applyNav(Nav.setPrompt(nav, true))
+        if (productPrefs.nudgePrompts()) {
+            val prompt = AppUpdates.onLaunch(context, appVersion)
+            launchPrompt = prompt
+            if (prompt != null) applyNav(Nav.setPrompt(nav, true))
+        }
     }
 
     QRaftTheme(themeMode = themeMode) {
@@ -101,6 +107,7 @@ fun QRaftApp(
                 themeMode = themeMode,
                 nav = nav,
                 saveCrashes = saveCrashes,
+                nudgePrompts = nudgePrompts,
                 releaseRepo = ReleaseTagFetcher.loadReleaseRepo(context).orEmpty(),
                 pendingStack = crashStore.read()?.stack,
                 appVersion = appVersion,
@@ -115,6 +122,7 @@ fun QRaftApp(
                 onPop = { popNav() },
                 onScroll = { route, y -> scrollRef[route] = y },
                 onSaveCrashes = { on -> feedbackPrefs.setSaveCrashes(on); saveCrashes = on },
+                onNudgePrompts = { on -> productPrefs.setNudgePrompts(on); nudgePrompts = on },
                 onFeedbackClose = { crashStore.clear(); popNav() },
                 onDonatePrompt = { donate ->
                     handleDonatePrompt(

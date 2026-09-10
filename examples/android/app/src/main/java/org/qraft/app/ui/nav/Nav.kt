@@ -5,7 +5,7 @@ object Nav {
 
     fun normalizeStack(raw: List<GpRoute>): List<GpRoute> {
         val out = mutableListOf<GpRoute>()
-        for (item in raw) {
+        for (item in raw.map { if (it == GpRoute.Style) GpRoute.Home else it }) {
             if (out.isEmpty() && item != GpRoute.Home) out.add(GpRoute.Home)
             if (out.lastOrNull() == item) continue
             out.add(item)

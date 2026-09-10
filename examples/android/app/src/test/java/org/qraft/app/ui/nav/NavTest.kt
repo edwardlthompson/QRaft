@@ -64,6 +64,23 @@ class NavTest {
     }
 
     @Test
+    fun productRoutesRoundtrip() {
+        val wallpaper = Nav.push(Nav.home(), GpRoute.Wallpaper)
+        assertEquals(GpRoute.Wallpaper, Nav.current(wallpaper))
+        val restored = NavJson.deserialize(NavJson.serialize(wallpaper))
+        assertEquals(listOf(GpRoute.Home, GpRoute.Wallpaper), restored.stack)
+        assertEquals(GpRoute.Home, Nav.current(Nav.pop(restored)))
+    }
+
+    @Test
+    fun legacyStyleRouteMapsToHome() {
+        val pushed = Nav.push(Nav.home(), GpRoute.Style)
+        assertEquals(GpRoute.Home, Nav.current(pushed))
+        val restored = NavJson.deserialize("""{"stack":["home","style"]}""")
+        assertEquals(GpRoute.Home, Nav.current(restored))
+    }
+
+    @Test
     fun deserializeInvalidOrEmptyReturnsHome() {
         assertEquals(Nav.home(), NavJson.deserialize(""))
         assertEquals(Nav.home(), NavJson.deserialize("{"))

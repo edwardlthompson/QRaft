@@ -55,23 +55,17 @@ grep '\[AUTO\]' BUILD_PLAN.md
 
 **Autonomous `/build`:** Runs all `[AGENT]`/`[AUTO]` and Parallel work first, then attempts the grouped **Human & device (after automation)** section via `scripts/attempt-build-plan-row.sh`. Success marks ✅; failure appends `HUMAN_BACKLOG.md` and continues — never halts on human labels. Humans review the grouped section (and backlog) after automation finishes. Status: `bash scripts/build-sprint-status.sh --json`.
 
-> **Template maintainer:** **M47** Sequential AGENT rows open (Cline-first onboarding + Golden Path nav). M46 AGENT/AUTO archived. HUMAN leftovers that still need a person: CII, optional Ollama, Android SDK. Last ship **v1.0.0**. **Child repos:** copy the playbook.
+> **Template maintainer:** **M47** archived. HUMAN leftovers that still need a person: CII, optional Ollama, Android SDK. Last ship **v1.0.0**. **Child repos:** copy the playbook.
 
 ---
 
 ## Template Maintainer — Active Board
 
-> **v1.0.0** published @ `3dae768`. **M47** Sequential AGENT rows below (Cline-first + Golden Path nav). **M46** AGENT/AUTO archived in COMPLETED_TASKS.md @ `6229822`. Closed HUMAN leftovers archived in COMPLETED_TASKS.md @ `c61d249`. Still open: CII login, optional Ollama, Android SDK licenses. **M45** and **M44** archived in COMPLETED_TASKS.md. **v0.25.0** archived in COMPLETED_TASKS.md @ `7670444`. **v0.24.0** archived in COMPLETED_TASKS.md @ `c0f0dee`.
+> **v1.0.0** published @ `3dae768`. **M47** archived in COMPLETED_TASKS.md @ `d573863`. **M46** AGENT/AUTO archived in COMPLETED_TASKS.md @ `6229822`. Closed HUMAN leftovers archived in COMPLETED_TASKS.md @ `c61d249`. Still open: CII login, optional Ollama, Android SDK licenses. **M45** and **M44** archived in COMPLETED_TASKS.md. **v0.25.0** archived in COMPLETED_TASKS.md @ `7670444`. **v0.24.0** archived in COMPLETED_TASKS.md @ `c0f0dee`.
 
-### M47 — Cline-first onboarding + Golden Path navigation (Sequential)
+### M47 — Cline-first onboarding + Golden Path navigation
 
-> Execute in order. Schema lock (row 1) before web/Android wiring. Do not implement in the plan-only PR. Parallel web/Android dispatch waits until row 1 is ✅.
-
-1. ✅ [AGENT] Nav model + docs/features/navigation.md + pure unit tests
-2. ✅ [AGENT] Cline-first onboarding (extensions.json, docs/help/CLINE.md, strip Codex from tour/ship)
-3. ✅ [AGENT] Web: history stack + persist + wire AppShell
-4. ✅ [AGENT] Android: BackHandler + persist + wire Golden Path UI
-5. ✅ [AGENT] verify + docs twins + adapter sync
+> **M47** archived in COMPLETED_TASKS.md @ `d573863`.
 
 ### M46 leftovers (human only)
 
@@ -81,7 +75,6 @@ grep '\[AUTO\]' BUILD_PLAN.md
 
 1. 🔲 [HUMAN] Optional: install Ollama and point Cursor Models at `http://127.0.0.1:11434/v1` (`docs/LOCAL_MODELS.md`)
 2. 🔲 [ADB] Optional: Android SDK licenses + first AVD (`/emulator` or `just android-instrumented`)
-3. 🔲 [ADB] Golden Path nav smoke: Settings Back → home, second Back does not finish (needs SDK/emulator)
 
 ---
 
@@ -95,114 +88,160 @@ When **Sprint 0** ends: stop re-reading `docs/INITIALIZATION_PROMPT.md` as the d
 
 ### Sprint 0 — Template Customization
 
-#### Sequential
-
-1. ✅ [AGENT] Run `scripts/init-project.sh` (`--stack android --license Apache-2.0 --prune`)
-1b. ✅ [AGENT] Fill `branding/product.json` (`mode: product`), product README + `docs/spec.md`
-2. 🔲 [AGENT] Run `scripts/setup-github-repo.sh` (requires `gh` auth with admin)
-3. 🔲 [AUTO] Sprint 0 sign-off (all green on `main`):
-  - `validate-bootstrap.sh --quick`
-  - `feature-gate.sh --stack android`
-  - `check-github-ci.sh --wait 300` (required: **CI**, **Security Scan**, **CodeQL**)
-  - `check-license-compliance.sh`
-
-#### Parallel (safe after Sequential step 1b)
-
-<!-- agent_count_target: 2 | sequential_lock_step: 1 -->
-
-| Task | Owner | Isolated scope |
-| ---- | ----- | -------------- |
-| Multi-module Android + Nayuki encode | AGENT | `examples/android/**` |
-| Product docs (spec/plan/README) | AGENT | `docs/**`, `README.md`, `branding/**` |
-
-#### Human & device (after automation)
-
-1. 🔲 [HUMAN] Create GitHub repo `edwardlthompson/QRaft` and push
-2. 🔲 [HUMAN] Enable Dependabot alerts + branch protection via setup script / Settings
-2a. 🔲 [HUMAN] Pick Cursor mode per `docs/CURSOR_MODES.md`
-2b. 🔲 [HUMAN] Bookmark `docs/help/BATCH_COMMANDS.md`
+> **Sprint 0** archived in COMPLETED_TASKS.md @ `d573863`.
+<!-- parallel_exception: archived -->
 
 ### Sprint 1 — Core encode + square render
 
-<!-- agent_count_target: 2 | sequential_lock_step: 1 -->
-
-#### Sequential
-
-1. ✅ [AGENT] Lock `:core-qr` API (`QrPayload`, `QrMatrix`, `QrEncoder`, `Scannability`, `SquareRasterizer`) + vendor Nayuki
-
-#### Parallel (safe after Sequential step 1)
-
-| Task | Owner | Isolated scope |
-| ---- | ----- | -------------- |
-| Square Bitmap wrapper + home preview | AGENT | `examples/android/render/**`, `examples/android/app/**` |
-| Widget / wallpaper / data scaffolds | AGENT | `examples/android/widget/**`, `examples/android/wallpaper/**`, `examples/android/data/**` |
+> **Sprint 1** archived in COMPLETED_TASKS.md @ `d573863` (NOTICE confirmed). ADB scan remains open.
+<!-- parallel_exception: archived -->
 
 #### Human & device (after automation)
 
 1. 🔲 [ADB] Install debug APK and scan home-screen sample QR with a phone camera
-2. 🔲 [HUMAN] Confirm Apache-2.0 + Nayuki MIT NOTICE wording
 
 ### Sprint 2 — Custom renderer + profiles
 
-<!-- agent_count_target: 2 | sequential_lock_step: 1 -->
-
-#### Sequential
-
-1. 🔲 [AGENT] Lock style model API (module shape, finder, colors, logo cut-out) in `docs/features/qr-style.md`
-
-#### Parallel (safe after Sequential step 1)
-
-| Task | Owner | Isolated scope |
-| ---- | ----- | -------------- |
-| Canvas module/finder renderers + tests | AGENT | `examples/android/render/**` |
-| DataStore profile persistence + search | AGENT | `examples/android/data/**` |
+> **Sprint 2** archived in COMPLETED_TASKS.md @ `d573863`.
+<!-- parallel_exception: archived -->
 
 ### Sprint 3 — Widget + wallpaper
 
-<!-- agent_count_target: 2 | sequential_lock_step: 1 -->
-
-#### Sequential
-
-1. 🔲 [AGENT] Lock widget + wallpaper public APIs in feature specs
-
-#### Parallel (safe after Sequential step 1)
-
-| Task | Owner | Isolated scope |
-| ---- | ----- | -------------- |
-| Glance cached bitmap + tap-to-brighten | AGENT | `examples/android/widget/**` |
-| Wallpaper safe-zone canvas + set-wallpaper | AGENT | `examples/android/wallpaper/**` |
+> **Sprint 3** archived in COMPLETED_TASKS.md @ `d573863`.
+<!-- parallel_exception: archived -->
 
 ### Sprint 4+ — Incremental Features
 
-> One vertical slice at a time. See `docs/FEATURE_MODULES.md`.
+> **qr-export** and **qr-editor** sequential archived in COMPLETED_TASKS.md. Sprint 5–9 AGENT work archived; ADB/HUMAN leftovers stay open.
+<!-- parallel_exception: archived -->
 
-**Agent rule:** After every `[AGENT]` step → `bash scripts/watch-agent-gates.sh --once --autofix --step <scaffold|tests|wire>`.
+### Sprint 5 — Style renderer complete
 
-#### Per-feature Sequential (steps 1–2: lock API)
-
-1. 🔲 [AGENT] Copy `docs/features/_template.md` → `docs/features/{name}.md`; refine acceptance criteria
-2. 🔲 [AGENT] Scaffold feature container (public API boundary only)
-
-#### Per-feature Parallel (safe after Sequential step 2)
-
-| Task                      | Owner | Isolated scope                                                                    |
-| ------------------------- | ----- | --------------------------------------------------------------------------------- |
-| Logic + unit tests        | AGENT | `examples/android/{core-qr,render,data,wallpaper,widget}/**`                      |
-| View + i18n               | AGENT | `examples/android/app/**/ui/`, `res/values/strings.xml`                           |
-| Feature spec + acceptance | AGENT | `docs/features/{feature}.md`                                                      |
-| E2e / instrumented smoke  | AGENT | `examples/android/**/androidTest/`                                                |
-#### Per-feature Sequential (steps 3–4: after Parallel merge)
-
-1. 🔲 [AGENT] Unit tests for feature pure logic (skip if Parallel agent completed)
-2. 🔲 [AGENT] Wire view/adapter; composition root (`appBootstrap.ts` / `GoldenPathApp.kt`) ≤10 lines
+> **Sprint 5** AGENT rows archived in COMPLETED_TASKS.md. ADB scan remains open.
+<!-- parallel_exception: archived -->
 
 #### Human & device (after automation)
 
-> Optional product judgment after gates pass.
+1. 🔲 [ADB] Scan styled URL QR (diamond or rounded + OLED) with a phone camera
 
-1. 🔲 [HUMAN] Optional product smoke after `[AUTO]` gate pass
+### Sprint 6 — Profiles persistence wired
 
-> Gates (`watch-agent-gates.sh`) run Sequential-side after each AGENT step — not in Parallel.
+> **Sprint 6** AGENT rows archived in COMPLETED_TASKS.md. HUMAN reload check remains open.
+<!-- parallel_exception: archived -->
+
+#### Human & device (after automation)
+
+1. ✅ [HUMAN] Save Website profile, kill app, confirm it reloads
+
+### Sprint 7 — Glance widget product
+
+> **Sprint 7** AGENT rows archived in COMPLETED_TASKS.md. ADB widget scan remains open.
+<!-- parallel_exception: archived -->
+
+#### Human & device (after automation)
+
+1. 🔲 [ADB] Pin widget, tap to full-screen bright QR, scan with a second camera
+
+### Sprint 8 — Wallpaper set + PNG
+
+> **Sprint 8** AGENT rows archived in COMPLETED_TASKS.md. ADB lock-wallpaper check remains open.
+<!-- parallel_exception: archived -->
+
+#### Human & device (after automation)
+
+1. 🔲 [ADB] Set lock wallpaper, confirm finders sit inside safe zone; restore prior wallpaper if needed
+
+### Sprint 9 — Export, packs, a11y, F-Droid
+
+> **Sprint 9** AGENT rows archived in COMPLETED_TASKS.md. ADB export scan and optional HUMAN smoke remain open.
+<!-- parallel_exception: archived -->
+
+#### Human & device (after automation)
+
+1. 🔲 [ADB] Export PNG of Website QR; optional scan of style-JSON QR
+2. 🔲 [HUMAN] Optional product smoke after [AUTO] gate pass
+
+### Sprint 10 — Style, gallery, share (session 1)
+
+> Schema lock then S1 vertical slices. Queued allideas stay 🔲 in Sprint 11–12.
+<!-- parallel_exception: sequential schema lock; remaining 1-80 are later sessions -->
+
+#### Sequential
+
+1. ✅ [AGENT] Lock `EccPolicy`, `QrStyle` v2, `ShareIntake`; specs `qr-style-plus`, `qr-gallery`, `qr-share-target`
+2. ✅ [AGENT] Auto ECC + readout; remove ECC dropdown (#1–2)
+3. ✅ [AGENT] Raster themes, gradient, image bg, center inlay, caption taller-not-wider (#13–18, 49)
+4. ✅ [AGENT] Home StyleControls, named save, validation (#4, 8, 23, 25–26)
+5. ✅ [AGENT] Gallery documents, card exports, delete, Add Widget, per-widget id (#29–33, 39–40)
+6. ✅ [AGENT] Share-sheet intake into Home (#68)
+
+### Sprint 11 — Queued editor, style, gallery, widget
+
+<!-- parallel_exception: queued allideas after Sprint 10 S1 lock -->
+
+1. ✅ [AGENT] #3 Draft autosave across process death
+2. ✅ [AGENT] #5 Undo/redo beyond last profile save
+3. ✅ [AGENT] #6 Duplicate current QR
+4. ✅ [AGENT] #7 Clear / new QR
+5. ✅ [AGENT] #9 Crypto scheme picker
+6. ✅ [AGENT] #10 Wi-Fi hidden-network flag
+7. ✅ [AGENT] #11 vCard org + URL fields
+8. ✅ [AGENT] #12 Default primary per payload kind
+9. ✅ [AGENT] #19 True connected-blob modules
+10. ✅ [AGENT] #20 True hex / ring finders
+11. ✅ [AGENT] #21 Decorative frames
+12. ✅ [AGENT] #22 Corner badge occupancy
+13. ✅ [AGENT] #24 Quiet-zone presets 4/6/8
+14. ✅ [AGENT] #27 Styled SVG export
+15. ✅ [AGENT] #28 Styled PDF + caption
+16. ✅ [AGENT] #34 Gallery rename / tags
+17. ✅ [AGENT] #35 Gallery sort
+18. ✅ [AGENT] #36 Encrypted local backup
+19. ✅ [AGENT] #37 Import QrExportDocument from SAF
+20. ✅ [AGENT] #38 Seed Personal/Work/Guest profiles
+21. ✅ [AGENT] #41 Widget sizes 1x1 / 2x2 / 3x3
+22. ✅ [AGENT] #42 Transparent widget background
+23. 🔲 [AGENT] #43 Quick Settings tile to Brighten
+24. 🔲 [AGENT] #44 PIN / biometric for sensitive widget
+25. 🔲 [AGENT] #45 Per-widget caption from gallery card
+26. 🔲 [AGENT] #46 Keyguard vs home pin helper
+27. 🔲 [AGENT] #47 Widget cache refresh on gallery edit
+28. 🔲 [AGENT] #48 TalkBack payload kinds without secrets
+
+### Sprint 12 — Queued wallpaper, export, payloads, scan, polish
+
+<!-- parallel_exception: queued allideas after Sprint 10 S1 lock -->
+
+1. 🔲 [AGENT] #50 Wallpaper from gallery card
+2. 🔲 [AGENT] #51 Lock vs home overlay preview
+3. 🔲 [AGENT] #52 Restore previous wallpaper (code)
+4. 🔲 [AGENT] #53 Dark/light wallpaper pair
+5. 🔲 [AGENT] #54 PNG size picker
+6. 🔲 [AGENT] #55 Batch PDF of gallery cards
+7. 🔲 [AGENT] #56 Share PNG with caption band
+8. 🔲 [AGENT] #57 Copy payload text
+9. 🔲 [AGENT] #58 System Print helper
+10. 🔲 [AGENT] #59 ZIP document + sidecars
+11. 🔲 [AGENT] #60 Calendar VEVENT payload
+12. 🔲 [AGENT] #61 Geo payload
+13. 🔲 [AGENT] #62 WhatsApp wa.me static URL
+14. 🔲 [AGENT] #63 App store / F-Droid URL
+15. 🔲 [AGENT] #64 Mastodon / Matrix URL presets
+16. 🔲 [AGENT] #65 MeCard payload
+17. 🔲 [AGENT] #66 FaceTime URL payloads
+18. 🔲 [AGENT] #67 Current Wi-Fi SSID with runtime location
+19. 🔲 [AGENT] #69 Camera scan (FOSS, offline)
+20. 🔲 [AGENT] #70 Decode QR from gallery image
+21. 🔲 [AGENT] #71 Scan actions open/copy/join
+22. 🔲 [AGENT] #72 Deep link qraft://profile/{id}
+23. 🔲 [AGENT] #73 Material You dynamic color
+24. 🔲 [AGENT] #74 Settings theme dropdown
+25. 🔲 [AGENT] #75 TalkBack on editor dropdowns
+26. 🔲 [AGENT] #76 Font scale / large preview
+27. 🔲 [AGENT] #77 German / Spanish strings
+28. 🔲 [AGENT] #78 First-run Home to Gallery to Widget tour
+29. 🔲 [AGENT] #79 App shortcuts New / last card
+30. 🔲 [AGENT] #80 Edge-to-edge gallery grid
 
 ---
 
@@ -241,6 +280,13 @@ When **Sprint 0** ends: stop re-reading `docs/INITIALIZATION_PROMPT.md` as the d
 
 | Sprint                                                            | Status   | Archive                          |
 | ----------------------------------------------------------------- | -------- | -------------------------------- |
+| Sprint 5–9 — Remaining product (style/widget/wallpaper/share) | AGENT archived; ADB/HUMAN open | `COMPLETED_TASKS.md` |
+| Sprint 4 — qr-editor + qr-export                              | Complete | `COMPLETED_TASKS.md` |
+| M47 — Cline-first + Golden Path nav                               | Complete | `COMPLETED_TASKS.md` @ `d573863` |
+| Sprint 3 — Widget + wallpaper                                     | Complete | `COMPLETED_TASKS.md` @ `d573863` |
+| Sprint 2 — Custom renderer + profiles                             | Complete | `COMPLETED_TASKS.md` @ `d573863` |
+| Sprint 1 — Core encode + square render                            | Complete | `COMPLETED_TASKS.md` @ `d573863` |
+| Sprint 0 — Template Customization                                 | Complete | `COMPLETED_TASKS.md` @ `d573863` |
 | HUMAN leftover automation                                         | Complete | `COMPLETED_TASKS.md` @ `c61d249` |
 | M46 — /allideas template backlog                                  | Complete | `COMPLETED_TASKS.md` @ `6229822` |
 | M45 — /ideas round 2                                             | Complete | `COMPLETED_TASKS.md`             |

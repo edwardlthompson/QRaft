@@ -1,0 +1,6 @@
+{
+  "id": "default",
+  "name": "QRaft default",
+  "moduleShapes": ["SQUARE", "ROUNDED", "DOT", "DIAMOND", "PILL_H", "PILL_V", "BLOB"],
+  "finderShapes": ["SQUARE", "ROUNDED", "CIRCLE", "HEX", "RING"]
+}

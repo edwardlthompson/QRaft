@@ -7,6 +7,7 @@ package org.qraft.wallpaper
  */
 object WallpaperSafeZone {
     const val DEFAULT_MARGIN_FRACTION = 0.10
+    const val MAX_USER_MARGIN = 0.20
 
     data class RectPx(
         val left: Int,
@@ -52,5 +53,7 @@ object WallpaperSafeZone {
         totalWidthPx: Int,
         totalHeightPx: Int,
         marginFraction: Double = DEFAULT_MARGIN_FRACTION,
-    ): RectPx = safeRectangle(totalWidthPx, totalHeightPx, marginFraction).inscribedSquare()
+    ): RectPx = safeRectangle(totalWidthPx, totalHeightPx, clampUserMargin(marginFraction)).inscribedSquare()
+
+    fun clampUserMargin(fraction: Double): Double = fraction.coerceIn(0.0, MAX_USER_MARGIN)
 }

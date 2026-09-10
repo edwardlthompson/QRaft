@@ -1,4 +1,4 @@
-package org.qraft.app.ui
+package org.qraft.app.ui.chrome
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +19,7 @@ import org.qraft.app.about.AppUpdates
 import org.qraft.app.about.DonationsConfig
 import org.qraft.app.ui.about.AboutScreen
 import org.qraft.app.ui.about.LaunchPromptDialogs
+import org.qraft.app.ui.components.ProductNavBar
 import org.qraft.app.ui.components.QRaftScaffold
 import org.qraft.app.ui.components.ThemeToggle
 import org.qraft.app.ui.feedback.FeedbackScreen
@@ -26,6 +27,7 @@ import org.qraft.app.ui.nav.FeedbackKind
 import org.qraft.app.ui.nav.GpRoute
 import org.qraft.app.ui.nav.Nav
 import org.qraft.app.ui.nav.NavState
+import org.qraft.app.ui.product.ProductPages
 import org.qraft.app.ui.settings.SettingsScreen
 import org.qraft.app.ui.theme.ThemeMode
 
@@ -36,6 +38,7 @@ fun QRaftScreen(
     themeMode: ThemeMode,
     nav: NavState,
     saveCrashes: Boolean,
+    nudgePrompts: Boolean,
     releaseRepo: String,
     pendingStack: String?,
     appVersion: String,
@@ -50,12 +53,16 @@ fun QRaftScreen(
     onPop: () -> Unit,
     onScroll: (GpRoute, Int) -> Unit,
     onSaveCrashes: (Boolean) -> Unit,
+    onNudgePrompts: (Boolean) -> Unit,
     onFeedbackClose: () -> Unit,
     onDonatePrompt: (Boolean) -> Unit,
     onUpdatePrompt: (Boolean) -> Unit,
     onApplyUpdate: () -> Unit,
 ) {
     val route = Nav.current(nav)
+    val productTabs = route == GpRoute.Home ||
+        route == GpRoute.Profiles ||
+        route == GpRoute.Wallpaper
     QRaftScaffold(
         snackbarHostState = snackbarHostState,
         topBar = {
@@ -77,6 +84,11 @@ fun QRaftScreen(
                     ThemeToggle(themeMode = themeMode, onToggle = onThemeToggle)
                 },
             )
+        },
+        bottomBar = {
+            if (productTabs) {
+                ProductNavBar(current = route, onSelect = { dest -> onPushRoute(dest, null) })
+            }
         },
     ) { innerPadding ->
         if (nav.promptOpen && launchPrompt != null) {
@@ -102,6 +114,8 @@ fun QRaftScreen(
                 onThemeModeSelect = onThemeModeSelect,
                 saveCrashes = saveCrashes,
                 onSaveCrashes = onSaveCrashes,
+                nudgePrompts = nudgePrompts,
+                onNudgePrompts = onNudgePrompts,
                 onOpenAbout = { onPushRoute(GpRoute.About, null) },
                 onBack = onPop,
                 scrollY = Nav.restoreScroll(nav, GpRoute.Settings),
@@ -122,7 +136,10 @@ fun QRaftScreen(
                 onScroll = { onScroll(GpRoute.About, it) },
                 modifier = panelMod,
             )
-            GpRoute.Home -> HomeQrPreview(modifier = panelMod)
+            GpRoute.Home, GpRoute.Profiles, GpRoute.Wallpaper ->
+                ProductPages(route = route, modifier = panelMod)
+            GpRoute.Style ->
+                ProductPages(route = GpRoute.Home, modifier = panelMod)
         }
     }
 }

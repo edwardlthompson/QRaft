@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="widget_label">QRaft QR</string>
-    <string name="widget_description">Shows a saved QR code on the home or lock screen.</string>
+    <string name="widget_description">Shows a saved QR on the home or lock screen. Resize 1×1, 2×2, or 3×3.</string>
+    <string name="widget_talkback">QR code for %1$s</string>
+    <string name="widget_brighten_cd">Full-screen QR. Tap to close.</string>
+    <string name="widget_hidden">Hidden</string>
+    <string name="widget_next">Next</string>
+    <string name="widget_copy">Copy</string>
+    <string name="widget_open">Open</string>
+    <string name="widget_config_title">Choose a profile</string>
+    <string name="widget_caption">Show name caption</string>
+    <string name="widget_sensitive_lock">Hide sensitive codes until tap</string>
+    <string name="widget_transparent">Transparent background</string>
+    <string name="widget_tile_label">Brighten QR</string>
+    <string name="widget_save">Save</string>
 </resources>

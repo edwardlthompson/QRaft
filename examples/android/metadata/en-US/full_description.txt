@@ -1,5 +1,5 @@
-Golden Path Android is a minimal FOSS application stub shipped with agent-project-bootstrap.
+QRaft crafts custom QR codes entirely on your phone. There is no INTERNET permission, no account, and no analytics.
 
-It demonstrates Gradle structure, assembleDebug CI, and Fastlane metadata patterns without proprietary SDKs.
+Type a website, Wi-Fi, vCard, or text payload. Style modules and finder eyes. Save a Website profile. Pin a Glance widget on the home screen or a LineageOS lock-screen panel. Tap to a full-screen bright QR. Set a safe-zone wallpaper that keeps finder patterns inside the zoom crop. Export PNG, SVG, PDF, or JSON.
 
-Replace this text with your application description before F-Droid submission.
+Placeholder screenshot slots live in images/phoneScreenshots/.

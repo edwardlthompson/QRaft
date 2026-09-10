@@ -15,6 +15,22 @@
 
 ```
 
+## 2026-09-09 — Sprint 10 session 1 style, gallery, share
+
+- **Status:** Accepted
+- **Context:** `/allideas` 1–80 on the board; first session needed auto ECC, style v2, in-app gallery documents, and share-sheet intake.
+- **Decision:** `EccPolicy` chooses H/M from surface+overlay; `QrStyle` v2 JSON; gallery cards are `QrExportDocument` in DataStore; `ShareIntake` fills Home from SEND/PROCESS_TEXT/VIEW. Caption adds height only; wallpaper and Glance stay square.
+- **Alternatives considered:** User-facing ECC dropdown (rejected — Nayuki `boostEcl` made it look like a no-op). Cached PNG as the gallery document (rejected — re-encode from payload+style).
+- **Consequences:** Sprint 11–12 keep remaining 1–80 🔲. Pin-widget refusal uses a toast. Image backgrounds copy into `filesDir/gallery/{id}/`.
+
+## 2026-09-08 — Sprint 5–9 north-star product
+
+- **Status:** Accepted
+- **Context:** Kickoff later slices (style complete, profiles wired, Glance QR, wallpaper set, export/packs) were on BUILD_PLAN but unimplemented.
+- **Decision:** Ship the LineageOS path in-tree: occupancy-tested extra shapes (blob/hex/ring map to rounded/circle paint), DataStore seed+save, live widget + BrightenActivity, WallpaperBinder set home/lock, PNG/PDF/SVG share. No INTERNET. PdfDocument is device-only (Robolectric cannot construct it).
+- **Alternatives considered:** Connected-blob neighbor joining and painted corner badges — deferred; occupancy still covers dark modules.
+- **Consequences:** ADB still must scan widget/wallpaper on device. Sensitive lock hides the widget bitmap until tap; no PIN/biometrics yet.
+
 ## 2026-09-05 — Ship v1.1.0 without Release Please bot merge
 
 - **Decision:** Cut v1.1.0 via agent PR #94 + annotated tag/GitHub Release after #86 stayed `action_required` on workflows.
@@ -23,13 +39,19 @@
 
 ## Entries
 
+### 2026-09-08 — /build closed child Sprints 0–3
+- **Status:** Accepted
+- **Context:** Fresh clone of `edwardlthompson/QRaft`; `/build --lane auto` on product child playbook.
+- **Decision:** Run `setup-github-repo.sh`, Sprint 0 sign-off, then implement style rasterizer + DataStore profiles + widget cache + wallpaper composer. Leave Sprint 4+ `{name}` template rows open. Backlog ADB camera scan.
+- **Alternatives considered:** Dispatch overlapping parallel tables across sprints (rejected: scope collisions). Invent a Sprint 4 feature name (rejected: playbook placeholder).
+- **Consequences:** Unreleased changelog has style/profile/widget/wallpaper notes; next named feature still needs a copied `docs/features/{name}.md`.
+
 ### 2026-09-08 — QRaft first public ship (v0.1.0)
 - **Status:** Accepted
 - **Context:** Product child of agent-project-bootstrap; android-only, Apache-2.0, offline. `/ship` needed green CI, a GitHub Release, and a signed sideload APK.
 - **Decision:** Publish product release tag `v0.1.0` with signed `app-release.apk` + manual SBOM/OpenVEX. Keep `.template-version` / Release Please manifest at template `1.1.0`. Close RP `1.1.1` and Dependabot Kotlin `2.4.x` PRs. Gate pruned web/node CI jobs; skip product upgrade-sim.
 - **Alternatives considered:** Merge Release Please 1.1.1 (rejected: conflates template and app semver). Sync all version files to 0.1.0 (rejected: breaks upstream template update checker).
 - **Consequences:** Release workflow tag-gate still expects `v` + `.template-version`; product tags need manual SBOM until RP/tag-gate are retargeted. Sideload uses local upload keystore (gitignored).
-
 
 ### 2026-09-01 — M47 wrap-up: Cline first-run and stack nav
 - **Status:** Accepted

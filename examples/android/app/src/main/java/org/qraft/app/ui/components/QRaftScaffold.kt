@@ -16,6 +16,7 @@ fun QRaftScaffold(
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
     topBar: @Composable () -> Unit,
+    bottomBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     Scaffold(
@@ -28,6 +29,7 @@ fun QRaftScaffold(
             )
         },
         topBar = topBar,
+        bottomBar = bottomBar,
         content = content,
     )
 }

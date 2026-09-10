@@ -25,4 +25,13 @@ class WallpaperSafeZoneTest {
         assertTrue(qr.right <= safe.right)
         assertTrue(qr.bottom <= safe.bottom)
     }
+
+    @Test
+    fun userMarginClampsToTwentyPercent() {
+        assertEquals(0.0, WallpaperSafeZone.clampUserMargin(-1.0), 0.0)
+        assertEquals(0.20, WallpaperSafeZone.clampUserMargin(0.5), 0.0)
+        val qr = WallpaperSafeZone.qrContentRect(1000, 2000, 0.9)
+        val atTwenty = WallpaperSafeZone.qrContentRect(1000, 2000, 0.20)
+        assertEquals(atTwenty, qr)
+    }
 }

@@ -29,6 +29,8 @@ fun SettingsScreen(
     onThemeModeSelect: (ThemeMode) -> Unit,
     saveCrashes: Boolean,
     onSaveCrashes: (Boolean) -> Unit,
+    nudgePrompts: Boolean = false,
+    onNudgePrompts: (Boolean) -> Unit = {},
     onOpenAbout: () -> Unit = {},
     onBack: () -> Unit,
     scrollY: Int = 0,
@@ -68,6 +70,8 @@ fun SettingsScreen(
         }
         Text(text = stringResource(R.string.settings_feedback_save_crashes))
         Switch(checked = saveCrashes, onCheckedChange = onSaveCrashes)
+        Text(text = stringResource(R.string.settings_nudge_prompts))
+        Switch(checked = nudgePrompts, onCheckedChange = onNudgePrompts)
         Button(onClick = onOpenAbout) {
             Text(stringResource(R.string.settings_about))
         }

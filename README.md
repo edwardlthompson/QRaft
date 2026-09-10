@@ -26,8 +26,8 @@ QRaft is a free, open-source Android app (LineageOS / AOSP first) that generates
 ## LineageOS lock-screen widget
 
 1. Install QRaft (sideload or F-Droid when published).
-2. Add the **QRaft QR** widget from the home screen or LineageOS Glanceable Hub / lock-screen widget panel (wording varies by ROM version).
-3. Resize from compact to large and assign a saved profile. Tap opens a brightness-boosted full-screen view for scanning.
+2. Save a Website profile, then add the **QRaft QR** widget from the home screen or LineageOS Glanceable Hub / lock-screen widget panel (wording varies by ROM version). See [`docs/LINEAGE_WIDGET.md`](docs/LINEAGE_WIDGET.md).
+3. Resize from compact to large. Tap opens a brightness-boosted full-screen QR for scanning. **Next** cycles saved profiles.
 
 ## Wallpaper zoom compensation
 

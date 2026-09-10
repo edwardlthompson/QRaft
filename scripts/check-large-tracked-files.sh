@@ -4,31 +4,33 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+# shellcheck source=lib/resolve-python.sh
+. "$(cd "$(dirname "$0")" && pwd)/lib/resolve-python.sh"
 
 MAX_KB=500
-MAX_BYTES=$((MAX_KB * 1024))
-ERRORS=0
-MAX_REPORT=20
-reported=0
+export MAX_KB
+"$PY" - <<'PY'
+import os, subprocess, sys
+from pathlib import Path
 
-while IFS= read -r file; do
-  [ -z "$file" ] && continue
-  size=$(git cat-file -s "HEAD:$file" 2>/dev/null || echo 0)
-  if [ "$size" -gt "$MAX_BYTES" ]; then
-    kb=$((size / 1024))
-    echo "LARGE TRACKED FILE: $file (${kb} KB > ${MAX_KB} KB)"
-    ERRORS=$((ERRORS + 1))
-    reported=$((reported + 1))
-    if [ "$reported" -ge "$MAX_REPORT" ]; then
-      echo "... truncated (max $MAX_REPORT)"
-      break
-    fi
-  fi
-done < <(git ls-files)
-
-if [ "$ERRORS" -gt 0 ]; then
-  echo "$ERRORS tracked file(s) exceed ${MAX_KB} KB"
-  exit 1
-fi
-
-echo "Large tracked file check passed"
+max_bytes = int(os.environ["MAX_KB"]) * 1024
+files = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
+errors = 0
+reported = 0
+for rel in files:
+    path = Path(rel)
+    if not path.is_file():
+        continue
+    size = path.stat().st_size
+    if size > max_bytes:
+        print(f"LARGE TRACKED FILE: {rel} ({size // 1024} KB > {os.environ['MAX_KB']} KB)")
+        errors += 1
+        reported += 1
+        if reported >= 20:
+            print("... truncated (max 20)")
+            break
+if errors:
+    print(f"{errors} tracked file(s) exceed {os.environ['MAX_KB']} KB")
+    sys.exit(1)
+print("Large tracked file check passed")
+PY

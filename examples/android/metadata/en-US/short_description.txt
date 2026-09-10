@@ -1,1 +1,1 @@
-FOSS Android skeleton for agent-project-bootstrap
+Offline QR codes for home widgets, lock-screen glance panels, and wallpapers.

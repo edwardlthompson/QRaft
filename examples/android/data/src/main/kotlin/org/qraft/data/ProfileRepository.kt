@@ -11,10 +11,11 @@ data class QrProfile(
     val tags: List<String> = emptyList(),
     val styleJson: String = "{}",
     val sensitive: Boolean = false,
+    val updatedAt: Long = 0L,
 )
 
 /**
- * In-memory profile store scaffold. Replace with DataStore + optional Room.
+ * In-memory profile store. Persistent path is [DataStoreProfileRepository].
  */
 class ProfileRepository {
     private val profiles = linkedMapOf<String, QrProfile>()
@@ -27,15 +28,7 @@ class ProfileRepository {
 
     fun all(): List<QrProfile> = profiles.values.toList()
 
-    fun search(query: String): List<QrProfile> {
-        val q = query.trim().lowercase()
-        if (q.isEmpty()) return all()
-        return all().filter { profile ->
-            profile.name.lowercase().contains(q) ||
-                profile.tags.any { it.lowercase().contains(q) } ||
-                profile.payloadText.lowercase().contains(q)
-        }
-    }
+    fun search(query: String): List<QrProfile> = ProfileSearch.filter(all(), query)
 
     fun delete(id: String) {
         profiles.remove(id)

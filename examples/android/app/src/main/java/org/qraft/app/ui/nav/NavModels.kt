@@ -2,6 +2,9 @@ package org.qraft.app.ui.nav
 
 enum class GpRoute(val wire: String) {
     Home("home"),
+    Profiles("profiles"),
+    Style("style"),
+    Wallpaper("wallpaper"),
     Settings("settings"),
     About("about"),
     Feedback("feedback");

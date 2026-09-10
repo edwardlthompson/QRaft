@@ -2,6 +2,104 @@
 
 > Archive of finished BUILD_PLAN items.
 
+## Sprint 10 session 1 — Style plus gallery plus share (2026-09-09)
+
+- ✅ [AGENT] Lock `EccPolicy`, `QrStyle` v2, `ShareIntake`; specs `qr-style-plus`, `qr-gallery`, `qr-share-target`
+- ✅ [AGENT] Auto ECC + readout; remove ECC dropdown (#1–2)
+- ✅ [AGENT] Raster themes, gradient, image bg, center inlay, caption taller-not-wider (#13–18, 49)
+- ✅ [AGENT] Home StyleControls, named save, validation (#4, 8, 23, 25–26)
+- ✅ [AGENT] Gallery documents, card exports, delete, Add Widget, per-widget id (#29–33, 39–40)
+- ✅ [AGENT] Share-sheet intake into Home (#68)
+
+## Sprint 5 — Style renderer complete (2026-09-08)
+
+- ✅ [AGENT] Extend `docs/features/qr-style.md` with diamond/pill/blob modules, finder frame vs pupil, eye color, logo spec, corner badge
+- ✅ [AGENT] Scaffold new enums/fields on `QrStyle` / `QrStyleJson` (decode unknown → DEFAULT)
+- ✅ [AGENT] Occupancy tests: dark modules covered, light not painted as dark; overlay forces H
+- ✅ [AGENT] Wire Style panel into live editor preview (≤10 composition-root lines)
+
+## Sprint 6 — Profiles persistence wired (2026-09-08)
+
+- ✅ [AGENT] Lock `docs/features/qr-profiles.md`: `QrProfile` fields, seed URL (not a personal site), history N, backup JSON
+- ✅ [AGENT] Add `updatedAt` + payload/style round-trip on `ProfileCodec`
+- ✅ [AGENT] Unit tests for seed, history undo, backup JSON
+- ✅ [AGENT] Wire editor Save to repository (≤10 composition-root lines)
+
+## Sprint 7 — Glance widget product (2026-09-08)
+
+- ✅ [AGENT] Extend `docs/features/qr-widget.md`: cache key, BrightenActivity, copy/open, carousel, sensitive blur
+- ✅ [AGENT] Scaffold BrightenActivity + widget selected-profile prefs API
+- ✅ [AGENT] Widget cache tests + TalkBack label never includes Wi-Fi password / crypto key
+- ✅ [AGENT] Widget config: pick profile, caption on/off, sensitive lock
+
+## Sprint 8 — Wallpaper set + PNG (2026-09-08)
+
+- ✅ [AGENT] Extend `docs/features/qr-wallpaper.md`: WindowMetrics size, set home/lock/both, SAF PNG
+- ✅ [AGENT] Scaffold `WallpaperBinder` (metrics → compose → `WallpaperManager`)
+- ✅ [AGENT] Unit tests for margin 0–20% and OLED leftover fill (never stretch)
+- ✅ [AGENT] Wire set-wallpaper + SAF PNG from editor payload/style
+
+## Sprint 9 — Export, packs, a11y, F-Droid (2026-09-08)
+
+- ✅ [AGENT] Lock `docs/features/qr-share.md`: PNG, SVG paths, PDF sheet, QR-of-style-JSON, packs layout
+- ✅ [AGENT] Scaffold pack schema `packs/*.json` + README PR instructions
+- ✅ [AGENT] Unit tests for SVG path export and style-JSON QR payload
+- ✅ [AGENT] TalkBack on editor fields; large touch targets; F-Droid placeholder screenshots
+
+## Sprint 4 — qr-editor (2026-09-08)
+
+- ✅ [AGENT] Copy `docs/features/_template.md` → `docs/features/qr-editor.md`; refine acceptance criteria
+- ✅ [AGENT] Scaffold feature container (public API boundary only)
+- ✅ [AGENT] Unit tests for feature pure logic (`EditorDraftTest`)
+- ✅ [AGENT] Wire Editor / Profiles / Style / Wallpaper routes; donate prompts default off
+
+## Sprint 4 — qr-export + device smoke (2026-09-08)
+
+- ✅ [AGENT] Copy `docs/features/_template.md` → `docs/features/qr-export.md`; refine acceptance criteria
+- ✅ [AGENT] Scaffold feature container (public API boundary only)
+- ✅ [AGENT] Unit tests for feature pure logic (skip if Parallel agent completed)
+- ✅ [AGENT] Wire view/adapter; composition root (`appBootstrap.ts` / `GoldenPathApp.kt`) ≤10 lines
+- ✅ [HUMAN] Optional product smoke after `[AUTO]` gate pass
+- ✅ [ADB] Golden Path nav smoke: Settings Back → home, second Back does not finish (CPH2583 Android 16)
+
+## M47 — Cline-first onboarding + Golden Path navigation (2026-09-08)
+
+- ✅ [AGENT] Nav model + docs/features/navigation.md + pure unit tests
+- ✅ [AGENT] Cline-first onboarding (extensions.json, docs/help/CLINE.md, strip Codex from tour/ship)
+- ✅ [AGENT] Web: history stack + persist + wire AppShell
+- ✅ [AGENT] Android: BackHandler + persist + wire Golden Path UI
+- ✅ [AGENT] verify + docs twins + adapter sync
+
+## Sprint 3 — Widget + wallpaper (2026-09-08)
+
+- ✅ [AGENT] Lock widget + wallpaper public APIs in feature specs
+- ✅ [AGENT] Glance cached bitmap + tap-to-brighten (`QrWidgetCache`, `BrightenAction`)
+- ✅ [AGENT] Wallpaper safe-zone canvas + set-wallpaper (`WallpaperComposer`, `WallpaperApplier`)
+
+## Sprint 2 — Custom renderer + profiles (2026-09-08)
+
+- ✅ [AGENT] Lock style model API in `docs/features/qr-style.md`
+- ✅ [AGENT] Canvas module/finder renderers + tests (`StyledQrRasterizer`)
+- ✅ [AGENT] DataStore profile persistence + search (`DataStoreProfileRepository`)
+
+## Sprint 1 — Core encode + square render (2026-09-08)
+
+- ✅ [AGENT] Lock `:core-qr` API (`QrPayload`, `QrMatrix`, `QrEncoder`, `Scannability`, `SquareRasterizer`) + vendor Nayuki
+- ✅ [AGENT] Square Bitmap wrapper + home preview
+- ✅ [AGENT] Widget / wallpaper / data scaffolds
+- ✅ [HUMAN] Confirm Apache-2.0 + Nayuki MIT NOTICE wording
+
+## Sprint 0 — Template Customization (2026-09-08)
+
+- ✅ [AGENT] Run `scripts/init-project.sh` (`--stack android --license Apache-2.0 --prune`)
+- ✅ [AGENT] Fill `branding/product.json` (`mode: product`), product README + `docs/spec.md`
+- ✅ [AGENT] Run `scripts/setup-github-repo.sh` (requires `gh` auth with admin)
+- ✅ [AUTO] Sprint 0 sign-off (all green on `main`)
+- ✅ [HUMAN] Create GitHub repo `edwardlthompson/QRaft` and push
+- ✅ [HUMAN] Enable Dependabot alerts + branch protection via setup script / Settings
+- ✅ [HUMAN] Pick Cursor mode per `docs/CURSOR_MODES.md`
+- ✅ [HUMAN] Bookmark `docs/help/BATCH_COMMANDS.md`
+
 ## v1.0.0 First stable template (2026-08-28)
 
 - ✅ [AUTO] Merge Release Please PR #82 — [v1.0.0](https://github.com/edwardlthompson/agent-project-bootstrap/releases/tag/v1.0.0) published @ `3dae768`

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:shortcutId="new_qr"
+        android:shortcutShortLabel="@string/shortcut_new_qr"
+        android:shortcutLongLabel="@string/shortcut_new_qr_long">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetClass="org.qraft.app.MainActivity"
+            android:targetPackage="org.qraft.app" />
+    </shortcut>
+</shortcuts>
