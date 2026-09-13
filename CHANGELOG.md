@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
 ## [1.2.0](https://github.com/edwardlthompson/QRaft/compare/v1.1.0...v1.2.0) (2026-09-13)
 
 
@@ -26,8 +28,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **ci:** run MainActivitySmokeTest on the emulator job ([c9cb2cb](https://github.com/edwardlthompson/QRaft/commit/c9cb2cb8e0c1ea579b413eab09f1d998fc466d1a))
 * **ci:** shrink branding rasters and unstick instrumented About/tour ([355844f](https://github.com/edwardlthompson/QRaft/commit/355844ff411c011c61957ba7076df08cbfa30818))
 * harden android-only gates and theme package paths ([1cfabb9](https://github.com/edwardlthompson/QRaft/commit/1cfabb935cc228ee12843351d0f5cb4e1e7c2247))
-
-## [Unreleased]
 
 ## [0.1.0] - 2026-09-08
 
