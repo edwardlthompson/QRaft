@@ -396,8 +396,7 @@ jobs:
           arch: x86_64
           target: default
           disable-animations: true
-          # Full Compose UI stays on Monday weekly-health; CI uses activity smoke (KB/ADR: Android emulator flakes).
-          script: cd examples/android && chmod +x gradlew && ./gradlew :app:connectedDebugAndroidTest --tests org.qraft.app.MainActivitySmokeTest --no-daemon
+          script: cd examples/android && chmod +x gradlew && ./gradlew :app:connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=org.qraft.app.MainActivitySmokeTest --no-daemon
 
   coverage-comment:
     name: PR Coverage Summary
