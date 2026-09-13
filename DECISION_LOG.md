@@ -15,6 +15,14 @@
 
 ```
 
+## 2026-09-13 — App version 1.2.0 signed sideload
+
+- **Status:** Accepted
+- **Context:** GitHub `v1.2.0` shipped while `examples/android` still advertised `0.1.0` / `versionCode` 1. Both phones had a **debug** `org.qraft.app` (same `applicationId`, debug signature). The previous upload JKS was not on disk.
+- **Decision:** Set `versionName=1.2.0` / `versionCode=2`. Generate a new gitignored PKCS12 `qraft-upload.jks` + `keystore.properties`. `assembleRelease` only; uninstall debug, then install the signed APK on OP13 and OP12. Attach `app-release.apk` to the existing `v1.2.0` GitHub release. Menu/layout polish stays out of scope (feature freeze).
+- **Alternatives considered:** Keep `0.1.0` until a new tag (rejected — phones would not match the shipped release). Install debug (rejected). Reuse another project's keystore (rejected).
+- **Consequences:** Future in-place updates **must** use this local upload keystore. `v0.1.0` sideload cannot update in place onto this signature. Back up `examples/android/qraft-upload.jks` + `keystore.properties` (never commit). AGENT board remains empty.
+
 ## 2026-09-13 — Competitor gap closure (FOSS) + v1.2.0 ship
 
 - **Status:** Accepted

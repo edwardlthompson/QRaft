@@ -44,8 +44,8 @@ android {
         // API 26 (Android 8.0): F-Droid-friendly floor. Primary target is LineageOS on Android 11+.
         minSdk = 26
         targetSdk = 37
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "1.2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
