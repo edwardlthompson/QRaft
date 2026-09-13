@@ -31,8 +31,9 @@ class QRaftUiTest {
         composeTestRule.onNodeWithText("Settings").assertIsDisplayed()
         composeTestRule.onNodeWithText("Theme").assertIsDisplayed()
         composeTestRule.onNodeWithText("Version, updates, and ways to support development")
+            .performScrollTo()
             .assertIsDisplayed()
-        composeTestRule.onNodeWithText("Dark theme").performClick()
+        composeTestRule.onNodeWithText("System theme").assertIsDisplayed()
         composeTestRule.onNodeWithText("Close settings").performScrollTo().performClick()
     }
 
