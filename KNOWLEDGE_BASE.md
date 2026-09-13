@@ -188,3 +188,31 @@
 | **Cause** | Child product still ships template RP config that bumps `.template-version` / `TEMPLATE_INDEX`; sync gates require those to match the RP manifest |
 | **Fix** | Keep template baseline at `1.1.0`; close template-style RP PRs; publish product `v0.1.0` GitHub Release + APK; upload SBOM/OpenVEX manually when Release workflow tag-gate fails |
 | **Prevention** | Retarget product `release-please-config.json` / tag-gate for app semver (tracked follow-up); skip upgrade-sim when `branding/product.json` `mode=product` |
+
+### KB-023 — AGP 9 `connectedDebugAndroidTest` rejects `--tests`
+
+| Field | Detail |
+|-------|--------|
+| **Symptom** | CI emulator job: `Unknown command-line option '--tests'` |
+| **Cause** | AGP 9 instrumented test tasks do not take Gradle `--tests` |
+| **Fix** | `-Pandroid.testInstrumentationRunnerArguments.class=org.qraft.app.MainActivitySmokeTest` |
+| **Prevention** | Keep full Compose UI on Monday `weekly-health`; PR CI stays activity smoke |
+
+### KB-024 — Robolectric `runBlocking` + `withContext(Main)` Toast deadlock
+
+| Field | Detail |
+|-------|--------|
+| **Symptom** | `:app:testDebugUnitTest` hangs in `GalleryScanCloneSaveTest` (`Sandbox.runOnMainThread`) |
+| **Cause** | Test `runBlocking` occupies Robolectric main; `save()` waits on `Dispatchers.Main` for Toast |
+| **Fix** | `Handler(Looper.getMainLooper()).post { Toast... }` |
+| **Prevention** | Do not `withContext(Main)` inside `runBlocking` Robolectric tests |
+
+### KB-025 — Branding rasters over 500 KB fail hygiene
+
+| Field | Detail |
+|-------|--------|
+| **Symptom** | `LARGE TRACKED FILE: branding/assets/readme-hero.png` (and siblings) after commit |
+| **Cause** | Untracked PNGs pass local hygiene; CI checks **tracked** files only |
+| **Fix** | JPEG under 500 KB (`readme-hero.jpg`, `social-preview.jpg`); `hero_asset()` prefers small PNG then JPEG then SVG |
+| **Prevention** | Run `check-repo-hygiene` after `git add` of rasters, not only while they are untracked |
+
