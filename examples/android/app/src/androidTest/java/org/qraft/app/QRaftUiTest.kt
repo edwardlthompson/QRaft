@@ -39,7 +39,10 @@ class QRaftUiTest {
     @Test
     fun opensAboutPanelWithVersion() {
         composeTestRule.dismissLaunchPrompts()
-        composeTestRule.onNodeWithContentDescription("About").performClick()
+        composeTestRule.onNodeWithContentDescription("Settings").performClick()
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithText("About", substring = false).performScrollTo().performClick()
+        composeTestRule.waitForIdle()
         composeTestRule.onNodeWithText("About").assertIsDisplayed()
         composeTestRule.onNodeWithText("Installed format: apk").assertIsDisplayed()
     }

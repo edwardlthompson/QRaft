@@ -120,24 +120,27 @@ def _rel_url(path: str, *, from_preview: bool) -> str:
     return "../../" + path
 
 
+def hero_asset(root: Path, *, from_preview: bool) -> str:
+    """Prefer a small raster hero when present, else the SVG."""
+    prefix = "../assets/" if from_preview else "branding/assets/"
+    assets = root / "branding" / "assets"
+    png = assets / "readme-hero.png"
+    jpg = assets / "readme-hero.jpg"
+    # Prefer PNG only when it fits the 500 KB hygiene budget.
+    if png.is_file() and png.stat().st_size <= 500 * 1024:
+        return prefix + "readme-hero.png"
+    if (assets / "readme-hero.jpg").is_file():
+        return prefix + "readme-hero.jpg"
+    return prefix + "readme-hero.svg"
+
+
 def render_readme(root: Path, product: dict, *, for_preview: bool = False) -> str:
     template_path = root / "branding" / "templates" / "README.product.md"
     template = template_path.read_text(encoding="utf-8")
     urls = product["urls"]
     badge = product["badge"]
-    if for_preview:
-        hero_png = root / "branding" / "assets" / "readme-hero.png"
-        hero_path = "../assets/readme-hero.png" if hero_png.is_file() else "../assets/readme-hero.svg"
-        lockup_path = "../assets/logo-lockup.svg"
-    else:
-        hero_png = root / "branding" / "assets" / "readme-hero.png"
-        hero_path = (
-            "branding/assets/readme-hero.png"
-            if hero_png.is_file()
-            else "branding/assets/readme-hero.svg"
-        )
-        lockup_path = "branding/assets/logo-lockup.svg"
-
+    hero_path = hero_asset(root, from_preview=for_preview)
+    lockup_path = "../assets/logo-lockup.svg" if for_preview else "branding/assets/logo-lockup.svg"
     license_badge, license_name = license_fields(root)
     replacements = {
         "{{name}}": product["name"],

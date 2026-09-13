@@ -23,8 +23,9 @@ Official color stylesheet (generated): [`official-colors.css`](official-colors.c
 | `assets/favicon.svg` | Browser tab |
 | `assets/app-icon-512.svg` | Export to store `icon.png` 512×512 (`[HUMAN]`/`[ADB]`) |
 | `assets/readme-hero.svg` | README banner (fallback) |
-| `assets/readme-hero.png` | Photorealistic README / splash hero (preferred when present) |
-| `assets/splash-cyberpunk.png` | Same hero art for Android cold-start splash |
+| `assets/readme-hero.jpg` | Photorealistic README / splash hero (preferred when present; keep under 500 KB) |
+| `assets/splash-cyberpunk.jpg` | Same hero art for Android cold-start splash |
+| `assets/social-preview.jpg` | GitHub / OG 1280×640 (upload in repo Settings → Social preview) |
 | `assets/social-preview.svg` | GitHub / OG 1280×640 (upload PNG export in repo Settings → Social preview) |
 
 ## Clear space & contrast
