@@ -33,30 +33,25 @@ sealed class QrPayload {
     }
 
     data class VCard(
-        val fullName: String,
+        val givenName: String = "",
+        val familyName: String = "",
         val phone: String = "",
         val email: String = "",
         val org: String = "",
         val url: String = "",
     ) : QrPayload() {
-        override fun encodeText(): String = buildString {
-            append("BEGIN:VCARD\nVERSION:3.0\n")
-            append("FN:").append(fullName).append('\n')
-            if (org.isNotBlank()) append("ORG:").append(org).append('\n')
-            if (phone.isNotBlank()) append("TEL:").append(phone).append('\n')
-            if (email.isNotBlank()) append("EMAIL:").append(email).append('\n')
-            if (url.isNotBlank()) append("URL:").append(url).append('\n')
-            append("END:VCARD")
-        }
+        val fullName: String get() = VCardNames.displayName(givenName, familyName)
+        override fun encodeText(): String =
+            VCardNames.encode(givenName, familyName, phone, email, org, url)
     }
 
     data class Email(val address: String, val subject: String = "", val body: String = "") : QrPayload() {
         override fun encodeText(): String {
             if (subject.isBlank() && body.isBlank()) return "mailto:${address.trim()}"
-            val q = buildList {
-                if (subject.isNotBlank()) add("subject=${encodeQuery(subject)}")
-                if (body.isNotBlank()) add("body=${encodeQuery(body)}")
-            }.joinToString("&")
+            val q = listOfNotNull(
+                subject.takeIf { it.isNotBlank() }?.let { "subject=${encodeQuery(it)}" },
+                body.takeIf { it.isNotBlank() }?.let { "body=${encodeQuery(it)}" },
+            ).joinToString("&")
             return "mailto:${address.trim()}?$q"
         }
     }
@@ -75,6 +70,64 @@ sealed class QrPayload {
         override fun encodeText(): String {
             val a = address.trim()
             return if (scheme.isBlank()) a else "${scheme.trim()}:$a"
+        }
+    }
+
+    data class CalendarEvent(
+        val summary: String,
+        val dtStart: String = "",
+        val location: String = "",
+        val description: String = "",
+    ) : QrPayload() {
+        override fun encodeText(): String = buildString {
+            append("BEGIN:VEVENT\n")
+            append("SUMMARY:").append(summary).append('\n')
+            if (dtStart.isNotBlank()) append("DTSTART:").append(dtStart).append('\n')
+            if (location.isNotBlank()) append("LOCATION:").append(location).append('\n')
+            if (description.isNotBlank()) append("DESCRIPTION:").append(description).append('\n')
+            append("END:VEVENT")
+        }
+    }
+
+    data class Geo(val latitude: String, val longitude: String) : QrPayload() {
+        override fun encodeText(): String =
+            "GEO:${latitude.trim()},${longitude.trim()}"
+    }
+
+    data class WhatsApp(val phone: String, val text: String = "") : QrPayload() {
+        override fun encodeText(): String {
+            val raw = phone.trim()
+            val digits = if (raw.contains("wa.me/", ignoreCase = true)) {
+                raw.substringAfter("wa.me/", "").substringBefore('?').filter { it.isDigit() }
+            } else {
+                raw.filter { it.isDigit() }
+            }
+            return if (text.isBlank()) "https://wa.me/$digits"
+            else "https://wa.me/$digits?text=${encodeQuery(text)}"
+        }
+    }
+
+    data class AppStore(val url: String) : QrPayload() {
+        override fun encodeText(): String = url.trim()
+    }
+
+    data class SocialUrl(val url: String) : QrPayload() {
+        override fun encodeText(): String = url.trim()
+    }
+
+    data class MeCard(val name: String, val phone: String = "", val email: String = "") : QrPayload() {
+        override fun encodeText(): String = buildString {
+            append("MECARD:N:").append(name.trim()).append(';')
+            if (phone.isNotBlank()) append("TEL:").append(phone.trim()).append(';')
+            if (email.isNotBlank()) append("EMAIL:").append(email.trim()).append(';')
+            append(';')
+        }
+    }
+
+    data class FaceTime(val target: String, val audio: Boolean = false) : QrPayload() {
+        override fun encodeText(): String {
+            val scheme = if (audio) "facetime-audio" else "facetime"
+            return "$scheme:${target.trim()}"
         }
     }
 }

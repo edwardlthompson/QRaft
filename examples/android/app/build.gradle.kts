@@ -89,6 +89,12 @@ dependencies {
     implementation(project(":widget"))
     implementation(project(":wallpaper"))
     implementation(project(":data"))
+    implementation(project(":scan"))
+
+    val camera = "1.4.2"
+    implementation("androidx.camera:camera-camera2:$camera")
+    implementation("androidx.camera:camera-lifecycle:$camera")
+    implementation("androidx.camera:camera-view:$camera")
 
     val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
     implementation(composeBom)

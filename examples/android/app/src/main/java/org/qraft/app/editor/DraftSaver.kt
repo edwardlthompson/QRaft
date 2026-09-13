@@ -7,7 +7,7 @@ val DraftSaver = listSaver<EditorDraft, String>(
         listOf(
             it.kind.name, it.primary, it.secondary, it.tertiary, it.wifiSecurity.name,
             if (it.wifiHidden) "1" else "0",
-            it.org, it.url,
+            it.org, it.url, it.givenName, it.familyName,
         )
     },
     restore = {
@@ -16,6 +16,8 @@ val DraftSaver = listSaver<EditorDraft, String>(
             wifiHidden = it.getOrNull(5) == "1",
             org = it.getOrNull(6) ?: "",
             url = it.getOrNull(7) ?: "",
+            givenName = it.getOrNull(8) ?: "",
+            familyName = it.getOrNull(9) ?: "",
         )
     },
 )

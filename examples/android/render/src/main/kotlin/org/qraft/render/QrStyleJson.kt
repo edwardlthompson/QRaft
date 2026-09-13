@@ -20,6 +20,7 @@ object QrStyleJson {
         put("centerMark", style.centerMark.name)
         put("caption", style.caption.text)
         put("imageBackgroundPath", style.imageBackgroundPath)
+        put("logoImagePath", style.logoImagePath)
         put("frame", style.frame.name)
         put("cornerBadge", style.cornerBadge)
     }.toString()
@@ -49,6 +50,7 @@ object QrStyleJson {
                 centerMark = enumValueOr(o.optString("centerMark"), CenterMark.NONE),
                 caption = CaptionSpec(o.optString("caption", "")),
                 imageBackgroundPath = o.optString("imageBackgroundPath", ""),
+                logoImagePath = o.optString("logoImagePath", ""),
                 frame = enumValueOr(o.optString("frame"), QrFrame.NONE),
                 cornerBadge = o.optBoolean("cornerBadge", false),
             )

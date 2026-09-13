@@ -2,6 +2,7 @@ package org.qraft.app.share
 
 import org.qraft.app.editor.EditorDraft
 import org.qraft.app.editor.PayloadKind
+import org.qraft.app.editor.VCardDraft
 
 object ShareIntake {
     const val MAX_CHARS = 4096
@@ -12,7 +13,7 @@ object ShareIntake {
         val clipped = if (raw.length > MAX_CHARS) raw.take(MAX_CHARS) else raw
         val lower = mime.lowercase()
         if (lower.contains("vcard") || clipped.startsWith("BEGIN:VCARD", ignoreCase = true)) {
-            return vcardDraft(clipped)
+            return VCardDraft.fromPayloadText(clipped)
         }
         val line = clipped.lineSequence().firstOrNull().orEmpty()
         return when {
@@ -30,23 +31,5 @@ object ShareIntake {
                 EditorDraft(kind = PayloadKind.Text, primary = line)
             else -> EditorDraft(kind = PayloadKind.Text, primary = clipped)
         }
-    }
-
-    private fun vcardDraft(body: String): EditorDraft {
-        fun field(name: String): String {
-            val prefix = "$name:"
-            return body.lineSequence()
-                .firstOrNull { it.startsWith(prefix, ignoreCase = true) }
-                ?.substringAfter(':')
-                ?.trim()
-                .orEmpty()
-        }
-        val name = field("FN").ifBlank { field("N").replace(";", " ").trim() }
-        return EditorDraft(
-            kind = PayloadKind.VCard,
-            primary = name.ifBlank { "Contact" },
-            secondary = field("TEL"),
-            tertiary = field("EMAIL"),
-        )
     }
 }

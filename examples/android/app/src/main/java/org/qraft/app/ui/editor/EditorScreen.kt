@@ -19,7 +19,6 @@ import org.qraft.app.R
 import org.qraft.app.display.highRefreshScroll
 import org.qraft.app.editor.EditorDraft
 import org.qraft.app.editor.PayloadKind
-import org.qraft.app.ui.insets.bottomInsetPadding
 import org.qraft.app.ui.stylepanel.StyleControls
 import org.qraft.app.ui.theme.SpacingMd
 import org.qraft.render.QrStyle
@@ -42,9 +41,13 @@ fun EditorScreen(
     onStyleQr: () -> Unit,
     onPickBackground: () -> Unit,
     onClearBackground: () -> Unit,
+    onPickLogo: () -> Unit = {},
+    onClearLogo: () -> Unit = {},
     onAddWidget: () -> Unit,
     onImportJson: () -> Unit = {},
     onCurrentWifi: () -> Unit,
+    onPasteClipboard: () -> Unit = {},
+    onDecoratePhoto: () -> Unit = {},
     onUndo: () -> Unit = {},
     onRedo: () -> Unit = {},
     onDuplicate: () -> Unit = {},
@@ -54,7 +57,7 @@ fun EditorScreen(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize().padding(SpacingMd).bottomInsetPadding(),
+        modifier = modifier.fillMaxSize().padding(SpacingMd),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(SpacingMd),
     ) {
@@ -75,7 +78,8 @@ fun EditorScreen(
                 value = draft.kind,
                 options = PayloadKind.entries.toList(),
                 labelOf = { kindLabels.getValue(it) },
-                onSelect = { onDraftChange(draft.copy(kind = it, primary = EditorDraft.defaultPrimary(it))) },
+                iconOf = { PayloadKindIcons.of(it) },
+                onSelect = { onDraftChange(EditorDraft.withKind(it)) },
             )
             PayloadFields(draft = draft, onDraftChange = onDraftChange)
             if (validation != null) {
@@ -94,6 +98,8 @@ fun EditorScreen(
                 onStyleChange = onStyleChange,
                 onPickBackground = onPickBackground,
                 onClearBackground = onClearBackground,
+                onPickLogo = onPickLogo,
+                onClearLogo = onClearLogo,
             )
             EditorActions(
                 canSave = canSave,
@@ -106,6 +112,8 @@ fun EditorScreen(
                 onAddWidget = onAddWidget,
                 onImportJson = onImportJson,
                 onCurrentWifi = onCurrentWifi,
+                onPasteClipboard = onPasteClipboard,
+                onDecoratePhoto = onDecoratePhoto,
                 onUndo = onUndo,
                 onRedo = onRedo,
                 onDuplicate = onDuplicate,
@@ -126,4 +134,12 @@ private fun kindLabel(kind: PayloadKind): Int = when (kind) {
     PayloadKind.Sms -> R.string.editor_kind_sms
     PayloadKind.Phone -> R.string.editor_kind_phone
     PayloadKind.Crypto -> R.string.editor_kind_crypto
+    PayloadKind.Calendar -> R.string.editor_kind_calendar
+    PayloadKind.Geo -> R.string.editor_kind_geo
+    PayloadKind.WhatsApp -> R.string.editor_kind_whatsapp
+    PayloadKind.AppStore -> R.string.editor_kind_appstore
+    PayloadKind.Social -> R.string.editor_kind_social
+    PayloadKind.MeCard -> R.string.editor_kind_mecard
+    PayloadKind.FaceTime -> R.string.editor_kind_facetime
+    PayloadKind.Barcode -> R.string.editor_kind_barcode
 }

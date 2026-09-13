@@ -21,10 +21,12 @@ object QrShare {
         matrix: QrMatrix,
         style: QrStyle,
         extras: RasterExtras = RasterExtras(),
+        sizePx: Int = ExportPngSize.DEFAULT.px,
     ): File {
         val dir = File(context.cacheDir, "qr_export").apply { mkdirs() }
         val file = File(dir, "qraft.png")
-        val bmp: Bitmap = StyledQrRenderer.render(matrix, 1024, style, extras, applyCaption = true)
+        val edge = sizePx.coerceIn(256, 4096)
+        val bmp: Bitmap = StyledQrRenderer.render(matrix, edge, style, extras, applyCaption = true)
         file.outputStream().use { out -> bmp.compress(Bitmap.CompressFormat.PNG, 100, out) }
         bmp.recycle()
         return file
@@ -35,11 +37,23 @@ object QrShare {
         matrix: QrMatrix,
         style: QrStyle,
         extras: RasterExtras = RasterExtras(),
+        sizePx: Int = ExportPngSize.DEFAULT.px,
     ) {
-        val file = pngFile(context, matrix, style, extras)
+        val file = pngFile(context, matrix, style, extras, sizePx)
+        shareFile(context, file, "image/png")
+    }
+
+    fun shareBitmap(context: Context, bitmap: Bitmap, fileName: String = "qraft-poster.png") {
+        val dir = File(context.cacheDir, "qr_export").apply { mkdirs() }
+        val file = File(dir, fileName)
+        file.outputStream().use { out -> bitmap.compress(Bitmap.CompressFormat.PNG, 100, out) }
+        shareFile(context, file, "image/png")
+    }
+
+    private fun shareFile(context: Context, file: File, mime: String) {
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
         val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "image/png"
+            type = mime
             putExtra(Intent.EXTRA_STREAM, uri)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
@@ -50,13 +64,7 @@ object QrShare {
         val dir = File(context.cacheDir, "qr_export").apply { mkdirs() }
         val file = File(dir, "qraft.pdf")
         file.writeBytes(pdfBytes(matrix, style))
-        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "application/pdf"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        context.startActivity(Intent.createChooser(intent, null))
+        shareFile(context, file, "application/pdf")
     }
 
     fun svgText(matrix: QrMatrix, style: QrStyle): String = QrSvgExporter.export(matrix, style)

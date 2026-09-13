@@ -5,6 +5,7 @@
 ## Acceptance criteria
 
 - ✅ Composer fills the full display with background ARGB and blits a square QR into `qrContentRect`
+- ✅ Lock wallpapers use `composeLock`: caption under the QR when set, leftover area solid black
 - ✅ User margin clamped 0–20%; leftover is background (OLED-aware), never stretched
 - ✅ `WallpaperBinder` sets home / lock / both via `WallpaperManager` flags; SAF PNG from the wallpaper screen
 - ✅ Empty matrix is rejected (`sizePx` / dimensions must be > 0)
@@ -57,4 +58,5 @@ fun interface WallpaperSetter {
 class WallpaperApplier(private val setter: WallpaperSetter) {
     fun apply(image: WallpaperImage)
 }
+
 ```

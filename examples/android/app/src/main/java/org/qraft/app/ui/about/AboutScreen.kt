@@ -3,6 +3,7 @@ package org.qraft.app.ui.about
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -11,13 +12,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import org.qraft.app.R
 import org.qraft.app.about.DonationsConfig
 import org.qraft.app.display.highRefreshScroll
+import org.qraft.app.ui.components.BrandMark
 import org.qraft.app.ui.insets.LocalNavigationMode
 import org.qraft.app.ui.insets.bottomInsetPadding
 import org.qraft.app.ui.insets.navigationBarInsetBottomDp
@@ -51,10 +55,16 @@ fun AboutScreen(
             .padding(SpacingMd),
         verticalArrangement = Arrangement.spacedBy(SpacingMd),
     ) {
-        Text(
-            text = stringResource(R.string.about_title),
-            style = MaterialTheme.typography.headlineSmall,
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(SpacingMd),
+        ) {
+            BrandMark(size = 56.dp)
+            Text(
+                text = stringResource(R.string.about_title),
+                style = MaterialTheme.typography.headlineSmall,
+            )
+        }
         Text(text = stringResource(R.string.about_version, version))
         Text(text = stringResource(R.string.about_format, installedFormat))
         Text(text = updateStatus)

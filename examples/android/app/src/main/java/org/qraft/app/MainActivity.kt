@@ -18,6 +18,7 @@ class MainActivity : ComponentActivity() {
     private var networkStatusMonitor: NetworkStatusMonitor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_QRaft)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         CrashCapture.install(applicationContext)
@@ -29,6 +30,8 @@ class MainActivity : ComponentActivity() {
             appUpdatePreferences.clearPendingRestart()
             appUpdatePreferences.ensureInstalledFormat()
         }
+        // Refresh glance widgets after upgrades (e.g. opaque plate default).
+        org.qraft.widget.WidgetRefresh.afterGalleryEdit(applicationContext)
 
         setContent {
             QRaftApp(

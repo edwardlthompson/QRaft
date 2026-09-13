@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="../../branding/assets/logo-mark.svg" alt="QRaft" width="64" />
+  <img src="../../branding/assets/logo-mark.png" alt="QRaft" width="96" />
 </p>
 
 # QRaft Android (FOSS)
@@ -16,6 +16,7 @@ examples/android/
   :widget      Jetpack Glance AppWidget (home + keyguard)
   :wallpaper   Safe-zone math + wallpaper export path
   :data        Profile repository scaffold
+
 ```
 
 **minSdk 26** (Android 8.0) — F-Droid-friendly floor. Primary target: LineageOS on Android 11+.
@@ -30,6 +31,7 @@ export ANDROID_HOME=…
 export SOURCE_DATE_EPOCH=1700000000
 cd examples/android
 ./gradlew :core-qr:test :wallpaper:test :app:assembleDebug
+
 ```
 
 ## FOSS compliance

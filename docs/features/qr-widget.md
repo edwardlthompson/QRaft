@@ -6,7 +6,9 @@
 
 - ✅ Quick Settings tile opens BrightenActivity for the selected gallery card
 - ✅ TalkBack is `QR code for {name}` and never includes a Wi-Fi password
-- ✅ Config: pick profile, caption on/off, sensitive lock; Next cycles profiles
+- ✅ Config: pick profile, caption, carousel Prev/Next (opt-in), sensitive lock, transparent — **per widget instance** (no shared bleed)
+- ✅ Carousel wraps all gallery codes when enabled for that widget only
+- ✅ Sensitive cards require device PIN / biometric before Brighten loads payload
 - ✅ Offline/error: empty cache is non-fatal; widget still renders a label
 - ✅ Accessibility: widget description stays in `widget_description`; no new untranslated UI in logic
 - ✅ i18n: `widget_*` strings only in `examples/android/widget/src/main/res/values/strings.xml`
@@ -21,14 +23,14 @@
 
 | Layer | Path |
 |-------|------|
-| Logic | `examples/android/widget/src/main/kotlin/org/qraft/widget/QrWidgetCache.kt`, `BrightenAction.kt` |
-| View | `QrGlanceWidget.kt` |
+| Logic | `examples/android/widget/src/main/kotlin/org/qraft/widget/QrWidgetCache.kt`, `BrightenAction.kt`, `BrightenTile.kt` |
+| View | `QrGlanceWidget.kt`, `BrightenTileService.kt` |
 | Tests | `examples/android/widget/src/test/kotlin/org/qraft/widget/` |
-| Wiring | receiver already in widget manifest; app composition root unchanged this sprint |
+| Wiring | receiver + QS tile in widget manifest; app composition root unchanged this sprint |
 
 ## Tests
 
-- Automated: yes — `QrWidgetCacheTest`, `BrightenActionTest`
+- Automated: yes — `QrWidgetCacheTest`, `BrightenActionTest`, `BrightenTileTest`
 
 ## Fallback validation
 
@@ -48,4 +50,5 @@ class QrWidgetCache {
     fun get(key: String): CachedBitmap?
     fun key(profileId: String, styleJson: String, sizePx: Int): String
 }
+
 ```

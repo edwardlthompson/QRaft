@@ -15,6 +15,22 @@
 
 ```
 
+## 2026-09-13 — Competitor gap closure (FOSS) + v1.2.0 ship
+
+- **Status:** Accepted
+- **Context:** Close FOSS gaps vs Play QR makers without ads/ML Kit. `/ship` hung on `GalleryScanCloneSaveTest` (`runBlocking` + `withContext(Main)` Toast deadlock on Robolectric).
+- **Decision:** Per-`appWidgetId` widget prefs (carousel opt-in, wrap chevrons). CameraX + ZXing Y-plane scan, gallery photos, history. User logo, decorate-on-photo, local presets, 1D barcodes, Material kind icons + geometric center marks. Toast via `Handler.post`. Empty `[Unreleased]` before push (KB-017).
+- **Alternatives considered:** Global widget carousel (rejected — bleed). ML Kit / Play Services (rejected — FOSS). `withContext(Main)` for Toast (rejected — Robolectric deadlock).
+- **Consequences:** AGENT board empty. Next version is Release Please **1.2.0**. App `versionName` still 0.1.0 until that PR merges extra-files.
+
+## 2026-09-10 — FOSS scanner + ADB device acceptance
+
+- **Status:** Accepted
+- **Context:** Sprint 12 scan rows were blocked without a decoder; ADB leftovers asked for peer-phone camera scans that automation cannot perform. Android 16 devices break Espresso Compose idle (`InputManager.getInstance`).
+- **Decision:** Use **ZXing** (Apache-2.0) for offline camera/gallery decode (no ML Kit / Play Services). Accept ADB product rows via module unit tests + `MainActivitySmokeTest` + `installDebug` + `am start`; full Compose UI stays on Monday `weekly-health-check` API 34 emulator.
+- **Alternatives considered:** ML Kit (rejected — FOSS/F-Droid). Require physical second-camera scan for ✅ (rejected — not automatable). Block all ADB until API 34 local emulator (rejected — phones are available).
+- **Consequences:** #69–#71 reopen as AGENT work. `scripts/lib/human_task_android_product.py` owns the ADB rule. Peer-phone scan is optional curiosity only.
+
 ## 2026-09-09 — Sprint 10 session 1 style, gallery, share
 
 - **Status:** Accepted

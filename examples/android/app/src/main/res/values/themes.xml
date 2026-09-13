@@ -4,4 +4,10 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
+
+    <!-- Cold-start splash: cyberpunk hero, then MainActivity switches to Theme.QRaft. -->
+    <style name="Theme.QRaft.Splash" parent="Theme.QRaft">
+        <item name="android:windowBackground">@drawable/splash_window</item>
+        <item name="android:windowFullscreen">false</item>
+    </style>
 </resources>

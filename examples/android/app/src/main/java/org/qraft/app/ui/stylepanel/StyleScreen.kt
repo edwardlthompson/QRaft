@@ -21,6 +21,7 @@ import org.qraft.render.FinderShape
 import org.qraft.render.ModuleShape
 import org.qraft.render.QrFrame
 import org.qraft.render.QrStyle
+import org.qraft.render.StylePresets
 
 @Composable
 fun StyleControls(
@@ -28,12 +29,32 @@ fun StyleControls(
     onStyleChange: (QrStyle) -> Unit,
     onPickBackground: () -> Unit,
     onClearBackground: () -> Unit,
+    onPickLogo: () -> Unit = {},
+    onClearLogo: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val quietOptions = listOf(4, 6, 8).filter { it >= Scannability.MIN_QUIET_ZONE_MODULES }
     val eyeOptions = listOf(style.foregroundArgb, 0xFF0D47A1.toInt(), 0xFF1B5E20.toInt(), 0xFFE65100.toInt())
     val contrast = Scannability.contrastRatio(style.foregroundArgb, style.backgroundArgb)
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(SpacingMd)) {
+        MenuField(
+            label = stringResource(R.string.style_preset),
+            value = StylePresets.ALL.firstOrNull {
+                it.style.moduleShape == style.moduleShape &&
+                    it.style.colorTheme == style.colorTheme
+            } ?: StylePresets.ALL.first(),
+            options = StylePresets.ALL,
+            labelOf = { it.label },
+            onSelect = { pack ->
+                onStyleChange(
+                    pack.style.copy(
+                        imageBackgroundPath = style.imageBackgroundPath,
+                        logoImagePath = style.logoImagePath,
+                        caption = style.caption,
+                    ),
+                )
+            },
+        )
         MenuField(
             label = stringResource(R.string.style_theme),
             value = style.colorTheme,
@@ -78,7 +99,7 @@ fun StyleControls(
                 onStyleChange(
                     style.copy(
                         centerMark = mark,
-                        logoCutout = style.logoCutout.copy(enabled = mark != CenterMark.NONE),
+                        logoCutout = style.logoCutout.copy(enabled = mark != CenterMark.NONE || style.logoImagePath.isNotBlank()),
                     ),
                 )
             },
@@ -119,6 +140,10 @@ fun StyleControls(
         TextButton(onClick = onPickBackground) { Text(stringResource(R.string.style_image_bg)) }
         if (style.imageBackgroundPath.isNotBlank()) {
             TextButton(onClick = onClearBackground) { Text(stringResource(R.string.style_image_bg_clear)) }
+        }
+        TextButton(onClick = onPickLogo) { Text(stringResource(R.string.style_logo_image)) }
+        if (style.logoImagePath.isNotBlank()) {
+            TextButton(onClick = onClearLogo) { Text(stringResource(R.string.style_logo_image_clear)) }
         }
         OutlinedTextField(
             value = style.caption.text,

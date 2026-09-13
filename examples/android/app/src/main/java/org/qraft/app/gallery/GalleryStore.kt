@@ -21,5 +21,10 @@ object GalleryStore {
 
     fun thumbFile(context: Context, id: String): File = dir(context, id).resolve("thumb.png")
 
+    fun readThumb(context: Context, id: String): ByteArray? {
+        val file = thumbFile(context, id)
+        return if (file.exists()) file.readBytes() else null
+    }
+
     fun documentOf(profile: QrProfile): Pair<String, String> = profile.payloadText to profile.styleJson
 }

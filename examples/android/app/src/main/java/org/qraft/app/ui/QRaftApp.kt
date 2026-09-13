@@ -33,8 +33,9 @@ import org.qraft.app.ui.nav.NavState
 import org.qraft.app.ui.nav.NavStore
 import org.qraft.app.ui.theme.ThemeMode
 import org.qraft.app.ui.theme.ThemePreferences
-import org.qraft.app.ui.theme.next
 import kotlinx.coroutines.CoroutineScope
+import org.qraft.app.tour.TourPrefs
+import org.qraft.app.ui.tour.FirstRunTourDialog
 import org.qraft.app.ui.chrome.QRaftScreen
 import org.qraft.app.ui.theme.QRaftTheme
 import kotlinx.coroutines.launch
@@ -53,6 +54,9 @@ fun QRaftApp(
     @Suppress("UNUSED_PARAMETER") networkStatusMonitor: NetworkStatusMonitor,
 ) {
     val themeMode by themePreferences.themeMode.collectAsStateWithLifecycle(initialValue = ThemeMode.System)
+    val dynamicColor by themePreferences.dynamicColor.collectAsStateWithLifecycle(initialValue = false)
+    val tourPrefs = remember { TourPrefs(context) }
+    var showTour by remember { mutableStateOf(!tourPrefs.completed()) }
     val installedFormat by appUpdatePreferences.installedFormat.collectAsStateWithLifecycle(initialValue = "apk")
     val pendingRestart by appUpdatePreferences.pendingRestart.collectAsStateWithLifecycle(initialValue = false)
     val navPrefs = remember { NavPreferences(context) }
@@ -86,11 +90,9 @@ fun QRaftApp(
     }
 
     BackHandler(enabled = true) { popNav() }
-
     LaunchedEffect(pendingRestart) {
         if (pendingRestart) updateStatus = context.getString(R.string.about_update_restarting)
     }
-
     LaunchedEffect(Unit) {
         navPrefs.write(nav)
         if (productPrefs.nudgePrompts()) {
@@ -100,11 +102,15 @@ fun QRaftApp(
         }
     }
 
-    QRaftTheme(themeMode = themeMode) {
+    QRaftTheme(themeMode = themeMode, dynamicColor = dynamicColor) {
         NavigationModeProvider {
+            if (showTour) {
+                FirstRunTourDialog(onFinished = { tourPrefs.setCompleted(true); showTour = false })
+            }
             QRaftScreen(
                 snackbarHostState = snackbarHostState,
                 themeMode = themeMode,
+                dynamicColor = dynamicColor,
                 nav = nav,
                 saveCrashes = saveCrashes,
                 nudgePrompts = nudgePrompts,
@@ -116,8 +122,8 @@ fun QRaftApp(
                 donations = donations,
                 canApplyUpdate = false,
                 launchPrompt = launchPrompt,
-                onThemeToggle = { scope.launch { themePreferences.setThemeMode(themeMode.next()) } },
                 onThemeModeSelect = { mode -> scope.launch { themePreferences.setThemeMode(mode) } },
+                onDynamicColor = { on -> scope.launch { themePreferences.setDynamicColor(on) } },
                 onPushRoute = { route, kind -> applyNav(Nav.push(nav, route, kind)) },
                 onPop = { popNav() },
                 onScroll = { route, y -> scrollRef[route] = y },
@@ -125,14 +131,14 @@ fun QRaftApp(
                 onNudgePrompts = { on -> productPrefs.setNudgePrompts(on); nudgePrompts = on },
                 onFeedbackClose = { crashStore.clear(); popNav() },
                 onDonatePrompt = { donate ->
-                    handleDonatePrompt(
-                        donate, appVersion, donations, launchPrefs, nav, context, ::applyNav,
-                    ) { launchPrompt = null }
+                    handleDonatePrompt(donate, appVersion, donations, launchPrefs, nav, context, ::applyNav) {
+                        launchPrompt = null
+                    }
                 },
                 onUpdatePrompt = { install ->
-                    handleUpdatePrompt(
-                        install, launchPrompt, launchPrefs, nav, context, ::applyNav,
-                    ) { launchPrompt = null }
+                    handleUpdatePrompt(install, launchPrompt, launchPrefs, nav, context, ::applyNav) {
+                        launchPrompt = null
+                    }
                 },
                 onApplyUpdate = {},
             )

@@ -29,6 +29,19 @@ class QrCaptionTest {
     }
 
     @Test
+    fun captionBandIsSnugNotDoubleQuietZone() {
+        val matrix = QrEncoder.encodeText("snug")
+        val square = StyledQrRasterizer.rasterize(matrix, 256)
+        val styled = QrStyle(caption = CaptionSpec("Hi"), quietZoneModules = 4)
+        val band = QrCaption.extraHeight(square, styled)
+        // Old layout added quietZone*modulePx + width/8 (~96+32); snug band is text-sized only.
+        assertTrue(band < square.width / 6)
+        assertTrue(band > 0)
+        val tall = QrCaption.compose(square, styled)
+        assertTrue(tall.height - square.height < square.width / 6)
+    }
+
+    @Test
     fun overlayHasOverlayFlag() {
         assertTrue(QrStyle(centerMark = CenterMark.LINK).hasOverlay)
         assertFalse(QrStyle.DEFAULT.hasOverlay)

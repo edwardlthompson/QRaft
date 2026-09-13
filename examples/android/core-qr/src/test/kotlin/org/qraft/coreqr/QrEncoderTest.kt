@@ -50,7 +50,7 @@ class QrEncoderTest {
 
     @Test
     fun vcardIncludesOrgAndUrl() {
-        val text = QrPayload.VCard("Ada", org = "QRaft", url = "https://qraft.app").encodeText()
+        val text = QrPayload.VCard(givenName = "Ada", org = "QRaft", url = "https://qraft.app").encodeText()
         assertTrue(text.contains("ORG:QRaft"))
         assertTrue(text.contains("URL:https://qraft.app"))
     }

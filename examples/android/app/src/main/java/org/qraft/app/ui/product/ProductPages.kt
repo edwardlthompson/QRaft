@@ -24,45 +24,48 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.util.Consumer
 import kotlinx.coroutines.launch
 import org.qraft.app.R
-import org.qraft.app.editor.DraftSaver
-import org.qraft.app.editor.EditorDraft
 import org.qraft.app.editor.DraftHistory
+import org.qraft.app.editor.DraftSaver
 import org.qraft.app.editor.DraftSnap
 import org.qraft.app.editor.DraftStore
+import org.qraft.app.editor.EditorDraft
 import org.qraft.app.editor.PayloadKind
 import org.qraft.app.editor.ProfileApply
 import org.qraft.app.editor.RasterExtrasFactory
 import org.qraft.app.gallery.BgImage
 import org.qraft.app.gallery.GallerySave
-import org.qraft.app.gallery.GalleryStore
 import org.qraft.app.share.ExportIntake
+import org.qraft.app.share.ExportPngSize
+import org.qraft.app.share.QrPoster
 import org.qraft.app.share.QrShare
 import org.qraft.app.share.ShareIntents
-import org.qraft.app.share.WidgetPin
 import org.qraft.app.shortcut.ProfileShortcuts
-import org.qraft.app.ui.editor.EditorScreen
 import org.qraft.app.ui.nav.GpRoute
-import org.qraft.app.ui.profiles.ProfilesScreen
+import org.qraft.app.ui.profiles.GalleryChromeState
+import org.qraft.app.ui.restorePreviousWallpaper
 import org.qraft.app.ui.setWallpaperFromDraft
 import org.qraft.app.ui.wall.WallpaperScreen
 import org.qraft.app.ui.writeWallpaperPng
 import org.qraft.app.wifi.CurrentWifi
-import org.qraft.data.BackupCrypto
 import org.qraft.data.DataStoreProfileRepository
 import org.qraft.data.ProfileHistory
 import org.qraft.data.ProfileSnapshot
 import org.qraft.data.QrProfile
-import org.qraft.render.QrExportDocument
-import org.qraft.render.QrExportJson
 import org.qraft.render.QrStyle
 import org.qraft.render.QrStyleJson
-import org.qraft.render.StyleJsonQr
+import org.qraft.render.StyledQrRenderer
 import org.qraft.wallpaper.WallpaperBinder
 import org.qraft.wallpaper.WallpaperSafeZone
 import org.qraft.wallpaper.WallpaperTarget
 
 @Composable
-fun ProductPages(route: GpRoute, modifier: Modifier = Modifier) {
+fun ProductPages(
+    route: GpRoute,
+    modifier: Modifier = Modifier,
+    galleryChrome: GalleryChromeState,
+    onOpenGallery: () -> Unit = {},
+    onOpenHome: () -> Unit = {},
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val repo = remember { DataStoreProfileRepository(context) }
@@ -75,6 +78,7 @@ fun ProductPages(route: GpRoute, modifier: Modifier = Modifier) {
     var history by remember { mutableStateOf(listOf<ProfileSnapshot>()) }
     var past by remember { mutableStateOf(listOf<DraftSnap>()) }
     var future by remember { mutableStateOf(listOf<DraftSnap>()) }
+    var pngSize by rememberSaveable { mutableStateOf(ExportPngSize.DEFAULT) }
     val size = remember { WallpaperBinder.displaySizePx(context) }
     val saveDoc = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("image/png")) { uri ->
         if (uri != null) writeWallpaperPng(context, uri, draft, style, size, margin)
@@ -84,6 +88,21 @@ fun ProductPages(route: GpRoute, modifier: Modifier = Modifier) {
             styleJson = QrStyleJson.encode(style.copy(imageBackgroundPath = path))
         }
     }
+    val pickLogo = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        uri?.let { BgImage.import(context, it) }?.let { path ->
+            styleJson = QrStyleJson.encode(logoStyleFromPath(style, path))
+        }
+    }
+    val pickPoster = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        val path = uri?.let { BgImage.import(context, it) } ?: return@rememberLauncherForActivityResult
+        val matrix = draft.toPayload()?.encodeText()?.let { QrShare.encodeOrNull(it, style) }
+        if (matrix == null) {
+            Toast.makeText(context, R.string.editor_payload_empty, Toast.LENGTH_SHORT).show()
+            return@rememberLauncherForActivityResult
+        }
+        val qr = StyledQrRenderer.render(matrix, 512, style, RasterExtrasFactory.of(style, draft.kind))
+        QrPoster.compose(path, qr)?.let { QrShare.shareBitmap(context, it, "qraft-poster.png") }
+    }
     val pickExport = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         val applied = ExportIntake.apply(ShareIntents.readFromUri(context.contentResolver, uri))
         if (applied == null) {
@@ -91,6 +110,20 @@ fun ProductPages(route: GpRoute, modifier: Modifier = Modifier) {
         } else {
             draft = applied.first
             styleJson = QrStyleJson.encode(applied.second)
+        }
+    }
+    val wifiPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { granted ->
+        if (!granted) {
+            Toast.makeText(context, R.string.editor_wifi_unavailable, Toast.LENGTH_SHORT).show()
+            return@rememberLauncherForActivityResult
+        }
+        val ssid = CurrentWifi.ssidOrNull(context)
+        if (ssid == null) {
+            Toast.makeText(context, R.string.editor_wifi_unavailable, Toast.LENGTH_SHORT).show()
+        } else {
+            draft = draft.copy(kind = PayloadKind.Wifi, primary = ssid)
         }
     }
     val activity = context as? ComponentActivity
@@ -108,14 +141,33 @@ fun ProductPages(route: GpRoute, modifier: Modifier = Modifier) {
     LaunchedEffect(Unit) {
         repo.seedIfEmpty()
         profiles = repo.all()
-        var shared = false
-        ShareIntents.applyIncoming(context, activity?.intent) { next ->
-            draft = next
-            shared = true
+        val shared = activity?.intent?.let { intent ->
+            ShareIntents.fromIntent(
+                intent.action,
+                intent.type,
+                intent.getStringExtra(Intent.EXTRA_TEXT)
+                    ?: intent.getStringExtra(Intent.EXTRA_PROCESS_TEXT)
+                    ?: intent.dataString,
+                ShareIntents.readFromUri(
+                    context.contentResolver,
+                    androidx.core.content.IntentCompat.getParcelableExtra(
+                        intent,
+                        Intent.EXTRA_STREAM,
+                        android.net.Uri::class.java,
+                    ),
+                ),
+            )
         }
-        if (!shared) {
-            val extra = activity?.intent?.getStringExtra(ProfileShortcuts.EXTRA_PROFILE_ID)
-            extra?.let { repo.get(it) }?.let { loaded ->
+        if (shared != null) {
+            draft = shared
+        } else {
+            val deepId = when {
+                ProfileShortcuts.wantsLastCard(activity?.intent) ->
+                    ProfileShortcuts.lastProfileId(context)
+                        ?: profiles.maxByOrNull { it.updatedAt }?.id
+                else -> ProfileShortcuts.profileIdFromIntent(activity?.intent)
+            }
+            deepId?.let { repo.get(it) }?.let { loaded ->
                 val applied = ProfileApply.fromProfile(loaded)
                 draft = applied.first
                 styleJson = QrStyleJson.encode(applied.second)
@@ -136,8 +188,7 @@ fun ProductPages(route: GpRoute, modifier: Modifier = Modifier) {
     LaunchedEffect(draftReady, draft, styleJson, saveName) {
         if (!draftReady) return@LaunchedEffect
         DraftStore.save(context, draft, styleJson, saveName)
-        val snap = DraftSnap(draft, styleJson, saveName)
-        val next = DraftHistory.push(past, future, snap)
+        val next = DraftHistory.push(past, future, DraftSnap(draft, styleJson, saveName))
         past = next.first
         future = next.second
     }
@@ -147,132 +198,64 @@ fun ProductPages(route: GpRoute, modifier: Modifier = Modifier) {
         cm.setPrimaryClip(ClipData.newPlainText("qraft", text))
     }
     fun matrixOrNull() = draft.toPayload()?.encodeText()?.let { QrShare.encodeOrNull(it, style) }
-    fun extrasOf(s: QrStyle = style, kind: PayloadKind = draft.kind) = RasterExtrasFactory.of(s, kind)
-    fun matrixOf(profile: QrProfile) = QrShare.encodeOrNull(profile.payloadText, QrStyleJson.decode(profile.styleJson))
-    fun saveGallery() {
-        scope.launch {
-            val profile = GallerySave.write(context, repo, saveName, draft, style, System.currentTimeMillis()) ?: return@launch
-            history = ProfileHistory.push(history, ProfileSnapshot(profile.payloadText, profile.styleJson, profile.updatedAt))
-            ProfileShortcuts.publishOpen(context, profile)
-            refresh()
-        }
+    fun extrasOf() = RasterExtrasFactory.of(style, draft.kind)
+    fun saveGallery() = scope.launch {
+        val profile = GallerySave.write(context, repo, saveName, draft, style, System.currentTimeMillis())
+            ?: return@launch
+        history = ProfileHistory.push(
+            history,
+            ProfileSnapshot(profile.payloadText, profile.styleJson, profile.updatedAt),
+        )
+        ProfileShortcuts.publishOpen(context, profile)
+        refresh()
+        onOpenGallery()
     }
     val validation = if (draft.primary.isBlank()) context.getString(R.string.editor_payload_empty) else null
     val editor: @Composable (Boolean) -> Unit = { canSave ->
-        EditorScreen(
-            draft = draft, style = style, onDraftChange = { draft = it },
-            onStyleChange = { styleJson = QrStyleJson.encode(it) },
-            saveName = saveName, onSaveNameChange = { saveName = it },
-            canSave = canSave && draft.toPayload() != null, validation = validation,
+        ProductHomeEditor(
+            draft = draft,
+            style = style,
+            styleJson = styleJson,
+            saveName = saveName,
+            canSave = canSave && draft.toPayload() != null,
+            validation = validation,
+            pngSize = pngSize,
+            past = past,
+            future = future,
+            onDraft = { draft = it },
+            onStyleJson = { styleJson = it },
+            onSaveName = { saveName = it },
+            onPastFuture = { p, f -> past = p; future = f },
             onSave = { saveGallery() },
-            onExportJson = {
-                draft.toPayload()?.encodeText()?.let {
-                    clip(QrExportJson.encode(QrExportDocument(payloadText = it, style = style)))
-                }
-            },
-            onExportPng = { matrixOrNull()?.let { QrShare.sharePng(context, it, style, extrasOf()) } },
-            onExportSvg = { matrixOrNull()?.let { clip(QrShare.svgText(it, style)) } },
-            onExportPdf = { matrixOrNull()?.let { QrShare.sharePdf(context, it, style) } },
-            onStyleQr = { draft = EditorDraft(primary = StyleJsonQr.payload(style)) },
-            onPickBackground = { pickBg.launch(arrayOf("image/*")) },
-            onClearBackground = { styleJson = QrStyleJson.encode(style.copy(imageBackgroundPath = "")) },
-            onAddWidget = {
-                val id = profiles.firstOrNull { it.payloadText == draft.toPayload()?.encodeText() }?.id
-                if (!WidgetPin.request(context, id ?: DataStoreProfileRepository.SEED_ID)) {
-                    Toast.makeText(context, R.string.widget_pin_refused, Toast.LENGTH_LONG).show()
-                }
-            },
-            onImportJson = { pickExport.launch(arrayOf("application/json", "text/*", "*/*")) },
-            onCurrentWifi = {
-                CurrentWifi.ssidOrNull(context)?.let { ssid -> draft = draft.copy(kind = PayloadKind.Wifi, primary = ssid) }
-            },
-            onUndo = {
-                val (snap, p, f) = DraftHistory.undo(past, future)
-                past = p
-                future = f
-                snap?.let {
-                    draft = it.draft
-                    styleJson = it.styleJson
-                    saveName = it.name
-                }
-            },
-            onRedo = {
-                val (snap, p, f) = DraftHistory.redo(past, future)
-                past = p
-                future = f
-                snap?.let {
-                    draft = it.draft
-                    styleJson = it.styleJson
-                    saveName = it.name
-                }
-            },
-            onDuplicate = {
-                saveName = "$saveName copy"
-                saveGallery()
-            },
-            onNew = {
-                draft = EditorDraft()
-                styleJson = QrStyleJson.encode(QrStyle.DEFAULT)
-                saveName = "Website"
-            },
-            canUndo = past.size > 1,
-            canRedo = future.isNotEmpty(),
+            matrixOrNull = ::matrixOrNull,
+            extrasOf = ::extrasOf,
+            clip = ::clip,
+            pickBg = pickBg,
+            pickLogo = pickLogo,
+            pickExport = pickExport,
+            pickPoster = pickPoster,
+            wifiPermission = wifiPermission,
             modifier = modifier,
         )
     }
     when (route) {
         GpRoute.Home, GpRoute.Style -> editor(true)
-        GpRoute.Profiles -> ProfilesScreen(
+        GpRoute.Profiles -> ProductProfilesPage(
             profiles = profiles,
-            onLoad = { profile ->
-                val applied = ProfileApply.fromProfile(profile)
-                draft = applied.first
-                styleJson = QrStyleJson.encode(applied.second)
-                saveName = profile.name
-            },
-            onDelete = { id ->
-                scope.launch {
-                    repo.delete(id)
-                    GalleryStore.delete(context, id)
-                    refresh()
-                }
-            },
-            onBackup = { secret -> scope.launch { clip(BackupCrypto.wrap(repo.exportJson(), secret)) } },
-            onRestore = { secret ->
-                val text = (context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
-                    .primaryClip?.getItemAt(0)?.coerceToText(context)?.toString().orEmpty()
-                val json = BackupCrypto.unwrap(text, secret)
-                if (json != null) scope.launch { repo.importJson(json); refresh() }
-            },
-            onUndo = {
-                val (snap, next) = ProfileHistory.undo(history)
-                history = next
-                if (snap != null) {
-                    draft = ProfileApply.fromProfile(QrProfile("undo", "Undo", snap.payloadText, styleJson = snap.styleJson)).first
-                    styleJson = snap.styleJson
-                }
-            },
-            onExportJson = { p ->
-                clip(QrExportJson.encode(QrExportDocument(payloadText = p.payloadText, style = QrStyleJson.decode(p.styleJson))))
-            },
-            onExportPng = { p ->
-                val s = QrStyleJson.decode(p.styleJson)
-                val kind = ProfileApply.fromProfile(p).first.kind
-                matrixOf(p)?.let { QrShare.sharePng(context, it, s, extrasOf(s, kind)) }
-            },
-            onExportSvg = { p -> matrixOf(p)?.let { clip(QrShare.svgText(it, QrStyleJson.decode(p.styleJson))) } },
-            onExportPdf = { p -> matrixOf(p)?.let { QrShare.sharePdf(context, it, QrStyleJson.decode(p.styleJson)) } },
-            onAddWidget = { p ->
-                if (!WidgetPin.request(context, p.id)) {
-                    Toast.makeText(context, R.string.widget_pin_refused, Toast.LENGTH_LONG).show()
-                }
-            },
-            onUpdate = { p ->
-                scope.launch {
-                    repo.upsert(p.copy(updatedAt = System.currentTimeMillis()))
-                    refresh()
-                }
-            },
+            history = history,
+            pngSize = pngSize,
+            onPngSize = { pngSize = it },
+            onHistory = { history = it },
+            onDraftStyle = { d, sj, name -> draft = d; styleJson = sj; saveName = name },
+            onOpenHome = onOpenHome,
+            size = size,
+            margin = margin,
+            context = context,
+            scope = scope,
+            repo = repo,
+            clip = ::clip,
+            refresh = { profiles = repo.all() },
+            chrome = galleryChrome,
             modifier = modifier,
         )
         GpRoute.Wallpaper -> WallpaperScreen(
@@ -282,6 +265,12 @@ fun ProductPages(route: GpRoute, modifier: Modifier = Modifier) {
             onSetLock = { scope.launch { setWallpaperFromDraft(context, draft, style, size, margin, WallpaperTarget.LOCK) } },
             onSetBoth = { scope.launch { setWallpaperFromDraft(context, draft, style, size, margin, WallpaperTarget.BOTH) } },
             onSavePng = { saveDoc.launch("qraft-wallpaper.png") },
+            onRestore = { scope.launch { restorePreviousWallpaper(context, WallpaperTarget.BOTH) } },
+            onPair = {
+                scope.launch {
+                    setWallpaperFromDraft(context, draft, style, size, margin, WallpaperTarget.BOTH, pairDarkLight = true)
+                }
+            },
             modifier = modifier,
         )
         else -> editor(false)

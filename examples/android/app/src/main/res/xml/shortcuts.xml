@@ -6,8 +6,19 @@
         android:shortcutShortLabel="@string/shortcut_new_qr"
         android:shortcutLongLabel="@string/shortcut_new_qr_long">
         <intent
-            android:action="android.intent.action.MAIN"
+            android:action="org.qraft.app.action.NEW_QR"
             android:targetClass="org.qraft.app.MainActivity"
             android:targetPackage="org.qraft.app" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:shortcutId="last_card"
+        android:shortcutShortLabel="@string/shortcut_last_card"
+        android:shortcutLongLabel="@string/shortcut_last_card_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="org.qraft.app.MainActivity"
+            android:targetPackage="org.qraft.app"
+            android:data="qraft://profile/last" />
     </shortcut>
 </shortcuts>

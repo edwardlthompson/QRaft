@@ -7,9 +7,10 @@
 
 | Layer | Technology | Version | Notes |
 |-------|-----------|---------|-------|
-| Platform | Android (QRaft product; template baseline 1.1.0) | app 0.1.0 | examples/android multi-module |
+| Platform | Android (QRaft product; template baseline 1.1.0) | app 0.1.0 → RP 1.2.0 | examples/android (`:app`, `:core-qr`, `:render`, `:widget`, `:wallpaper`, `:data`, `:scan`) |
 | License | Apache-2.0 | - | Pure FOSS; F-Droid-friendly |
 | Distribution | GitHub Releases + GitHub Pages demo | - | F-Droid/Winget stubs for child repos |
+
 ## Active Modules
 
 - ❌ Web / PWA (pruned)
@@ -49,6 +50,8 @@ Cline is the first-run agent in Cursor: GitHub sign-in, FREE models, no API keys
 Golden Path Settings/About/Feedback are a route stack, not three booleans. Web History API and Android BackHandler pop one level; at home Back stays in the app. Persist key `gp.nav.v1` restores location after theme/crash/share-target (web) and rotation/process death (Android).
 
 ## Session Retrospectives
+
+| 2026-09-13 | QRaft /cleanup+/ship | Competitor-gap FOSS scan/widgets/barcodes archived; Unreleased emptied; ruff 0.16.7; Robolectric Toast hang fixed | Merge Release Please 1.2.0; wait SBOM; do not `withContext(Main)` inside `runBlocking` Robolectric tests |
 
 | 2026-09-09 | QRaft Sprint 10 S1 | Auto ECC, style v2, gallery documents, share-sheet intake; unit tests | Remaining allideas 1–80 queued Sprint 11–12; ADB pin/share smoke |
 

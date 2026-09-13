@@ -55,6 +55,28 @@ class WallpaperComposerTest {
         assertTrue(qr.width == qr.height)
         assertTrue(qr.width < 400 || qr.height < 800)
     }
+
+    @Test
+    fun lockLeftoverIsBlackWithoutCaption() {
+        val matrix = QrEncoder.encodeText("lock-bg")
+        val image = WallpaperComposer.compose(
+            matrix,
+            400,
+            800,
+            QrStyle(backgroundArgb = 0xFFFFFFFF.toInt()),
+            leftoverArgb = WallpaperComposer.LOCK_LEFTOVER_ARGB,
+            applyCaption = false,
+        )
+        assertEquals(WallpaperComposer.LOCK_LEFTOVER_ARGB, image.pixels[0])
+        assertEquals(WallpaperComposer.LOCK_LEFTOVER_ARGB, image.pixels[image.pixels.lastIndex])
+    }
+
+    @Test
+    fun maxSideForCaptionFitsBandInsideBounds() {
+        val side = WallpaperComposer.maxSideForCaption(300, 400)
+        assertTrue(side in 1..300)
+        assertTrue(side + org.qraft.render.QrCaption.bandHeightPx(side) <= 400)
+    }
 }
 
 class WallpaperApplierTest {

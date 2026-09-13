@@ -17,7 +17,8 @@ class ShareIntakeTest {
     fun vcardAndMailto() {
         val card = ShareIntake.parse("BEGIN:VCARD\nFN:Ada\nTEL:1\nEMAIL:a@b.c\nEND:VCARD", "text/vcard")
         assertEquals(PayloadKind.VCard, card?.kind)
-        assertEquals("Ada", card?.primary)
+        assertEquals("Ada", card?.givenName)
+        assertEquals("", card?.familyName)
         assertEquals(PayloadKind.Email, ShareIntake.parse("mailto:a@b.c")?.kind)
         assertEquals(PayloadKind.Phone, ShareIntake.parse("tel:123")?.kind)
         assertEquals(PayloadKind.Sms, ShareIntake.parse("sms:555")?.kind)
@@ -40,6 +41,6 @@ class ShareIntakeTest {
             null,
         )
         assertEquals(PayloadKind.VCard, draft?.kind)
-        assertEquals("Ada", draft?.primary)
+        assertEquals("Ada", draft?.givenName)
     }
 }

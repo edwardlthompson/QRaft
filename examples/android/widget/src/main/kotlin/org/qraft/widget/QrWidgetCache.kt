@@ -33,6 +33,10 @@ class QrWidgetCache {
     fun get(key: String): CachedBitmap? = entries[key]?.let {
         it.copy(pixels = it.pixels.copyOf())
     }
+
+    fun clear() {
+        entries.clear()
+    }
 }
 
 object BrightenAction {

@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="widget_label">QRaft QR</string>
-    <string name="widget_description">Shows a saved QR on the home or lock screen. Resize 1×1, 2×2, or 3×3.</string>
+    <string name="widget_description">Shows a saved QR on the home or lock screen. Resize freely; the code stays square.</string>
     <string name="widget_talkback">QR code for %1$s</string>
     <string name="widget_brighten_cd">Full-screen QR. Tap to close.</string>
     <string name="widget_hidden">Hidden</string>
-    <string name="widget_next">Next</string>
+    <string name="widget_prev">Previous code</string>
+    <string name="widget_next">Next code</string>
+    <string name="widget_carousel">Show chevrons to cycle all gallery codes</string>
     <string name="widget_copy">Copy</string>
     <string name="widget_open">Open</string>
-    <string name="widget_config_title">Choose a profile</string>
-    <string name="widget_caption">Show name caption</string>
+    <string name="widget_config_title">Choose a gallery QR</string>
+    <string name="widget_config_hint">Pick which saved QR this widget should show.</string>
+    <string name="widget_config_empty">No gallery cards yet. Save a QR from Home first.</string>
+    <string name="widget_config_pick_required">Select a gallery QR to continue.</string>
+    <string name="widget_caption">Show card name under QR when style has no caption</string>
     <string name="widget_sensitive_lock">Hide sensitive codes until tap</string>
-    <string name="widget_transparent">Transparent background</string>
+    <string name="widget_transparent">Transparent background (hard to see on dark wallpaper)</string>
     <string name="widget_tile_label">Brighten QR</string>
     <string name="widget_save">Save</string>
+    <string name="widget_unlock">Unlock</string>
+    <string name="widget_unlock_title">Unlock sensitive QR</string>
+    <string name="widget_unlock_subtitle">Use PIN, pattern, or biometric</string>
+    <string name="widget_unlock_prompt">This QR is locked. Unlock to show it full-screen.</string>
+    <string name="widget_pin_home">Home: long-press empty space → Widgets → QRaft QR.</string>
+    <string name="widget_pin_keyguard">Lock screen (LineageOS): add the same QRaft QR widget to the keyguard / Glanceable Hub panel.</string>
 </resources>

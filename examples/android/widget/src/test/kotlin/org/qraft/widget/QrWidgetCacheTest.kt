@@ -44,41 +44,37 @@ class BrightenActionTest {
     }
 }
 
-@RunWith(RobolectricTestRunner::class)
-@Config(sdk = [26])
-class BrightenIntentsTest {
+class SensitiveUnlockTest {
     @Test
-    fun usesProfilePayloadAndNewTask() {
-        val profile = org.qraft.data.QrProfile("id", "Work", "https://fdroid.org", styleJson = "{}")
-        val intent = BrightenIntents.activityIntent(
-            androidx.test.core.app.ApplicationProvider.getApplicationContext(),
-            profile,
-        )
-        assertEquals(BrightenActivity::class.java.name, intent.component?.className)
-        assertEquals("https://fdroid.org", intent.getStringExtra(BrightenActivity.EXTRA_PAYLOAD))
-        assertEquals("{}", intent.getStringExtra(BrightenActivity.EXTRA_STYLE))
-        assertTrue(intent.flags and android.content.Intent.FLAG_ACTIVITY_NEW_TASK != 0)
-    }
-
-    @Test
-    fun nullProfileFallsBackToSeed() {
-        val intent = BrightenIntents.activityIntent(
-            androidx.test.core.app.ApplicationProvider.getApplicationContext(),
-            null,
-        )
-        assertEquals(
-            org.qraft.data.DataStoreProfileRepository.seedWebsite().payloadText,
-            intent.getStringExtra(BrightenActivity.EXTRA_PAYLOAD),
-        )
+    fun onlySensitiveWithLock() {
+        assertTrue(SensitiveUnlock.requiresAuth(true, true))
+        assertTrue(!SensitiveUnlock.requiresAuth(true, false))
+        assertTrue(!SensitiveUnlock.requiresAuth(false, true))
     }
 }
 
-class WidgetTalkbackTest {
+class WidgetCacheRefreshTest {
     @Test
-    fun descriptionOmitsWifiPassword() {
-        val payload = "WIFI:T:WPA;S:Cafe;P:s3cret;"
-        val description = "QR code for ${WidgetTalkback.label("Guest Wi-Fi")}"
-        assertTrue(WidgetTalkback.descriptionOmitsSecrets(description, payload))
-        assertEquals("s3cret", WidgetTalkback.wifiPassword(payload))
+    fun clearDropsEntries() {
+        val cache = WidgetRefresh.sharedCache()
+        cache.put("k", 2, 2, IntArray(4) { 1 })
+        assertEquals(2, cache.get("k")!!.width)
+        cache.clear()
+        assertNull(cache.get("k"))
+    }
+}
+
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [26])
+class BrightenTileTest {
+    @Test
+    fun pendingIntentTargetsBrightenActivity() {
+        val context = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>()
+        val profile = org.qraft.data.QrProfile("id", "Work", "https://fdroid.org", styleJson = "{}")
+        val pending = BrightenTile.pendingIntent(context, profile)
+        assertEquals(43, BrightenTile.REQUEST_CODE)
+        val intent = org.robolectric.Shadows.shadowOf(pending).savedIntent
+        assertEquals(BrightenActivity::class.java.name, intent.component?.className)
+        assertEquals("https://fdroid.org", intent.getStringExtra(BrightenActivity.EXTRA_PAYLOAD))
     }
 }

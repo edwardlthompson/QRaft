@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_scan">Scan</string>
+    <string name="scan_title">Scan QR</string>
+    <string name="scan_hint_point">Point at a code — recognition is automatic (no shutter).</string>
+    <string name="scan_camera_needed">Camera permission is needed for live scan. Gallery pick works without it.</string>
+    <string name="scan_grant_camera">Allow camera</string>
+    <string name="scan_pick_gallery">Pick photo from gallery</string>
+    <string name="scan_decoding">Reading photo…</string>
+    <string name="scan_ok_camera">Decoded from camera</string>
+    <string name="scan_ok_gallery">Decoded from gallery photo</string>
+    <string name="scan_fail">No code found in that image</string>
+    <string name="scan_torch_on">Torch on</string>
+    <string name="scan_torch_off">Torch off</string>
+    <string name="scan_history">History</string>
+    <string name="scan_history_empty">No recent scans</string>
+    <string name="scan_history_clear">Clear history</string>
+    <string name="scan_format">Format: %1$s</string>
+    <string name="scan_copy">Copy</string>
+    <string name="scan_open">Open</string>
+    <string name="scan_join_wifi">Join Wi‑Fi</string>
+    <string name="scan_save_gallery">Save to gallery</string>
+    <string name="scan_saved_gallery">Saved to Gallery — open it to clone or restyle</string>
+    <string name="scan_save_failed">Could not save that QR</string>
+</resources>

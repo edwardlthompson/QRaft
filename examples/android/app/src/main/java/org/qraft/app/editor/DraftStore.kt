@@ -12,6 +12,8 @@ object DraftStore {
     private const val HIDDEN = "hidden"
     private const val ORG = "org"
     private const val URL = "url"
+    private const val GIVEN = "given"
+    private const val FAMILY = "family"
     private const val STYLE = "style"
     private const val NAME = "name"
 
@@ -25,6 +27,8 @@ object DraftStore {
             .putBoolean(HIDDEN, draft.wifiHidden)
             .putString(ORG, draft.org)
             .putString(URL, draft.url)
+            .putString(GIVEN, draft.givenName)
+            .putString(FAMILY, draft.familyName)
             .putString(STYLE, styleJson)
             .putString(NAME, saveName)
             .apply()
@@ -42,6 +46,8 @@ object DraftStore {
             wifiHidden = prefs.getBoolean(HIDDEN, false),
             org = prefs.getString(ORG, "") ?: "",
             url = prefs.getString(URL, "") ?: "",
+            givenName = prefs.getString(GIVEN, "") ?: "",
+            familyName = prefs.getString(FAMILY, "") ?: "",
         )
     }
 

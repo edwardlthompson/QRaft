@@ -78,6 +78,16 @@ def automate_product_smoke(root: Path, cfg: dict) -> AttemptResult:
     return AttemptResult(1, "feature-gate", tail or f"exit {code}", True)
 
 
+def automate_foss_scanner_choice(root: Path, _cfg: dict) -> AttemptResult:
+    """Record ZXing as the FOSS offline decoder so Sprint 12 scan can proceed."""
+    note = (
+        "FOSS scanner for #69–#71: use ZXing (Apache-2.0) encode/decode offline; "
+        "no ML Kit / Play Services. Implement camera + gallery decode next."
+    )
+    append_decision_log(root, note)
+    return AttemptResult(0, "foss-scanner-zxing", note, False)
+
+
 def automate_release_tag(root: Path, _cfg: dict) -> AttemptResult:
     code, out = run_cmd(root, ["gh", "release", "list", "--limit", "1"])
     if code != 0:
@@ -85,3 +95,28 @@ def automate_release_tag(root: Path, _cfg: dict) -> AttemptResult:
     if out.strip():
         return AttemptResult(0, "release-tag", "Release exists; autonomous ack only", False)
     return AttemptResult(1, "release-tag", "No release; human product approval required", True)
+
+
+def automate_quarterly_radar(root: Path, _cfg: dict) -> AttemptResult:
+    """Ack when next-due date is still in the future; otherwise require a human pass."""
+    import re
+    from datetime import date
+
+    plan = (root / "BUILD_PLAN.md").read_text(encoding="utf-8")
+    match = re.search(r"next due\s+(\d{4}-\d{2}-\d{2})", plan, re.I)
+    if not match:
+        return AttemptResult(1, "quarterly-radar", "No next-due date in BUILD_PLAN", True)
+    due = date.fromisoformat(match.group(1))
+    if date.today() < due:
+        return AttemptResult(
+            0,
+            "quarterly-radar",
+            f"Not due until {due.isoformat()}; Monday cron still runs radar",
+            False,
+        )
+    return AttemptResult(
+        1,
+        "quarterly-radar",
+        f"Due {due.isoformat()}; human should review CURSOR_RADAR_REPORT.md",
+        True,
+    )

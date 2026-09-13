@@ -41,13 +41,13 @@ A full-phone QR is large and usually needs more scan distance than a widget.
 
 ## Privacy (offline)
 
-No `INTERNET` permission. Profiles stay on-device. A lock-screen QR is visible to anyone who can see the phone — see [`docs/PRIVACY.md`](docs/PRIVACY.md).
+No `INTERNET` permission. Profiles stay on-device. A lock-screen QR is visible to anyone who can see the phone — see [`{{url_privacy}}`]({{url_privacy}}).
 
 ## Modules
 
 ```text
 examples/android/
-  :app  :core-qr  :render  :widget  :wallpaper  :data
+  :app  :core-qr  :render  :widget  :wallpaper  :data  :scan
 ```
 
 **minSdk 26** (F-Droid-friendly). Primary target: LineageOS on Android 11+. Package: `org.qraft.app`.

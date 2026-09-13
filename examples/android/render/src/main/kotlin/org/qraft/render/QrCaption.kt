@@ -3,11 +3,21 @@ package org.qraft.render
 import org.qraft.coreqr.SquareRasterizer
 
 object QrCaption {
+    /**
+     * Extra pixels under the square QR for caption text.
+     * Quiet zone is already inside the QR bitmap — only a snug text band is added.
+     */
+    fun bandHeightPx(squareWidth: Int): Int {
+        val textSize = (squareWidth / 14f).coerceAtLeast(12f)
+        val padTop = (textSize * 0.15f).toInt().coerceAtLeast(2)
+        val padBottom = (textSize * 0.2f).toInt().coerceAtLeast(2)
+        val textBlock = (textSize * 1.15f).toInt().coerceAtLeast(14)
+        return padTop + textBlock + padBottom
+    }
+
     fun extraHeight(square: SquareRasterizer.Result, style: QrStyle): Int {
         if (style.caption.text.isBlank()) return 0
-        val quietPx = (style.quietZoneModules.coerceAtLeast(0) * square.modulePx).coerceAtLeast(4)
-        val band = (square.width / 8).coerceAtLeast(24)
-        return quietPx + band
+        return bandHeightPx(square.width)
     }
 
     fun compose(square: SquareRasterizer.Result, style: QrStyle): SquareRasterizer.Result {

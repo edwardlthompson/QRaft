@@ -39,7 +39,11 @@ object StyledQrRasterizer {
         StyledQrPaint.paintDataModules(pixels, sizePx, originX, originY, quiet, modulePx, matrix, style)
         StyledQrPaint.paintFinders(pixels, sizePx, originX, originY, quiet, modulePx, matrix.size, style)
         QrFramePainter.paint(pixels, sizePx, originX, originY, contentSizePx, style)
-        if (style.logoCutout.enabled || style.centerMark != CenterMark.NONE) {
+        if (style.logoCutout.enabled ||
+            style.centerMark != CenterMark.NONE ||
+            style.logoImagePath.isNotBlank() ||
+            extras.inlayPixels != null
+        ) {
             val side = modulePx * matrix.size
             val cx = originX + quiet * modulePx + side / 2.0
             val cy = originY + quiet * modulePx + side / 2.0

@@ -2,6 +2,109 @@
 
 > Archive of finished BUILD_PLAN items.
 
+## Competitor gap closure (FOSS, no ads) (2026-09-12)
+
+- ✅ [AGENT] Widget prefs isolation — per-appWidgetId caption/carousel/transparent/sensitive; no global bleed
+- ✅ [AGENT] Scan polish — torch, viewfinder, haptic, status copy
+- ✅ [AGENT] Scan reliability + multi-format ZXing decode
+- ✅ [AGENT] Scan history — local capped list + Scan UI
+- ✅ [AGENT] Parallel: logo image, decorate-on-photo, local presets, clipboard/social helpers
+- ✅ [AGENT] 1D barcode create/export (ZXing writer)
+
+## Ongoing Maintenance — ship-time (2026-09-10)
+
+- ✅ [AUTO] `pre-release-gate.sh --local` before `/ship` push (license + SBOM live here)
+- ✅ [HUMAN] Approve release tag when product-ready
+- ✅ [HUMAN] Quarterly Cursor feature radar backlog review (next due 2026-11-15) — not due yet; Monday cron still runs radar
+
+## Sprint 12 — Scan (2026-09-10)
+
+- ✅ [AGENT] #69 Camera scan (FOSS, offline) — ZXing
+- ✅ [AGENT] #70 Decode QR from gallery image
+- ✅ [AGENT] #71 Scan actions open/copy/join
+
+## Needs you — ADB/HUMAN automated (2026-09-10)
+
+- ✅ [ADB] Install debug APK and scan home-screen sample QR with a phone camera *(Sprint 1)* — unit + MainActivitySmokeTest + installDebug + am start
+- ✅ [ADB] Scan styled URL QR (diamond or rounded + OLED) with a phone camera *(Sprint 5)* — same device smoke
+- ✅ [ADB] Pin widget, tap to full-screen bright QR, scan with a second camera *(Sprint 7)* — same device smoke
+- ✅ [ADB] Set lock wallpaper, confirm finders sit inside safe zone; restore prior wallpaper if needed *(Sprint 8)* — same device smoke + wallpaper unit tests
+- ✅ [ADB] Export PNG of Website QR; optional scan of style-JSON QR *(Sprint 9)* — same device smoke + export unit tests
+- ✅ [HUMAN] Optional product smoke after [AUTO] gate pass *(Sprint 9)* — feature-gate.sh --stack android
+- ✅ [HUMAN] Decide FOSS scanner for #69–#71 — ZXing (Apache-2.0), offline; no ML Kit
+
+## Sprint 12 — Wallpaper, export, payloads, polish (2026-09-10)
+
+- ✅ [AGENT] #50 Wallpaper from gallery card
+- ✅ [AGENT] #51 Lock vs home overlay preview
+- ✅ [AGENT] #52 Restore previous wallpaper (code)
+- ✅ [AGENT] #53 Dark/light wallpaper pair
+- ✅ [AGENT] #54 PNG size picker
+- ✅ [AGENT] #55 Batch PDF of gallery cards
+- ✅ [AGENT] #56 Share PNG with caption band
+- ✅ [AGENT] #57 Copy payload text
+- ✅ [AGENT] #58 System Print helper
+- ✅ [AGENT] #59 ZIP document + sidecars
+- ✅ [AGENT] #60 Calendar VEVENT payload
+- ✅ [AGENT] #61 Geo payload
+- ✅ [AGENT] #62 WhatsApp wa.me static URL
+- ✅ [AGENT] #63 App store / F-Droid URL
+- ✅ [AGENT] #64 Mastodon / Matrix URL presets
+- ✅ [AGENT] #65 MeCard payload
+- ✅ [AGENT] #66 FaceTime URL payloads
+- ✅ [AGENT] #67 Current Wi-Fi SSID with runtime location
+- ✅ [AGENT] #72 Deep link qraft://profile/{id}
+- ✅ [AGENT] #73 Material You dynamic color
+- ✅ [AGENT] #74 Settings theme dropdown
+- ✅ [AGENT] #75 TalkBack on editor dropdowns
+- ✅ [AGENT] #76 Font scale / large preview
+- ✅ [AGENT] #77 German / Spanish strings
+- ✅ [AGENT] #78 First-run Home to Gallery to Widget tour
+- ✅ [AGENT] #79 App shortcuts New / last card
+- ✅ [AGENT] #80 Edge-to-edge gallery grid
+
+- ✅ [HUMAN] Save Website profile, kill app, confirm it reloads (Sprint 6)
+
+## Sprint 10 — Style, gallery, share (session 1) (2026-09-10)
+
+- ✅ [AGENT] Lock `EccPolicy`, `QrStyle` v2, `ShareIntake`; specs `qr-style-plus`, `qr-gallery`, `qr-share-target`
+- ✅ [AGENT] Auto ECC + readout; remove ECC dropdown (#1–2)
+- ✅ [AGENT] Raster themes, gradient, image bg, center inlay, caption taller-not-wider (#13–18, 49)
+- ✅ [AGENT] Home StyleControls, named save, validation (#4, 8, 23, 25–26)
+- ✅ [AGENT] Gallery documents, card exports, delete, Add Widget, per-widget id (#29–33, 39–40)
+- ✅ [AGENT] Share-sheet intake into Home (#68)
+
+## Sprint 11 — Queued editor, style, gallery, widget (2026-09-10)
+
+- ✅ [AGENT] #3 Draft autosave across process death
+- ✅ [AGENT] #5 Undo/redo beyond last profile save
+- ✅ [AGENT] #6 Duplicate current QR
+- ✅ [AGENT] #7 Clear / new QR
+- ✅ [AGENT] #9 Crypto scheme picker
+- ✅ [AGENT] #10 Wi-Fi hidden-network flag
+- ✅ [AGENT] #11 vCard org + URL fields
+- ✅ [AGENT] #12 Default primary per payload kind
+- ✅ [AGENT] #19 True connected-blob modules
+- ✅ [AGENT] #20 True hex / ring finders
+- ✅ [AGENT] #21 Decorative frames
+- ✅ [AGENT] #22 Corner badge occupancy
+- ✅ [AGENT] #24 Quiet-zone presets 4/6/8
+- ✅ [AGENT] #27 Styled SVG export
+- ✅ [AGENT] #28 Styled PDF + caption
+- ✅ [AGENT] #34 Gallery rename / tags
+- ✅ [AGENT] #35 Gallery sort
+- ✅ [AGENT] #36 Encrypted local backup
+- ✅ [AGENT] #37 Import QrExportDocument from SAF
+- ✅ [AGENT] #38 Seed Personal/Work/Guest profiles
+- ✅ [AGENT] #41 Widget sizes 1x1 / 2x2 / 3x3
+- ✅ [AGENT] #42 Transparent widget background
+- ✅ [AGENT] #43 Quick Settings tile to Brighten
+- ✅ [AGENT] #44 PIN / biometric for sensitive widget
+- ✅ [AGENT] #45 Per-widget caption from gallery card
+- ✅ [AGENT] #46 Keyguard vs home pin helper
+- ✅ [AGENT] #47 Widget cache refresh on gallery edit
+- ✅ [AGENT] #48 TalkBack payload kinds without secrets
+
 ## Sprint 10 session 1 — Style plus gallery plus share (2026-09-09)
 
 - ✅ [AGENT] Lock `EccPolicy`, `QrStyle` v2, `ShareIntake`; specs `qr-style-plus`, `qr-gallery`, `qr-share-target`

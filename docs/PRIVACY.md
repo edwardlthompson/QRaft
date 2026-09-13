@@ -18,7 +18,7 @@ QRaft is **100% offline**. The app does not request `INTERNET` or network-state 
 
 ## Lock-screen visibility
 
-A QR on the lock screen or wallpaper is visible to anyone who can see the phone. Do not encode secrets you are not willing to expose at arm’s length. Optional blur / tap-to-reveal / biometric gate is planned for sensitive profiles.
+A QR on the lock screen or wallpaper is visible to anyone who can see the phone. Do not encode secrets you are not willing to expose at arm’s length. Mark a gallery card **sensitive** and leave **Hide sensitive codes until tap** on: the widget shows **Hidden**, and Brighten requires your device PIN, pattern, or biometric before the payload is loaded (the launch Intent never carries the secret).
 
 ## User control
 

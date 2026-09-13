@@ -34,4 +34,12 @@ class ThemePreferencesTest {
         prefs.setThemeMode(ThemeMode.Dark)
         assertEquals(ThemeMode.Dark, prefs.themeMode.first())
     }
+
+    @Test
+    fun dynamicColorDefaultsOffAndPersists() = runBlocking {
+        val prefs = ThemePreferences(context)
+        assertEquals(false, prefs.dynamicColor.first())
+        prefs.setDynamicColor(true)
+        assertEquals(true, prefs.dynamicColor.first())
+    }
 }

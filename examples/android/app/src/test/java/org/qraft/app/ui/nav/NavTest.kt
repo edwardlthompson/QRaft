@@ -73,6 +73,15 @@ class NavTest {
     }
 
     @Test
+    fun pushScanTab() {
+        val scan = Nav.push(Nav.home(), GpRoute.Scan)
+        assertEquals(GpRoute.Scan, Nav.current(scan))
+        assertEquals("scan", GpRoute.Scan.wire)
+        val restored = NavJson.deserialize(NavJson.serialize(scan))
+        assertEquals(GpRoute.Scan, Nav.current(restored))
+    }
+
+    @Test
     fun legacyStyleRouteMapsToHome() {
         val pushed = Nav.push(Nav.home(), GpRoute.Style)
         assertEquals(GpRoute.Home, Nav.current(pushed))

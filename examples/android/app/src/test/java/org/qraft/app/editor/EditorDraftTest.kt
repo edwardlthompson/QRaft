@@ -49,7 +49,8 @@ class EditorDraftTest {
     fun vcardOrgAndUrlFields() {
         val text = EditorDraft(
             kind = PayloadKind.VCard,
-            primary = "Ada",
+            givenName = "Ada",
+            familyName = "Lovelace",
             secondary = "555",
             tertiary = "ada@example.com",
             org = "QRaft",
@@ -57,6 +58,7 @@ class EditorDraftTest {
         ).toPayload()!!.encodeText()
         assertTrue(text.contains("ORG:QRaft"))
         assertTrue(text.contains("URL:https://qraft.app"))
+        assertTrue(text.contains("N:Lovelace;Ada;;;"))
     }
 
     @Test
@@ -79,11 +81,32 @@ class EditorDraftTest {
         assertEquals(EditorDraft.DEFAULT_URL, EditorDraft.defaultPrimary(PayloadKind.Url))
         assertEquals(EditorDraft.DEFAULT_TEXT, EditorDraft.defaultPrimary(PayloadKind.Text))
         assertEquals(EditorDraft.DEFAULT_WIFI, EditorDraft.defaultPrimary(PayloadKind.Wifi))
-        assertEquals(EditorDraft.DEFAULT_VCARD, EditorDraft.defaultPrimary(PayloadKind.VCard))
+        assertEquals(EditorDraft.DEFAULT_GIVEN, EditorDraft.defaultPrimary(PayloadKind.VCard))
         assertEquals(EditorDraft.DEFAULT_EMAIL, EditorDraft.defaultPrimary(PayloadKind.Email))
         assertEquals(EditorDraft.DEFAULT_PHONE, EditorDraft.defaultPrimary(PayloadKind.Sms))
         assertEquals(EditorDraft.DEFAULT_PHONE, EditorDraft.defaultPrimary(PayloadKind.Phone))
         assertEquals("", EditorDraft.defaultPrimary(PayloadKind.Crypto))
+        assertEquals(EditorDraft.DEFAULT_VCARD, EditorDraft.defaultPrimary(PayloadKind.MeCard))
+        assertEquals(EditorDraft.DEFAULT_EMAIL, EditorDraft.defaultPrimary(PayloadKind.FaceTime))
+    }
+
+    @Test
+    fun meCardAndFaceTimeDraftsEncode() {
+        val me = EditorDraft(
+            kind = PayloadKind.MeCard,
+            primary = "Ada",
+            secondary = "+1",
+            tertiary = "a@b.c",
+        ).toPayload()!!.encodeText()
+        assertEquals("MECARD:N:Ada;TEL:+1;EMAIL:a@b.c;;", me)
+        assertEquals(
+            "facetime-audio:hello@example.com",
+            EditorDraft(
+                kind = PayloadKind.FaceTime,
+                primary = "hello@example.com",
+                secondary = "audio",
+            ).toPayload()!!.encodeText(),
+        )
     }
 
     @Test

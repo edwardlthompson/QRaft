@@ -13,7 +13,15 @@ WEEKLY_MARKERS = (
     "cursor-feature-radar",
     "check-security-triage",
     "ci matrix",
+    "repo hygiene",
+    "feature gate",
     "simulate-template-upgrade",
+    "android instrumented",
+    "dependabot",
+    "scorecard",
+    "codeql",
+    "license-compliance",
+    "sbom",
 )
 
 

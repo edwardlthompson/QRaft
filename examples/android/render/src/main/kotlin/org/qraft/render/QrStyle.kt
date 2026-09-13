@@ -35,11 +35,15 @@ data class QrStyle(
     val centerMark: CenterMark = CenterMark.NONE,
     val caption: CaptionSpec = CaptionSpec(),
     val imageBackgroundPath: String = "",
+    val logoImagePath: String = "",
     val frame: QrFrame = QrFrame.NONE,
     val cornerBadge: Boolean = false,
 ) {
     val hasOverlay: Boolean
-        get() = logoCutout.enabled || (centerMark != CenterMark.NONE) || cornerBadge
+        get() = logoCutout.enabled ||
+            (centerMark != CenterMark.NONE) ||
+            cornerBadge ||
+            logoImagePath.isNotBlank()
 
     companion object {
         val DEFAULT = QrStyle()

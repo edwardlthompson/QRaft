@@ -126,10 +126,16 @@ def render_readme(root: Path, product: dict, *, for_preview: bool = False) -> st
     urls = product["urls"]
     badge = product["badge"]
     if for_preview:
-        hero_path = "../assets/readme-hero.svg"
+        hero_png = root / "branding" / "assets" / "readme-hero.png"
+        hero_path = "../assets/readme-hero.png" if hero_png.is_file() else "../assets/readme-hero.svg"
         lockup_path = "../assets/logo-lockup.svg"
     else:
-        hero_path = "branding/assets/readme-hero.svg"
+        hero_png = root / "branding" / "assets" / "readme-hero.png"
+        hero_path = (
+            "branding/assets/readme-hero.png"
+            if hero_png.is_file()
+            else "branding/assets/readme-hero.svg"
+        )
         lockup_path = "branding/assets/logo-lockup.svg"
 
     license_badge, license_name = license_fields(root)
@@ -168,6 +174,7 @@ def render_readme(root: Path, product: dict, *, for_preview: bool = False) -> st
             "docs/FIRST_30_DAYS.md", from_preview=for_preview
         ),
         "{{url_start_here}}": _rel_url("docs/START_HERE.md", from_preview=for_preview),
+        "{{url_privacy}}": _rel_url("docs/PRIVACY.md", from_preview=for_preview),
         "{{url_agents}}": _rel_url("AGENTS.md", from_preview=for_preview),
         "{{url_tour}}": _rel_url("docs/help/TOUR.md", from_preview=for_preview),
         "{{ci_repo}}": str(urls.get("github_repo") or "OWNER/REPO"),

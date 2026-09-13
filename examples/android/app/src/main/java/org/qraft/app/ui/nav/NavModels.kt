@@ -5,6 +5,7 @@ enum class GpRoute(val wire: String) {
     Profiles("profiles"),
     Style("style"),
     Wallpaper("wallpaper"),
+    Scan("scan"),
     Settings("settings"),
     About("about"),
     Feedback("feedback");

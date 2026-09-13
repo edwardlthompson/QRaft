@@ -7,6 +7,7 @@ from pathlib import Path
 
 from human_task_android import (
     automate_adb_instrumented,
+    automate_adb_product_device,
     automate_android_sdk_smoke,
     automate_fdroid_dry_run,
 )
@@ -27,9 +28,11 @@ from human_task_leftovers import (
 )
 from human_task_rows import (
     automate_approve_adr,
+    automate_foss_scanner_choice,
     automate_informational,
     automate_init_placeholders,
     automate_product_smoke,
+    automate_quarterly_radar,
     automate_release_tag,
     automate_stack_config,
     automate_use_template,
@@ -43,7 +46,9 @@ HUMAN_RULES: list[tuple[re.Pattern[str], str, object]] = [
     (re.compile(r"Fill stack-local config|app-update\.json", re.I), "human", automate_stack_config),
     (re.compile(r"Approve ADR|Approve.*BUILD_PLAN", re.I), "human", automate_approve_adr),
     (re.compile(r"Optional product smoke", re.I), "human", automate_product_smoke),
+    (re.compile(r"FOSS scanner|#69|#70|#71|ZXing", re.I), "human", automate_foss_scanner_choice),
     (re.compile(r"Approve release tag", re.I), "human", automate_release_tag),
+    (re.compile(r"Quarterly Cursor feature radar", re.I), "human", automate_quarterly_radar),
     (re.compile(r"required status checks|branch protection|setup-github-repo", re.I), "human", automate_branch_protection),
     (re.compile(r"Dependabot PR|Review/merge Dependabot|TypeScript \d+ major", re.I), "human", automate_dependabot_major_merge),
     (re.compile(r"AUTOMERGE_TOKEN", re.I), "human", automate_automerge_token),
@@ -57,6 +62,14 @@ HUMAN_RULES: list[tuple[re.Pattern[str], str, object]] = [
 ]
 
 ADB_RULES: list[tuple[re.Pattern[str], str, object]] = [
+    (
+        re.compile(
+            r"scan|phone camera|debug APK|widget|wallpaper|Export PNG|Brighten",
+            re.I,
+        ),
+        "adb",
+        automate_adb_product_device,
+    ),
     (re.compile(r"instrumented|connectedDebugAndroidTest|\badb\b", re.I), "adb", automate_adb_instrumented),
     (re.compile(r"F-Droid|device dry-run", re.I), "adb", automate_fdroid_dry_run),
     (re.compile(r"emulator|Android SDK", re.I), "adb", automate_android_sdk_smoke),

@@ -42,6 +42,8 @@ dependencies {
     implementation("androidx.compose.ui:ui")
 
     implementation("androidx.core:core-ktx:1.19.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.9")
+    implementation("androidx.biometric:biometric:1.1.0")
     implementation("androidx.glance:glance-appwidget:1.1.1")
     implementation("androidx.glance:glance-material3:1.1.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")

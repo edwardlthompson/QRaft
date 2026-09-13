@@ -1,144 +1,140 @@
 package org.qraft.widget
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.ImageProvider
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.ActionCallback
-import androidx.glance.appwidget.action.actionRunCallback
-import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
-import androidx.glance.GlanceModifier
-import androidx.glance.Image
-import androidx.glance.LocalContext
-import androidx.glance.action.clickable
-import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
-import androidx.glance.layout.Column
-import androidx.glance.layout.fillMaxSize
-import androidx.glance.text.Text
+import org.qraft.coreqr.EccPolicy
 import org.qraft.coreqr.QrEncoder
+import org.qraft.coreqr.QrSurface
 import org.qraft.data.DataStoreProfileRepository
+import org.qraft.render.QrStyle
 import org.qraft.render.QrStyleJson
-import org.qraft.render.StyledQrRasterizer
 import org.qraft.render.StyledQrRenderer
 
 class QrGlanceWidget : GlanceAppWidget() {
-    override val sizeMode = SizeMode.Responsive(
-        setOf(DpSize(40.dp, 40.dp), DpSize(110.dp, 110.dp), DpSize(180.dp, 180.dp)),
-    )
+    /** Exact tracks free (non-square) resize; one small bitmap stays binder-safe. */
+    override val sizeMode = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val repo = DataStoreProfileRepository(context)
         repo.seedIfEmpty()
         val profiles = repo.all()
-        val widgetId = runCatching {
-            androidx.glance.appwidget.GlanceAppWidgetManager(context).getAppWidgetId(id)
-        }.getOrDefault(0)
+        val manager = GlanceAppWidgetManager(context)
+        val widgetId = runCatching { manager.getAppWidgetId(id) }.getOrDefault(0)
+        WidgetPrefs.consumePendingIfNeeded(context, widgetId)
         val profile = repo.get(WidgetPrefs.selectedId(context, widgetId))
             ?: profiles.firstOrNull()
             ?: DataStoreProfileRepository.seedWebsite()
-        val hide = profile.sensitive && WidgetPrefs.sensitiveLock(context)
-        val style = WidgetPaint.style(QrStyleJson.decode(profile.styleJson), WidgetPrefs.transparentBg(context))
+        val hide = profile.sensitive && WidgetPrefs.sensitiveLock(context, widgetId)
+        val transparent = WidgetPrefs.transparentBg(context, widgetId)
+        val style = WidgetPaint.style(QrStyleJson.decode(profile.styleJson), transparent)
         val payload = profile.payloadText.ifBlank { "https://example.com" }
-        val talkback = context.getString(R.string.widget_talkback, WidgetTalkback.label(profile.name))
-        val uri = if (hide) null else cachedOrRender(context, profile.id, profile.styleJson, payload, style)
+        val talkback = context.getString(
+            R.string.widget_talkback,
+            WidgetTalkback.talkbackName(profile.name, payload),
+        )
+        val density = context.resources.displayMetrics.density
+        val sizes = runCatching { manager.getAppWidgetSizes(id) }.getOrNull()
+            ?.takeIf { it.isNotEmpty() }
+            ?: listOf(DpSize(110.dp, 110.dp))
+        val targetPx = sizes.maxOf { WidgetSize.exactPx(density, it) }
+        // Style caption always; checkbox also allows the card name as a readable label.
+        // Caption is drawn as Glance Text (vector), not scaled bitmap pixels.
+        val captionText = WidgetCaption.forBitmap(
+            profile,
+            nameFallback = WidgetPrefs.captionEnabled(context, widgetId),
+        ).ifBlank { null }
+        val bitmap = if (hide) null else renderBitmap(
+            profile.id,
+            profile.styleJson,
+            payload,
+            style,
+            targetPx,
+        )
+        val brighten = BrightenIntents.activityIntent(
+            context,
+            profile,
+            WidgetPrefs.sensitiveLock(context, widgetId),
+        )
         provideContent {
             QrWidgetContent(
-                imageUri = uri,
+                bitmap = bitmap,
                 talkback = talkback,
-                payload = payload,
-                styleJson = profile.styleJson,
-                caption = if (WidgetPrefs.captionEnabled(context)) profile.name else null,
+                brightenIntent = brighten,
+                caption = captionText,
                 hidden = hide,
+                plate = !transparent,
+                carousel = WidgetPrefs.carouselEnabled(context, widgetId),
             )
         }
     }
 
-    private fun cachedOrRender(
-        context: Context,
+    private fun renderBitmap(
         profileId: String,
         styleJson: String,
         payload: String,
-        style: org.qraft.render.QrStyle,
-    ): android.net.Uri {
-        val key = CACHE.key(profileId, styleJson, WidgetSize.RENDER_PX)
-        val bmp = CACHE.get(key)?.let { hit ->
-            Bitmap.createBitmap(hit.pixels, hit.width, hit.height, Bitmap.Config.ARGB_8888)
-        } ?: run {
-            val matrix = QrEncoder.encodeText(
-                payload,
-                errorCorrection = org.qraft.coreqr.EccPolicy.choose(
-                    org.qraft.coreqr.QrSurface.WIDGET,
-                    style.hasOverlay,
-                ),
-                boostEcl = org.qraft.coreqr.EccPolicy.boostEcl(
-                    org.qraft.coreqr.QrSurface.WIDGET,
-                    style.hasOverlay,
-                ),
-            )
-            val raster = StyledQrRasterizer.rasterize(matrix, WidgetSize.RENDER_PX, style)
-            CACHE.put(key, raster.width, raster.height, raster.pixels)
-            StyledQrRenderer.render(matrix, WidgetSize.RENDER_PX, style, applyCaption = false)
+        style: QrStyle,
+        targetPx: Int,
+    ): Bitmap {
+        val matrix = QrEncoder.encodeText(
+            payload,
+            errorCorrection = EccPolicy.choose(QrSurface.WIDGET, style.hasOverlay),
+            boostEcl = EccPolicy.boostEcl(QrSurface.WIDGET, style.hasOverlay),
+        )
+        val quiet = style.quietZoneModules.coerceAtLeast(0)
+        val px = WidgetQrCanvas.snapToModules(targetPx, matrix.size + 2 * quiet)
+        val key = CACHE.key(profileId, "$styleJson#bg=${style.backgroundArgb}", px)
+        CACHE.get(key)?.let { hit ->
+            return Bitmap.createBitmap(hit.pixels, hit.width, hit.height, Bitmap.Config.ARGB_8888)
         }
-        val file = java.io.File(context.cacheDir, "glance-$profileId.png")
-        file.outputStream().use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
-        return android.net.Uri.fromFile(file)
+        val bmp = StyledQrRenderer.render(matrix, px, style, applyCaption = false)
+        val pixels = IntArray(bmp.width * bmp.height)
+        bmp.getPixels(pixels, 0, bmp.width, 0, 0, bmp.width, bmp.height)
+        CACHE.put(key, bmp.width, bmp.height, pixels)
+        return bmp
     }
 
     companion object {
-        private val CACHE = QrWidgetCache()
-    }
-}
-
-@Composable
-private fun QrWidgetContent(
-    imageUri: android.net.Uri?,
-    talkback: String,
-    payload: String,
-    styleJson: String,
-    caption: String?,
-    hidden: Boolean,
-) {
-    val context = LocalContext.current
-    val intent = Intent(context, BrightenActivity::class.java).apply {
-        putExtra(BrightenActivity.EXTRA_PAYLOAD, payload)
-        putExtra(BrightenActivity.EXTRA_STYLE, styleJson)
-    }
-    Column(
-        modifier = GlanceModifier.fillMaxSize().clickable(actionStartActivity(intent)),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Box(modifier = GlanceModifier.defaultWeight(), contentAlignment = Alignment.Center) {
-            if (hidden || imageUri == null) {
-                Text(text = context.getString(R.string.widget_hidden))
-            } else {
-                Image(provider = ImageProvider(imageUri), contentDescription = talkback)
-            }
-        }
-        if (caption != null) Text(text = caption)
-        Text(
-            text = context.getString(R.string.widget_next),
-            modifier = GlanceModifier.clickable(actionRunCallback<NextProfileAction>()),
-        )
+        internal val CACHE: QrWidgetCache = WidgetRefresh.sharedCache()
     }
 }
 
 class NextProfileAction : ActionCallback {
-    override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: androidx.glance.action.ActionParameters) {
-        val repo = DataStoreProfileRepository(context)
-        WidgetPrefs.cycle(context, repo.all().map { it.id }, runCatching {
-            androidx.glance.appwidget.GlanceAppWidgetManager(context).getAppWidgetId(glanceId)
-        }.getOrDefault(0))
-        QrGlanceWidget().update(context, glanceId)
+    override suspend fun onAction(
+        context: Context,
+        glanceId: GlanceId,
+        parameters: androidx.glance.action.ActionParameters,
+    ) {
+        cycleProfiles(context, glanceId, delta = 1)
     }
+}
+
+class PrevProfileAction : ActionCallback {
+    override suspend fun onAction(
+        context: Context,
+        glanceId: GlanceId,
+        parameters: androidx.glance.action.ActionParameters,
+    ) {
+        cycleProfiles(context, glanceId, delta = -1)
+    }
+}
+
+private suspend fun cycleProfiles(context: Context, glanceId: GlanceId, delta: Int) {
+    val repo = DataStoreProfileRepository(context)
+    val wid = runCatching {
+        GlanceAppWidgetManager(context).getAppWidgetId(glanceId)
+    }.getOrDefault(0)
+    if (!WidgetPrefs.carouselEnabled(context, wid)) return
+    WidgetPrefs.cycle(context, repo.all().map { it.id }, wid, delta)
+    QrGlanceWidget().update(context, glanceId)
 }
 
 class QrGlanceWidgetReceiver : GlanceAppWidgetReceiver() {

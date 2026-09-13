@@ -1,4 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Golden Path app icon">
-  <rect width="512" height="512" rx="96" fill="#1a1a2e"/>
-  <path d="M128 320 L256 128 L384 320 Z" fill="#e94560"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="QRaft mark">
+<rect x="0.00" y="0.00" width="512.00" height="512.00" rx="90.00" fill="#102A54"/>
+<rect x="28.00" y="28.00" width="456.00" height="456.00" rx="88.00" fill="#FFFFFF"/>
+<rect x="62.38" y="62.38" width="101.90" height="101.90" rx="6.11" fill="#000000"/>
+<rect x="82.76" y="82.76" width="61.14" height="61.14" rx="4.89" fill="#FFFFFF"/>
+<rect x="103.14" y="103.14" width="20.38" height="20.38" rx="3.06" fill="#000000"/>
+<rect x="347.71" y="62.38" width="101.90" height="101.90" rx="6.11" fill="#000000"/>
+<rect x="368.10" y="82.76" width="61.14" height="61.14" rx="4.89" fill="#FFFFFF"/>
+<rect x="388.48" y="103.14" width="20.38" height="20.38" rx="3.06" fill="#000000"/>
+<rect x="62.38" y="347.71" width="101.90" height="101.90" rx="6.11" fill="#000000"/>
+<rect x="82.76" y="368.10" width="61.14" height="61.14" rx="4.89" fill="#FFFFFF"/>
+<rect x="103.14" y="388.48" width="20.38" height="20.38" rx="3.06" fill="#000000"/>
+<rect x="214.99" y="203.67" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="244.43" y="203.67" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="185.55" y="233.11" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="273.87" y="233.11" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="185.55" y="262.54" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="273.87" y="262.54" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="185.55" y="291.98" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="273.87" y="291.98" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="185.55" y="321.42" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="273.87" y="321.42" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="214.99" y="350.86" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="244.43" y="350.86" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="244.43" y="380.30" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="273.87" y="380.30" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="332.75" y="203.67" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="362.18" y="203.67" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="391.62" y="203.67" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="332.75" y="233.11" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="421.06" y="233.11" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="332.75" y="262.54" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="421.06" y="262.54" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="332.75" y="291.98" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="362.18" y="291.98" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="391.62" y="291.98" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="332.75" y="321.42" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="391.62" y="321.42" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="332.75" y="350.86" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="421.06" y="350.86" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="332.75" y="380.30" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
+<rect x="421.06" y="380.30" width="27.67" height="27.67" rx="3.53" fill="#000000"/>
 </svg>
