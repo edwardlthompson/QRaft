@@ -7,7 +7,7 @@
 
 | Layer | Technology | Version | Notes |
 |-------|-----------|---------|-------|
-| Platform | Android (QRaft product; template baseline 1.1.0) | app 0.1.0 → RP 1.2.0 | examples/android (`:app`, `:core-qr`, `:render`, `:widget`, `:wallpaper`, `:data`, `:scan`) |
+| Platform | Android (QRaft product; template baseline 1.2.0) | app 1.2.0 | examples/android (`:app`, `:core-qr`, `:render`, `:widget`, `:wallpaper`, `:data`, `:scan`) |
 | License | Apache-2.0 | - | Pure FOSS; F-Droid-friendly |
 | Distribution | GitHub Releases + GitHub Pages demo | - | F-Droid/Winget stubs for child repos |
 
@@ -103,5 +103,5 @@ Golden Path Settings/About/Feedback are a route stack, not three booleans. Web H
 ## Template Provenance
 
 - **Source template:** `edwardlthompson/agent-project-bootstrap` (self-maintained)
-- **Template version:** `1.1.0` (see `.template-version`)
+- **Template version:** `1.2.0` (see `.template-version`)
 - **Last update check:** See `.template-update.json`

@@ -1,0 +1,1 @@
+QRaft 1.2.0: FOSS editor, gallery, widgets, camera/gallery scan, barcodes, and signed release. Offline, no ads or Play Services.
