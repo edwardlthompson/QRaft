@@ -11,12 +11,15 @@ import org.qraft.render.QrStyleJson
 object BatchPdfExport {
     fun pdfBytes(profiles: List<QrProfile>): ByteArray {
         if (profiles.isEmpty()) return ByteArray(0)
-        val pages = profiles.mapNotNull { profile ->
+        val built = profiles.mapNotNull { profile ->
             val style = QrStyleJson.decode(profile.styleJson)
             val matrix = QrShare.encodeOrNull(profile.payloadText, style) ?: return@mapNotNull null
-            matrix to style
+            Triple(matrix, style, profile.payloadText)
         }
-        return QrPdfExporter.exportPages(pages)
+        return QrPdfExporter.exportPages(
+            built.map { it.first to it.second },
+            payloads = built.map { it.third },
+        )
     }
 
     fun share(context: Context, profiles: List<QrProfile>) {

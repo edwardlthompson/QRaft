@@ -9,7 +9,6 @@ QRaft is **100% offline**. The app does not request `INTERNET` or network-state 
 | QR profiles and style presets | Generate widgets / wallpapers | Until you delete them or clear app data |
 | Theme and UI preferences | Local settings | Until cleared |
 | Optional crash draft (opt-in) | You review before sharing | At most one pending draft |
-
 ## What we do not collect
 
 - No analytics, ads, crash phone-home, or accounts
@@ -22,4 +21,4 @@ A QR on the lock screen or wallpaper is visible to anyone who can see the phone.
 
 ## User control
 
-Clear app storage to wipe profiles and preferences. Local backup/export of presets stays under your control when that feature ships.
+Clear app storage to wipe profiles and preferences. Clipboard backup and the optional encrypted vault file stay under your control: QRaft encrypts first, then the system file picker can save or open that file in Drive, Nextcloud, USB, or another provider the OS offers. QRaft does not talk to Google or any network. The passphrase is never stored. Photo backgrounds and logo image files are not inside the vault (only profile JSON).

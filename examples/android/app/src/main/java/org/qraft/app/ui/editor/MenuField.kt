@@ -27,7 +27,7 @@ fun <T> MenuField(
     label: String,
     value: T,
     options: List<T>,
-    labelOf: (T) -> String,
+    labelOf: @Composable (T) -> String,
     onSelect: (T) -> Unit,
     modifier: Modifier = Modifier,
     iconOf: ((T) -> ImageVector)? = null,

@@ -27,22 +27,24 @@ internal fun setWallpaperFromDraft(
     val text = draft.toPayload()?.encodeText() ?: return
     val matrix = QrShare.encodeOrNull(text, style, org.qraft.coreqr.QrSurface.WALLPAPER) ?: return
     WallpaperHistory.snapshot(context, target)
-    val home = WallpaperComposer.compose(matrix, size.first, size.second, style, margin.toDouble())
+    val home = WallpaperComposer.compose(
+        matrix, size.first, size.second, style, margin.toDouble(), payloadHint = text,
+    )
     when {
         pairDarkLight && target == WallpaperTarget.BOTH -> {
             WallpaperBinder.set(context, home, WallpaperTarget.HOME)
             WallpaperBinder.set(
                 context,
-                lockImage(matrix, size, WallpaperPair.darkVariant(style), margin),
+                lockImage(matrix, size, WallpaperPair.darkVariant(style), margin, text),
                 WallpaperTarget.LOCK,
             )
         }
         target == WallpaperTarget.BOTH -> {
             WallpaperBinder.set(context, home, WallpaperTarget.HOME)
-            WallpaperBinder.set(context, lockImage(matrix, size, style, margin), WallpaperTarget.LOCK)
+            WallpaperBinder.set(context, lockImage(matrix, size, style, margin, text), WallpaperTarget.LOCK)
         }
         target == WallpaperTarget.LOCK ->
-            WallpaperBinder.set(context, lockImage(matrix, size, style, margin), WallpaperTarget.LOCK)
+            WallpaperBinder.set(context, lockImage(matrix, size, style, margin, text), WallpaperTarget.LOCK)
         else -> WallpaperBinder.set(context, home, WallpaperTarget.HOME)
     }
 }
@@ -62,17 +64,23 @@ internal fun setWallpaperFromProfile(
     ) ?: return
     WallpaperHistory.snapshot(context, target)
     val image = when (target) {
-        WallpaperTarget.LOCK -> lockImage(matrix, size, style, margin)
+        WallpaperTarget.LOCK -> lockImage(matrix, size, style, margin, profile.payloadText)
         WallpaperTarget.BOTH -> {
             WallpaperBinder.set(
                 context,
-                WallpaperComposer.compose(matrix, size.first, size.second, style, margin.toDouble()),
+                WallpaperComposer.compose(
+                    matrix, size.first, size.second, style, margin.toDouble(),
+                    payloadHint = profile.payloadText,
+                ),
                 WallpaperTarget.HOME,
             )
-            lockImage(matrix, size, style, margin)
+            lockImage(matrix, size, style, margin, profile.payloadText)
         }
         WallpaperTarget.HOME ->
-            WallpaperComposer.compose(matrix, size.first, size.second, style, margin.toDouble())
+            WallpaperComposer.compose(
+                matrix, size.first, size.second, style, margin.toDouble(),
+                payloadHint = profile.payloadText,
+            )
     }
     WallpaperBinder.set(context, image, if (target == WallpaperTarget.BOTH) WallpaperTarget.LOCK else target)
 }
@@ -90,7 +98,9 @@ internal fun writeWallpaperPng(
 ) {
     val text = draft.toPayload()?.encodeText() ?: return
     val matrix = QrShare.encodeOrNull(text, style, org.qraft.coreqr.QrSurface.WALLPAPER) ?: return
-    val image = WallpaperComposer.compose(matrix, size.first, size.second, style, margin.toDouble())
+    val image = WallpaperComposer.compose(
+        matrix, size.first, size.second, style, margin.toDouble(), payloadHint = text,
+    )
     val bmp = WallpaperBinder.toBitmap(image)
     context.contentResolver.openOutputStream(uri)?.use { out ->
         bmp.compress(Bitmap.CompressFormat.PNG, 100, out)
@@ -103,10 +113,12 @@ private fun lockImage(
     size: Pair<Int, Int>,
     style: QrStyle,
     margin: Float,
+    payloadHint: String,
 ): WallpaperImage = WallpaperComposer.composeLock(
     matrix,
     size.first,
     size.second,
     style,
     margin.toDouble(),
+    payloadHint = payloadHint,
 )

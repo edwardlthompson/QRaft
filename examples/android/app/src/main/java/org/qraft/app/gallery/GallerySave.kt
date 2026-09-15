@@ -2,9 +2,7 @@ package org.qraft.app.gallery
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.widget.Toast
 import java.io.ByteArrayOutputStream
-import org.qraft.app.R
 import org.qraft.app.editor.EditorDraft
 import org.qraft.app.editor.ProfileApply
 import org.qraft.app.editor.RasterExtrasFactory
@@ -33,7 +31,6 @@ object GallerySave {
         now = now,
         tags = emptyList(),
         sensitive = false,
-        toastRes = R.string.editor_saved_gallery,
     )
 
     /** Overwrite an existing gallery card (same id) with edited payload/style/name. */
@@ -56,7 +53,6 @@ object GallerySave {
         now = now,
         tags = tags,
         sensitive = existing.sensitive,
-        toastRes = R.string.profiles_updated,
     )
 
     private suspend fun persist(
@@ -69,7 +65,6 @@ object GallerySave {
         now: Long,
         tags: List<String>,
         sensitive: Boolean,
-        toastRes: Int,
     ): QrProfile? {
         val sidecar = BgImage.copySidecar(context, id, style.imageBackgroundPath)
         val saved = style.copy(imageBackgroundPath = sidecar.orEmpty())
@@ -85,7 +80,6 @@ object GallerySave {
         repo.upsert(profile)
         writeThumb(context, profile, saved)
         WidgetRefresh.afterGalleryEdit(context)
-        Toast.makeText(context, toastRes, Toast.LENGTH_SHORT).show()
         return profile
     }
 

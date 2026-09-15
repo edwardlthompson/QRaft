@@ -80,6 +80,9 @@ class StyledQrRasterizerTest {
         val cx = result.contentOriginX + result.contentSizePx / 2
         val cy = result.contentOriginY + result.contentSizePx / 2
         assertEquals(bg, result.pixels[cy * result.width + cx])
+        val half = (matrix.size * result.modulePx * 0.20) / 2.0
+        val dx = (cx + half * 0.62).toInt(); val dy = (cy + half * 0.62).toInt()
+        if (dx in 0 until result.width && dy in 0 until result.height) assertEquals(bg, result.pixels[dy * result.width + dx])
     }
 
     @Test

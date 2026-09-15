@@ -2,6 +2,28 @@
 
 > Archive of finished BUILD_PLAN items.
 
+## Sprint 13 — UX audit leftovers (2026-09-14)
+
+- ✅ [AGENT] Confirm before Scan/Gallery overwrite Home draft (`docs/features/ux-draft-confirm.md`)
+- ✅ [AGENT] Tour names Scan and Wallpaper (`docs/features/ux-tour-tabs.md`)
+- ✅ [AGENT] Fold Look jargon (`docs/features/ux-look-fold.md`)
+- ✅ [AGENT] True-black OLED chrome (`docs/features/ux-oled-chrome.md`)
+- ✅ [AGENT] Visual hierarchy leftovers (`docs/features/ux-visual-hierarchy.md`)
+- ✅ [AGENT] Reduce-motion motion leftovers (`docs/features/ux-motion.md`)
+- ✅ [AGENT] Slim export overflow (`docs/features/ux-export-overflow.md`)
+- ✅ [AGENT] Single Home nav (`docs/features/ux-home-nav.md`)
+
+## UX polish (2026-09-14)
+
+- ✅ [AGENT] Home stepper feel (`docs/features/editor-feel.md`) — one primary CTA, share overflow, human Look labels, Snackbar
+- ✅ [AGENT] Gallery chrome (`docs/features/gallery-chrome.md`) — empty vs miss, Back closes the card, vault on empty
+- ✅ [AGENT] Scan to Home + Wallpaper buttons (`docs/features/scan-wallpaper-feel.md`)
+- ✅ [AGENT] Copy honesty (`docs/features/ux-copy-honesty.md`)
+- ✅ [AGENT] Gallery card is a card (`docs/features/ux-gallery-card.md`)
+- ✅ [AGENT] A11y + tokens + wallpaper empty (`docs/features/ux-a11y-tokens.md`)
+- ✅ [ADB] Two-phone vault smoke — `adb install -r` signed release on CPH2655 + CPH2583; Save vault on OP13, Open vault on OP12 (3→7 cards, local kept); junk PDF snackbar without data loss
+- ✅ [AGENT] Combine Home Save + wallpaper (`docs/features/editor-save-share.md`)
+
 ## Competitor gap closure (FOSS, no ads) (2026-09-12)
 
 - ✅ [AGENT] Widget prefs isolation — per-appWidgetId caption/carousel/transparent/sensitive; no global bleed

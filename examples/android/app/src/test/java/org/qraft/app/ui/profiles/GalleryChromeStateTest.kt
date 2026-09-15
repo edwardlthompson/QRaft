@@ -8,6 +8,20 @@ import org.qraft.data.ProfileSearch
 
 class GalleryChromeStateTest {
     @Test
+    fun emptyVsMissVsGrid() {
+        assertEquals(GalleryListKind.Empty, galleryListKind(0, 0))
+        assertEquals(GalleryListKind.Miss, galleryListKind(3, 0))
+        assertEquals(GalleryListKind.Grid, galleryListKind(3, 2))
+    }
+
+    @Test
+    fun openBackupShowsFilter() {
+        val chrome = GalleryChromeState()
+        chrome.openBackup()
+        assertTrue(chrome.filterOpen)
+    }
+
+    @Test
     fun toggleSearchAndFilterAndCollapse() {
         val chrome = GalleryChromeState()
         chrome.toggleSearch()

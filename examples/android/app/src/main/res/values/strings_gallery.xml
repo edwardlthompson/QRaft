@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profiles_no_matches">No matches</string>
+    <string name="profiles_create_home">Create a QR</string>
+    <string name="profiles_restore_backup">Restore backup</string>
+    <string name="profiles_open_card">Open card</string>
+    <string name="profiles_vault_busy">Vault is working</string>
+    <string name="profiles_backup_plaintext">Copy plaintext backup</string>
+    <string name="profiles_restore_clipboard">Restore plaintext from clipboard</string>
+    <string name="editor_replace_draft_title">Replace what you were editing?</string>
+    <string name="editor_replace_draft_body">Home has a QR that is not in the gallery. Replace it, or keep it?</string>
+    <string name="editor_replace_draft_keep">Keep</string>
+    <string name="editor_replace_draft_replace">Replace</string>
+</resources>

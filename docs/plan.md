@@ -9,6 +9,6 @@ Milestones for QRaft after Sprint 0 bootstrap.
 5. **Wallpaper engine** — DisplayMetrics overlay, set home/lock/both, SAF PNG ✅ Sprint 8
 6. **Polish** — PNG/PDF/SVG/JSON, style-JSON QR, packs, Fastlane slots ✅ Sprint 9
 
-North-star: URL + style on Home (pinned preview) → save profile → lock-screen widget → wallpaper → export.
+North-star: Content then Look on Home (compact live preview) → Place save → lock-screen widget → wallpaper → Share export.
 
 See `BUILD_PLAN.md` (Sprint 5–9 AGENT archived) and `docs/COMPETITOR_GAPS.md`.

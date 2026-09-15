@@ -10,7 +10,6 @@
 | Platform | Android (QRaft product; template baseline 1.2.0) | app 1.2.0 | examples/android (`:app`, `:core-qr`, `:render`, `:widget`, `:wallpaper`, `:data`, `:scan`) |
 | License | Apache-2.0 | - | Pure FOSS; F-Droid-friendly |
 | Distribution | GitHub Releases + GitHub Pages demo | - | F-Droid/Winget stubs for child repos |
-
 ## Active Modules
 
 - ❌ Web / PWA (pruned)
@@ -51,10 +50,14 @@ Golden Path Settings/About/Feedback are a route stack, not three booleans. Web H
 
 ## Session Retrospectives
 
+| 2026-09-14 | /ship vault+UX | feat commit for vault, stepper, Sprint 13 UX; Unreleased emptied for RP 1.3.0 | Do not apply CodeQL `vcodeql-bundle-*`; sideload `install -r` only |
+| 2026-09-14 | Sprint 13 UX leftovers | Confirm overwrite, tour Scan/Wallpaper, Look fold, true-black chrome, hierarchy, motion, overflow, footer-only nav | Sideload with `adb install -r` only; debug APK still signature-mismatched |
+| 2026-09-14 | UX audit leftovers queued | Eight Sequential AGENT rows from the ship-list plan (confirm, tour tabs, Look fold, OLED, hierarchy, motion, overflow, single nav) | QS tile + share-sheet already shipped; do not re-queue |
+| 2026-09-14 | Two-phone vault ADB | Signed `install -r` on OP13+OP12 (same upload JKS); SAF save+open merge 3→7; invalid PDF refused | Do not `adb install` debug over this signature; DocumentsUI may suffix `.txt` on `text/plain` |
+| 2026-09-14 | UX audit polish | Honest tour/About/clipboard; gallery is a library card; Scan tokens + wallpaper empty + WidgetConfig Text | Keep chips+footer dual nav; Scan/Gallery overwrite draft unnamed |
+| 2026-09-14 | Guided Home stepper | Content/Look/Place/Share with compact 120dp preview; Gallery/Wallpaper stay 240dp; `EditorStepsTest` + scoped gates | Do not persist step in DataStore in v1; Edit on Home resets Content |
 | 2026-09-13 | QRaft /cleanup+/ship | Competitor-gap FOSS scan/widgets/barcodes archived; Unreleased emptied; ruff 0.16.7; Robolectric Toast hang fixed | Merge Release Please 1.2.0; wait SBOM; do not `withContext(Main)` inside `runBlocking` Robolectric tests |
-
 | 2026-09-09 | QRaft Sprint 10 S1 | Auto ECC, style v2, gallery documents, share-sheet intake; unit tests | Remaining allideas 1–80 queued Sprint 11–12; ADB pin/share smoke |
-
 | 2026-09-08 | QRaft /build S0–S3 | GitHub setup + Sprint 0 sign-off; style/DataStore; widget cache + wallpaper composer | Leave Sprint 4+ `{name}` playbook 🔲; ADB camera scan in HUMAN_BACKLOG |
 | 2026-09-01 | M47 Cline-first + GP nav | Cline first-run (no keys); web History + Android BackHandler pop one route; persist gp.nav.v1 | Do not put Codex on /tour /prerelease /ship; device Back smoke is [ADB] |
 | 2026-08-28 | v1.0.0 /ship | Cloud agent #81 reviewed+merged; RP #82 cut first stable; Unreleased empty; SBOM+OpenVEX on the tag | Do not merge RP while upgrade-sim still fails on pruned stacks; `Release-As: 1.0.0` beats 0.26.0 |

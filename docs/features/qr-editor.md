@@ -4,7 +4,7 @@
 
 ## Acceptance criteria
 
-- ✅ User-visible: Home pins a live QR at the top; payload, ECC, and style are dropdowns/switches below (no FilterChips)
+- ✅ User-visible: Home is the guided stepper (`docs/features/editor-stepper.md`); compact live preview stays pinned
 - ✅ Donate/update launch dialogs stay off unless Settings toggle is on (default off)
 - ✅ Accessibility: dropdowns use outlined labels; preview has content descriptions; warnings are on-screen text
 - ✅ i18n: `editor_*`, `nav_profiles`, `nav_wallpaper`, `settings_nudge_prompts`
@@ -23,7 +23,6 @@
 | View | `examples/android/app/src/main/java/org/qraft/app/ui/editor/` |
 | Tests | `examples/android/app/src/test/java/org/qraft/app/editor/EditorDraftTest.kt` |
 | Wiring | `QRaftScreen` product routes + `ProductPrefs` in `QRaftApp` |
-
 ## Tests
 
 - Automated: yes — `EditorDraftTest` (payload mapping, empty reject, auto-H)
@@ -50,6 +49,7 @@ data class EditorDraft(
 
 fun EditorDraft.toPayload(): QrPayload?
 fun EditorDraft.effectiveEcc(hasOverlay: Boolean): ErrorCorrectionLevel
+
 ```
 
 ## Critique

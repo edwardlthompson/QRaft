@@ -66,6 +66,9 @@ class QrExportTest {
         assertTrue(svg.contains("<circle "))
         val diamond = QrSvgExporter.export(matrix, QrStyle(moduleShape = ModuleShape.DIAMOND), modulePx = 8)
         assertTrue(diamond.contains("<polygon "))
+        val styled = QrSvgExporter.export(matrix, QrStyle(centerMark = CenterMark.WIFI), modulePx = 8)
+        assertTrue(styled.contains("rx="))
+        assertTrue(styled.contains("#c2f3ff") || styled.contains("#C2F3FF"))
     }
 
     @Test

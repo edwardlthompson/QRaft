@@ -18,12 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import org.qraft.app.R
 import org.qraft.app.editor.EditorDraft
+import org.qraft.app.editor.EditorSteps
 import org.qraft.app.editor.PayloadKind
 import org.qraft.app.editor.RasterExtrasFactory
+import org.qraft.app.ui.theme.SpacingSm
 import org.qraft.coreqr.EccPolicy
 import org.qraft.coreqr.QrEncoder
 import org.qraft.coreqr.QrMatrix
@@ -41,9 +46,14 @@ fun EditorPreview(
     draft: EditorDraft,
     style: QrStyle,
     surface: QrSurface = QrSurface.EDITOR,
+    sizeDp: Float = EditorSteps.PREVIEW_FULL_DP,
+    maxSizeDp: Float? = null,
+    showEcc: Boolean = false,
+    modifier: Modifier = Modifier,
 ) {
     val fontScale = LocalDensity.current.fontScale
-    val previewDp = (240f * max(1f, fontScale)).dp
+    val scaled = sizeDp * max(1f, fontScale)
+    val previewDp = (maxSizeDp?.let { minOf(scaled, it) } ?: scaled).dp
     val overlay = style.hasOverlay
     val ecc = EccPolicy.choose(surface, overlay)
     val payload = draft.toPayload()
@@ -110,14 +120,15 @@ fun EditorPreview(
         }.orEmpty()
     }
     Column(
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(SpacingSm),
     ) {
         if (bitmap != null) {
             val aspect = bitmap.height.toFloat() / bitmap.width.toFloat()
             Image(
                 bitmap = bitmap.asImageBitmap(),
-                contentDescription = stringResource(R.string.home_preview_cd, payload?.encodeText().orEmpty()),
+                contentDescription = stringResource(R.string.home_preview_cd),
                 modifier = Modifier.size(
                     width = previewDp,
                     height = previewDp * aspect,
@@ -126,21 +137,27 @@ fun EditorPreview(
         } else {
             Text(text = stringResource(R.string.editor_preview_empty), style = MaterialTheme.typography.bodyMedium)
         }
-        Text(
-            text = if (overlay) {
-                stringResource(R.string.editor_ecc_logo)
-            } else {
-                stringResource(R.string.editor_ecc_auto, ecc.name)
-            },
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        warnings.forEach { warning ->
+        if (showEcc) {
             Text(
-                text = stringResource(warningLabel(warning)),
+                text = if (overlay) {
+                    stringResource(R.string.editor_ecc_logo)
+                } else {
+                    stringResource(R.string.editor_ecc_auto, ecc.name)
+                },
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+        if (warnings.isNotEmpty()) {
+            Column(modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }) {
+                warnings.forEach { warning ->
+                    Text(
+                        text = stringResource(warningLabel(warning)),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            }
         }
     }
 }

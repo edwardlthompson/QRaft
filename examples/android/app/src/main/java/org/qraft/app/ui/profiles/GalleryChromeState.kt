@@ -5,6 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import org.qraft.data.ProfileSearch
 
+enum class GalleryListKind { Empty, Miss, Grid }
+
+fun galleryListKind(total: Int, shown: Int): GalleryListKind = when {
+    total <= 0 -> GalleryListKind.Empty
+    shown <= 0 -> GalleryListKind.Miss
+    else -> GalleryListKind.Grid
+}
+
 /** Gallery search / sort / filter panel state shared with the TopAppBar. */
 class GalleryChromeState(
     searchOpen: Boolean = false,
@@ -23,6 +31,10 @@ class GalleryChromeState(
 
     fun toggleFilter() {
         filterOpen = !filterOpen
+    }
+
+    fun openBackup() {
+        filterOpen = true
     }
 
     fun collapse() {

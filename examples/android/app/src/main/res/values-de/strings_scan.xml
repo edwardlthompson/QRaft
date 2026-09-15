@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="scan_hint_point">Auf einen Code richten. Er wird von selbst gelesen.</string>
+    <string name="scan_edit_home">Auf Start bearbeiten</string>
+    <string name="scan_preview_cd">Scan-Vorschau</string>
+    <string name="snack_view">Ansehen</string>
+    <string name="scan_saved_gallery">In der Galerie gespeichert</string>
+</resources>

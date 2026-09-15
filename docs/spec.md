@@ -15,12 +15,12 @@
 
 | ID | Story | Acceptance |
 |----|-------|------------|
-| FR-1 | As a user I encode URL/text/Wi-Fi/vCard/email/SMS/phone/crypto into a QR matrix | Home dropdowns + `EditorDraft` → Nayuki `:core-qr`; ECC L/M/Q/H; auto-H with overlays |
-| FR-2 | As a user I preview a square QR without stretched modules | Pinned live preview on Home; style on the same screen; quiet zone ≥ 4 |
+| FR-1 | As a user I encode URL/text/Wi-Fi/vCard/email/SMS/phone/crypto into a QR matrix | Home Content step (frequent chips + More) + `EditorDraft` → Nayuki `:core-qr`; ECC L/M/Q/H; auto-H with overlays |
+| FR-2 | As a user I preview a square QR without stretched modules | Compact live preview on every Home step (120dp, tap enlarge); Look/Place/Share hold style and export; Gallery/Wallpaper stay 240dp; quiet zone ≥ 4 |
 | FR-3 | As a user I save named profiles with tags | `:data` profile store; search Personal/Work/Guest Wi-Fi/Website |
 | FR-4 | As a LineageOS user I pin a QR widget on home or lock-panel | Glance + `keyguard` category; cached bitmap; tap-to-brighten |
 | FR-5 | As a user I set a full-screen QR wallpaper fitted to real pixels | DisplayMetrics + safe-zone margin; set-wallpaper + PNG export |
-| FR-6 | As a user my data never leaves the device | No `INTERNET` permission; local backups only |
+| FR-6 | As a user my data never leaves the device | No `INTERNET` permission; clipboard backup plus optional encrypted vault via the system file picker (QRaft does not transmit) |
 ## Non-Functional Constraints
 
 - Kotlin + Jetpack Compose + Glance; minSdk **26**; target/compile SDK current AOSP

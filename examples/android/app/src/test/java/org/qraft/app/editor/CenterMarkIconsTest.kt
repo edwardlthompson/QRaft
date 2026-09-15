@@ -6,6 +6,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.qraft.render.CenterMark
+import org.qraft.render.CenterMarkIcons
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [26])
@@ -17,5 +18,8 @@ class CenterMarkIconsTest {
         assertTrue(wifi.second == 64 && wifi.third == 64)
         assertTrue(wifi.first.size == 64 * 64)
         assertTrue(link.first.size == 64 * 64)
+        assertTrue(wifi.first.toSet().size >= 3)
+        assertTrue(link.first.toSet().size >= 3)
+        assertTrue(wifi.first.contains(CenterMarkIcons.WHITE))
     }
 }

@@ -14,7 +14,7 @@ object RasterExtrasFactory {
         val inlay = when {
             logo != null -> logo
             mark == CenterMark.NONE || mark == CenterMark.CUTOUT -> Triple(null as IntArray?, 0, 0)
-            else -> CenterMarkIcons.bitmap(mark)
+            else -> org.qraft.render.CenterMarkIcons.bitmap(mark)
         }
         return RasterExtras(
             bgPixels = BgImage.pixels(style.imageBackgroundPath, sizePx),

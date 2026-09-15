@@ -2,13 +2,9 @@ package org.qraft.app.gallery
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
 import java.io.ByteArrayOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.qraft.app.R
 import org.qraft.app.editor.PayloadKind
 import org.qraft.app.editor.RasterExtrasFactory
 import org.qraft.app.editor.VCardDraft
@@ -47,9 +43,6 @@ object GalleryScanClone {
         repo.upsert(profile)
         writeThumb(context, profile, style)
         WidgetRefresh.afterGalleryEdit(context)
-        Handler(Looper.getMainLooper()).post {
-            Toast.makeText(context, R.string.scan_saved_gallery, Toast.LENGTH_SHORT).show()
-        }
         profile
     }
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -17,6 +18,11 @@ from token_contrast import check_repo, contrast_ratio  # noqa: E402
 class TokenContrastTests(unittest.TestCase):
     def test_black_on_white(self) -> None:
         self.assertGreater(contrast_ratio("#000000", "#FFFFFF"), 20.0)
+
+    def test_dark_background_is_true_black(self) -> None:
+        tokens = json.loads((ROOT / "design-tokens/design-tokens.json").read_text(encoding="utf-8"))
+        self.assertEqual(tokens["color"]["background"]["dark"].lower(), "#000000")
+        self.assertEqual(tokens["color"]["background"]["light"].upper(), "#FFFFFF")
 
     def test_repo_tokens_meet_aa(self) -> None:
         self.assertEqual(check_repo(ROOT), [])

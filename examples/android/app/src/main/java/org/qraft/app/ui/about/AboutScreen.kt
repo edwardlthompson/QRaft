@@ -18,9 +18,11 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import org.qraft.app.BuildConfig
 import org.qraft.app.R
 import org.qraft.app.about.DonationsConfig
 import org.qraft.app.display.highRefreshScroll
+import org.qraft.app.ui.CopyHonesty
 import org.qraft.app.ui.components.BrandMark
 import org.qraft.app.ui.insets.LocalNavigationMode
 import org.qraft.app.ui.insets.bottomInsetPadding
@@ -68,14 +70,24 @@ fun AboutScreen(
         Text(text = stringResource(R.string.about_version, version))
         Text(text = stringResource(R.string.about_format, installedFormat))
         Text(text = updateStatus)
+        if (CopyHonesty.showAboutNavDebug(BuildConfig.DEBUG)) {
+            Text(
+                text = stringResource(
+                    R.string.about_debug_navigation_mode,
+                    stringResource(navigationModeLabelRes(navMode)),
+                    insetDp,
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         Text(
-            text = stringResource(
-                R.string.about_debug_navigation_mode,
-                stringResource(navigationModeLabelRes(navMode)),
-                insetDp,
-            ),
+            text = stringResource(R.string.about_icon_credit),
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.clickable {
+                uriHandler.openUri("https://github.com/webalys-hq/streamline-vectors")
+            },
         )
         if (canApplyUpdate) {
             Button(onClick = onApplyUpdate) {

@@ -213,8 +213,12 @@ def generate_dimens_kt(tokens: dict, digest: str) -> str:
         "",
     ]
     for key, val in spacing.items():
+        if key == "minTouch":
+            continue
         name = key[0].upper() + key[1:]
         lines.append(f"val Spacing{name} = {val}.dp")
+    lines.append("")
+    lines.append(f"val MinTouchDp = {spacing.get('minTouch', 48)}.dp")
     lines.append("")
     for key, val in radius.items():
         name = key[0].upper() + key[1:]

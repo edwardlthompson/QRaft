@@ -43,11 +43,7 @@ class DataStoreProfileRepository(
     suspend fun importJson(text: String) {
         val incoming = ProfileCodec.decodeList(text)
         if (incoming.isEmpty()) return
-        mutate { current ->
-            val next = LinkedHashMap(current)
-            incoming.forEach { next[it.id] = it }
-            next
-        }
+        mutate { current -> ProfileMerge.apply(current, incoming) }
     }
 
     private suspend fun load(): LinkedHashMap<String, QrProfile> {

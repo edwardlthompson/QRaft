@@ -22,11 +22,14 @@ object QrShare {
         style: QrStyle,
         extras: RasterExtras = RasterExtras(),
         sizePx: Int = ExportPngSize.DEFAULT.px,
+        payloadHint: String = "",
     ): File {
         val dir = File(context.cacheDir, "qr_export").apply { mkdirs() }
         val file = File(dir, "qraft.png")
         val edge = sizePx.coerceIn(256, 4096)
-        val bmp: Bitmap = StyledQrRenderer.render(matrix, edge, style, extras, applyCaption = true)
+        val bmp: Bitmap = StyledQrRenderer.render(
+            matrix, edge, style, extras, applyCaption = true, payloadHint = payloadHint,
+        )
         file.outputStream().use { out -> bmp.compress(Bitmap.CompressFormat.PNG, 100, out) }
         bmp.recycle()
         return file
@@ -38,8 +41,9 @@ object QrShare {
         style: QrStyle,
         extras: RasterExtras = RasterExtras(),
         sizePx: Int = ExportPngSize.DEFAULT.px,
+        payloadHint: String = "",
     ) {
-        val file = pngFile(context, matrix, style, extras, sizePx)
+        val file = pngFile(context, matrix, style, extras, sizePx, payloadHint)
         shareFile(context, file, "image/png")
     }
 
@@ -60,16 +64,18 @@ object QrShare {
         context.startActivity(Intent.createChooser(intent, null))
     }
 
-    fun sharePdf(context: Context, matrix: QrMatrix, style: QrStyle) {
+    fun sharePdf(context: Context, matrix: QrMatrix, style: QrStyle, payloadHint: String = "") {
         val dir = File(context.cacheDir, "qr_export").apply { mkdirs() }
         val file = File(dir, "qraft.pdf")
-        file.writeBytes(pdfBytes(matrix, style))
+        file.writeBytes(pdfBytes(matrix, style, payloadHint))
         shareFile(context, file, "application/pdf")
     }
 
-    fun svgText(matrix: QrMatrix, style: QrStyle): String = QrSvgExporter.export(matrix, style)
+    fun svgText(matrix: QrMatrix, style: QrStyle, payloadHint: String = ""): String =
+        QrSvgExporter.export(matrix, style, payloadHint = payloadHint)
 
-    fun pdfBytes(matrix: QrMatrix, style: QrStyle): ByteArray = QrPdfExporter.export(matrix, style)
+    fun pdfBytes(matrix: QrMatrix, style: QrStyle, payloadHint: String = ""): ByteArray =
+        QrPdfExporter.export(matrix, style, payloadHint = payloadHint)
 
     fun encodeOrNull(text: String, style: QrStyle, surface: QrSurface = QrSurface.EXPORT): QrMatrix? {
         val overlay = style.hasOverlay

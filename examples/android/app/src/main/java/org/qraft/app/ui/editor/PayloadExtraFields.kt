@@ -33,7 +33,7 @@ fun PayloadExtraFields(
                 label = stringResource(R.string.editor_field_wifi_security),
                 value = draft.wifiSecurity,
                 options = WifiSecurity.entries.toList(),
-                labelOf = { it.name },
+                labelOf = { stringResource(org.qraft.app.ui.stylepanel.StyleLabels.wifiSecurityLabelRes(it)) },
                 onSelect = { onDraftChange(draft.copy(wifiSecurity = it)) },
             )
             Row(verticalAlignment = Alignment.CenterVertically) {

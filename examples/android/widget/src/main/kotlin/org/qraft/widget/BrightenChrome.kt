@@ -9,9 +9,12 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.provider.Settings
 import android.widget.Button
 
 internal object BrightenChrome {
+    fun allowHaptic(animatorDurationScale: Float): Boolean = animatorDurationScale != 0f
+
     fun actionButton(context: Context, label: String, onClick: () -> Unit): Button =
         Button(context).apply { text = label; setOnClickListener { onClick() } }
 
@@ -25,6 +28,12 @@ internal object BrightenChrome {
     }
 
     fun haptic(context: Context) {
+        val scale = Settings.Global.getFloat(
+            context.contentResolver,
+            Settings.Global.ANIMATOR_DURATION_SCALE,
+            1f,
+        )
+        if (!allowHaptic(scale)) return
         val effect = VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE)
         if (Build.VERSION.SDK_INT >= 31) {
             val vm = context.getSystemService(VibratorManager::class.java)

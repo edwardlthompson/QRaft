@@ -3,6 +3,38 @@
 > Chronological register of major technical trade-offs, accepted architectures, and rejected alternatives.
 > **Treat past entries as immutable history; append only.**
 
+## 2026-09-14 — /ship vault and UX leftovers
+
+- **Status:** Accepted
+- **Context:** Sprints 12–13 (vault, Home stepper, UX leftovers) were unreleased. `upd` offered CodeQL `vcodeql-bundle-v2.27.0` as a patch. Release Please dry-run lacked `npx` and unauthenticated GitHub rate limit.
+- **Decision:** Keep CodeQL `@v4`. Empty `[Unreleased]` so Release Please can cut 1.3.0 from a `feat(android)` commit. Gradle stays Dependabot backup; do not bump Kotlin past the compose 2.3.21 pin.
+- **Alternatives considered:** Apply the CodeQL bundle tags (rejected — previously broke analyze). Bump `org.jetbrains.kotlin.jvm` further (blocked for CodeQL).
+- **Consequences:** Next signed APK still needs `adb install -r` on `qraft-upload.jks`. Align `versionName`/`versionCode` after the Release Please PR like 1.2.0.
+
+## 2026-09-14 — Two-phone vault smoke (install -r)
+
+- **Status:** Accepted
+- **Context:** Earlier debug sideloads failed `INSTALL_FAILED_UPDATE_INCOMPATIBLE` because both phones already had the 1.2.0 upload-keystore release. Uninstall is forbidden.
+- **Decision:** `assembleRelease` with `qraft-upload.jks`, then `adb install -r` on CPH2655 and CPH2583. Vault smoke used the system picker to **Save vault** on OP13 (4 cards) and **Open vault** on OP12 (3 local cards → 7 after merge). A non-vault PDF showed “That file is not a QRaft backup” with count still 7 of 7.
+- **Alternatives considered:** Debug `installDebug` (rejected — signature mismatch). Uninstall then reinstall (forbidden).
+- **Consequences:** Future device updates must stay on the upload keystore. CreateDocument `text/plain` made DocumentsUI save `qraft-vault.qraft.txt`; Open vault `*/*` still reads it.
+
+## 2026-09-14 — UX audit polish (copy, gallery card, a11y)
+
+- **Status:** Accepted
+- **Context:** After stepper feel, first-run tour lied about footer position, Gallery was a second editor, empty gallery led with a vault form, About leaked inset debug, SVG copy said JSON, Scan used raw dp, WidgetConfig used Toast.
+- **Decision:** Three sequential rows: honest copy + debug About; slim Gallery card + Create-first empty; tokens/`MinTouchDp`, Settings `toggleable`, wallpaper empty disables set, WidgetConfig in-layout error, step `Crossfade` skipped when animator duration is 0.
+- **Alternatives considered:** Confirm dialog on Scan/Gallery overwrite (rejected this sequence). Drop chips+footer dual nav (kept). True-black OLED (deferred).
+- **Consequences:** Gallery edit is Open in editor. Vault passphrase lives under Restore/filter, not empty first paint. Sideload remains `adb install -r` only.
+
+## 2026-09-14 — Guided Home editor stepper
+
+- **Status:** Accepted
+- **Context:** Home was one long scroll (payload kinds, style, save, export). Competitors split encode / look / take-with-you. Delayed Generate (QR Code Monkey) is worse for craft.
+- **Decision:** Four jumpy steps (Content, Look, Place, Share) with Next/Previous above `ProductNavBar` and a compact 120dp live preview. Gallery/Wallpaper keep 240dp via `EditorPreview` default. System Back is Previous except on Content. Edit on Home / New / Duplicate reset to Content. No DataStore step persistence in v1.
+- **Alternatives considered:** Tabs instead of steps (rejected — users skip Look). Forced-linear wizard without jump chips (rejected). Shrinking the shared preview (rejected — wallpaper/gallery).
+- **Consequences:** `EditorSteps` is the testable machine. `GpRoute.Style` stays aliased to Home. Follow-up: remember last step in DataStore.
+
 ## Format
 
 ```markdown

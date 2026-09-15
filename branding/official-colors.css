@@ -1,5 +1,5 @@
 /* GENERATED — do not edit; run scripts/sync-design-tokens.py */
-/* source-hash: 091bb9f1760f */
+/* source-hash: 79eeecfee464 */
 /* Official brand colors — prefer --gp-* in app UI; use --brand-* in docs/marketing */
 
 :root {
@@ -31,7 +31,7 @@
   --brand-on-error: #FFFFFF;
   --brand-on-error-dark: #690005;
   --brand-background: #FFFFFF;
-  --brand-background-dark: #12121f;
+  --brand-background-dark: #000000;
   --brand-on-background: #1a1a2e;
   --brand-on-background-dark: #E6E6F0;
   --brand-surface: #F5F5FA;
@@ -57,7 +57,7 @@
   :root {
     --brand-accent: #D3304E;
     --brand-accent-secondary: #9BB8E8;
-    --brand-canvas: #12121f;
+    --brand-canvas: #000000;
     --brand-panel: #1a1a2e;
     --brand-ink: #E6E6F0;
   }

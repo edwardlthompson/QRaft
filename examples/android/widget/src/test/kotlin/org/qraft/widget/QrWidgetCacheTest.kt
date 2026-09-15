@@ -42,6 +42,12 @@ class BrightenActionTest {
         assertEquals("org.qraft.widget.action.BRIGHTEN", BrightenAction.ACTION)
         assertEquals(1.0f, BrightenAction.WINDOW_BRIGHTNESS, 0.0f)
     }
+
+    @Test
+    fun hapticRespectsReduceMotion() {
+        assertTrue(!BrightenChrome.allowHaptic(0f))
+        assertTrue(BrightenChrome.allowHaptic(1f))
+    }
 }
 
 class SensitiveUnlockTest {

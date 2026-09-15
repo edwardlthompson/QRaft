@@ -1,6 +1,6 @@
 # Feature: qr-profiles
 
-> Sprint 6. DataStore profiles wired to the editor. No network sync.
+> Sprint 6. DataStore profiles wired to the editor. No network sync. Cross-phone copy is the encrypted vault in [`qr-profile-vault.md`](qr-profile-vault.md).
 
 ## Acceptance criteria
 
@@ -23,10 +23,9 @@
 | View | `examples/android/app/.../profiles/ProfilesScreen.kt` |
 | Tests | `ProfileStoreTest`, `ProfileHistoryTest`, `ProfileApplyTest` |
 | Wiring | `ProductPages.kt` |
-
 ## Tests
 
-- Automated: yes — seed, codec `updatedAt`, history undo, backup JSON import
+- Automated: yes — seed, codec `updatedAt`, history undo, backup JSON import (merge by `updatedAt`; missing sidecar paths cleared)
 
 ## Fallback validation
 
@@ -41,13 +40,19 @@ object ProfileHistory { const val MAX = 8; fun push(...); fun undo(...) }
 class DataStoreProfileRepository {
   suspend fun seedIfEmpty(); suspend fun exportJson(): String; suspend fun importJson(text: String)
 }
+object ProfileMerge {
+  fun apply(current: Map<String, QrProfile>, incoming: List<QrProfile>): Map<String, QrProfile>
+}
+
 ```
+
+`importJson` is additive: incoming wins only when `incoming.updatedAt > local.updatedAt`. Equal timestamps keep local. Ids only on this device are never deleted. Missing `imageBackgroundPath` / `logoImagePath` files are cleared on import.
 
 ## Critique
 
 | Issue | Resolution |
 |-------|------------|
 | Null/empty at boundary | Blank ids ignored; import of empty JSON is a no-op |
-| Network timeout | N/A — on-device DataStore / clipboard backup |
-| Race conditions | Single DataStore.edit per mutation |
+| Network timeout | N/A — on-device DataStore / clipboard / SAF vault |
+| Race conditions | Single DataStore.edit per mutation; merge by `updatedAt` |
 | Unhandled exceptions | Codec decode catches and returns empty list |

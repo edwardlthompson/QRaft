@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="scan_hint_point">Apunta a un código. Se lee solo.</string>
+    <string name="scan_edit_home">Editar en Inicio</string>
+    <string name="scan_preview_cd">Vista previa del escáner</string>
+    <string name="snack_view">Ver</string>
+    <string name="scan_saved_gallery">Guardado en Galería</string>
+</resources>

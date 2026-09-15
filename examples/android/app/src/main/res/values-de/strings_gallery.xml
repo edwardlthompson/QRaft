@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profiles_no_matches">Keine Treffer</string>
+    <string name="profiles_create_home">QR erstellen</string>
+    <string name="profiles_restore_backup">Backup wiederherstellen</string>
+    <string name="profiles_edit_home">Im Editor öffnen</string>
+    <string name="profiles_open_card">Karte öffnen</string>
+    <string name="profiles_vault_busy">Tresor arbeitet</string>
+    <string name="profiles_backup_plaintext">Klartext-Backup kopieren</string>
+    <string name="profiles_restore_clipboard">Klartext aus der Zwischenablage wiederherstellen</string>
+    <string name="editor_replace_draft_title">Aktuelle Bearbeitung ersetzen?</string>
+    <string name="editor_replace_draft_body">Start hat einen QR, der nicht in der Galerie ist. Ersetzen oder behalten?</string>
+    <string name="editor_replace_draft_keep">Behalten</string>
+    <string name="editor_replace_draft_replace">Ersetzen</string>
+</resources>

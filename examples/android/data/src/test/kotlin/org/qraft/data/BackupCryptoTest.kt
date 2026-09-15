@@ -1,6 +1,7 @@
 package org.qraft.data
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -15,9 +16,30 @@ class BackupCryptoTest {
     @Test
     fun roundTripWithPassphrase() {
         val wrapped = BackupCrypto.wrap("""[{"id":"a"}]""", "secret")
-        assertTrue(wrapped.startsWith("QRAFT1:"))
+        assertTrue(wrapped.startsWith(BackupCrypto.PREFIX_V1))
         assertEquals("""[{"id":"a"}]""", BackupCrypto.unwrap(wrapped, "secret"))
         assertNull(BackupCrypto.unwrap(wrapped, "wrong"))
         assertNull(BackupCrypto.unwrap(wrapped, ""))
+    }
+
+    @Test
+    fun wrapVaultRequiresPassphrase() {
+        assertNull(BackupCrypto.wrapVault("[]", ""))
+        assertNull(BackupCrypto.wrapVault("[]", "   "))
+        val wrapped = BackupCrypto.wrapVault("""[{"id":"a"}]""", "secret")
+        assertTrue(wrapped!!.startsWith(BackupCrypto.PREFIX_V2))
+        assertEquals("""[{"id":"a"}]""", BackupCrypto.unwrap(wrapped, "secret"))
+        assertNull(BackupCrypto.unwrap(wrapped, "wrong"))
+        assertNull(BackupCrypto.unwrap(wrapped, ""))
+        assertEquals("""[{"id":"a"}]""", BackupCrypto.unwrap("  $wrapped  ", "secret"))
+    }
+
+    @Test
+    fun looksLikeBackup() {
+        assertTrue(BackupCrypto.looksLikeBackup("QRAFT2:abc"))
+        assertTrue(BackupCrypto.looksLikeBackup("QRAFT1:abc"))
+        assertTrue(BackupCrypto.looksLikeBackup("  [{\"id\":\"a\"}]"))
+        assertFalse(BackupCrypto.looksLikeBackup("%PDF-1.4"))
+        assertFalse(BackupCrypto.looksLikeBackup(""))
     }
 }

@@ -29,8 +29,6 @@ import org.qraft.render.QrStyle
 import org.qraft.wallpaper.WallpaperSafeZone
 import kotlin.math.roundToInt
 
-private enum class WallAction { Home, Lock, Both, SavePng, Restore, Pair }
-
 @Composable
 fun WallpaperScreen(
     draft: EditorDraft,
@@ -49,16 +47,10 @@ fun WallpaperScreen(
 ) {
     val clamped = WallpaperSafeZone.clampUserMargin(marginFraction.toDouble()).toFloat()
     val pct = (clamped * 100).roundToInt()
-    val demo = WallpaperSafeZone.qrContentRect(widthPx, heightPx, clamped.toDouble())
     var previewLock by rememberSaveable { mutableStateOf(true) }
-    val actionLabels = mapOf(
-        WallAction.Home to stringResource(R.string.wallpaper_set_home),
-        WallAction.Lock to stringResource(R.string.wallpaper_set_lock),
-        WallAction.Both to stringResource(R.string.wallpaper_set_both),
-        WallAction.SavePng to stringResource(R.string.wallpaper_save_png),
-        WallAction.Restore to stringResource(R.string.wallpaper_restore),
-        WallAction.Pair to stringResource(R.string.wallpaper_pair),
-    )
+    val lockLabel = stringResource(R.string.wallpaper_set_lock)
+    val homeLabel = stringResource(R.string.wallpaper_set_home)
+    val canSet = WallpaperEmpty.canSet(draft)
     Column(
         modifier = modifier.fillMaxSize().padding(SpacingMd),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -92,8 +84,6 @@ fun WallpaperScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.fillMaxWidth(),
             )
-            val lockLabel = stringResource(R.string.wallpaper_set_lock)
-            val homeLabel = stringResource(R.string.wallpaper_set_home)
             MenuField(
                 label = stringResource(R.string.wallpaper_overlay, widthPx, heightPx),
                 value = previewLock,
@@ -101,31 +91,26 @@ fun WallpaperScreen(
                 labelOf = { lock -> if (lock) lockLabel else homeLabel },
                 onSelect = { previewLock = it },
             )
-            Text(
-                text = stringResource(R.string.wallpaper_safe_size, demo.width, demo.height),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (!canSet) {
+                Text(
+                    text = stringResource(R.string.editor_payload_empty),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
             Text(
                 text = stringResource(R.string.wallpaper_scan_hint),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            MenuField(
-                label = stringResource(R.string.wallpaper_apply),
-                value = WallAction.Lock,
-                options = WallAction.entries.toList(),
-                labelOf = { actionLabels.getValue(it) },
-                onSelect = { action ->
-                    when (action) {
-                        WallAction.Home -> onSetHome()
-                        WallAction.Lock -> onSetLock()
-                        WallAction.Both -> onSetBoth()
-                        WallAction.SavePng -> onSavePng()
-                        WallAction.Restore -> onRestore()
-                        WallAction.Pair -> onPair()
-                    }
-                },
+            WallpaperTargetRow(
+                onHome = onSetHome,
+                onLock = onSetLock,
+                onBoth = onSetBoth,
+                onSavePng = onSavePng,
+                onRestore = onRestore,
+                onPair = onPair,
+                enabled = canSet,
             )
         }
     }

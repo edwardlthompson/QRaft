@@ -1,5 +1,5 @@
 // GENERATED — do not edit; run scripts/sync-design-tokens.py
-// source-hash: 091bb9f1760f
+// source-hash: 79eeecfee464
 package org.qraft.app.ui.theme
 
 import androidx.compose.ui.unit.dp
@@ -9,6 +9,8 @@ val SpacingSm = 8.dp
 val SpacingMd = 16.dp
 val SpacingLg = 24.dp
 val SpacingXl = 32.dp
+
+val MinTouchDp = 48.dp
 
 val RadiusSm = 4.dp
 val RadiusMd = 8.dp

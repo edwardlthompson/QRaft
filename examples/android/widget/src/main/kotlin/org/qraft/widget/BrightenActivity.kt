@@ -85,7 +85,9 @@ class BrightenActivity : FragmentActivity() {
         if (payload.isNotBlank()) {
             val matrix = QrEncoder.encodeText(payload)
             // QR only as bitmap; caption is a real TextView so enlarge stays sharp.
-            val bmp: Bitmap = StyledQrRenderer.render(matrix, 1024, style, applyCaption = false)
+            val bmp: Bitmap = StyledQrRenderer.render(
+                matrix, 1024, style, applyCaption = false, payloadHint = payload,
+            )
             image.setImageBitmap(bmp)
         }
         root.addView(image)

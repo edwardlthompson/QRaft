@@ -7,7 +7,9 @@ Compared 2026-09-08 against static web generators (QR Code Monkey, GenerateOnlin
 | Capability | Notes |
 |------------|--------|
 | Static types | URL, text, Wi-Fi, vCard, email, SMS, phone, crypto |
-| Live preview | Pinned at top of Editor + Wallpaper; style on the same Home screen |
+| Live preview | Pinned at top of Home + Wallpaper; style on the same Home screen |
+| Camera scan | ZXing camera + gallery photo decode (Scan tab); Edit on Home / save to Gallery |
+| Material You | Settings dynamic color on Android 12+ |
 | Module / finder style | Square, rounded, dot, diamond, pill, blob; finder frame vs pupil |
 | OLED + quiet zone + logo cut-out | Auto ECC H with overlay |
 | Profiles | DataStore, search, backup JSON, undo last save |
@@ -15,7 +17,6 @@ Compared 2026-09-08 against static web generators (QR Code Monkey, GenerateOnlin
 | Wallpaper | Safe-zone margin, set home/lock/both, SAF PNG |
 | Export | PNG, SVG, PDF, JSON, style-JSON QR |
 | Privacy | No network permission |
-
 ## Gaps worth building (FOSS / offline)
 
 | Gap | Why users expect it | Suggested slice |
@@ -28,13 +29,10 @@ Compared 2026-09-08 against static web generators (QR Code Monkey, GenerateOnlin
 | Batch sheet of N saved profiles | Print / events | PDF multi-page from Profiles |
 | EPS / high-DPI PNG size picker | Print shops | Export size dropdown |
 | Home-screen widget sizes 1×1 / 2×2 / 3×3 + transparent bg | QR Widget | Glance size buckets |
-| Scan from camera / gallery | Kodex, SecScanQR | Optional FOSS scanner module, no INTERNET |
 | Quick Settings tile | Kodex | Tile → BrightenActivity |
-| Material You dynamic color | Kodex | Theme tokens |
 | Share-sheet “make this a QR” | ShareAsQR | Intent filter |
 | PIN / biometric for sensitive widget | Kickoff leftover | DataStore PIN, not cloud |
 | Current Wi-Fi SSID that works on Android 10+ | Needs location at tap | Runtime location, fail-soft copy already exists |
-
 ## Deliberately not a gap
 
 | Competitor feature | Why QRaft will not copy |

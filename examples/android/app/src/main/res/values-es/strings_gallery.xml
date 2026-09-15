@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profiles_no_matches">Sin coincidencias</string>
+    <string name="profiles_create_home">Crear un QR</string>
+    <string name="profiles_restore_backup">Restaurar copia</string>
+    <string name="profiles_edit_home">Abrir en el editor</string>
+    <string name="profiles_open_card">Abrir tarjeta</string>
+    <string name="profiles_vault_busy">La caja fuerte está trabajando</string>
+    <string name="profiles_backup_plaintext">Copiar copia en texto plano</string>
+    <string name="profiles_restore_clipboard">Restaurar texto plano del portapapeles</string>
+    <string name="editor_replace_draft_title">¿Reemplazar lo que estabas editando?</string>
+    <string name="editor_replace_draft_body">Inicio tiene un QR que no está en la galería. ¿Reemplazarlo o conservarlo?</string>
+    <string name="editor_replace_draft_keep">Conservar</string>
+    <string name="editor_replace_draft_replace">Reemplazar</string>
+</resources>

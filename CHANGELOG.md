@@ -10,12 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.2.0](https://github.com/edwardlthompson/QRaft/compare/v1.1.0...v1.2.0) (2026-09-13)
 
-
 ### Added
 
 * **android:** checkpoint Sprint 10-11 editor, gallery, and widget ([a96f8d2](https://github.com/edwardlthompson/QRaft/commit/a96f8d29509bdbeee6ef966cebdd7a7302ed398c))
 * **android:** FOSS scan, isolated widgets, barcodes, and gap closure ([4e72834](https://github.com/edwardlthompson/QRaft/commit/4e72834732186755774b8e2a0ff7655c4a9a99e4))
-
 
 ### Fixed
 

@@ -5,18 +5,23 @@ import java.io.ByteArrayOutputStream
 import org.qraft.coreqr.QrMatrix
 
 object QrPdfExporter {
-    fun export(matrix: QrMatrix, style: QrStyle = QrStyle.DEFAULT, pagePt: Int = 612): ByteArray {
-        return exportPages(listOf(matrix to style), pagePt)
+    fun export(matrix: QrMatrix, style: QrStyle = QrStyle.DEFAULT, pagePt: Int = 612, payloadHint: String = ""): ByteArray {
+        return exportPages(listOf(matrix to style), pagePt, listOf(payloadHint))
     }
 
-    fun exportPages(pages: List<Pair<QrMatrix, QrStyle>>, pagePt: Int = 612): ByteArray {
+    fun exportPages(
+        pages: List<Pair<QrMatrix, QrStyle>>,
+        pagePt: Int = 612,
+        payloads: List<String> = emptyList(),
+    ): ByteArray {
         require(pagePt > 72)
         if (pages.isEmpty()) return ByteArray(0)
         val pdf = PdfDocument()
         val bitmaps = mutableListOf<android.graphics.Bitmap>()
         pages.forEachIndexed { index, (matrix, style) ->
             val page = pdf.startPage(PdfDocument.PageInfo.Builder(pagePt, pagePt, index + 1).create())
-            val bmp = StyledQrRenderer.render(matrix, pagePt - 72, style)
+            val hint = payloads.getOrElse(index) { "" }
+            val bmp = StyledQrRenderer.render(matrix, pagePt - 72, style, payloadHint = hint)
             bitmaps.add(bmp)
             page.canvas.drawBitmap(bmp, 36f, 36f, null)
             pdf.finishPage(page)

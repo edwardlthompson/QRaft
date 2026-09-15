@@ -7,6 +7,9 @@ import android.view.HapticFeedbackConstants
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,28 +35,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.qraft.app.R
+import org.qraft.app.display.reduceMotion
 import org.qraft.app.gallery.GalleryScanClone
 import org.qraft.app.scan.ScanHistoryStore
+import org.qraft.app.ui.CopyHonesty
+import org.qraft.app.ui.theme.MinTouchDp
+import org.qraft.app.ui.theme.SpacingMd
+import org.qraft.app.ui.theme.SpacingSm
+import org.qraft.app.ui.theme.SpacingXs
 import org.qraft.data.DataStoreProfileRepository
 import org.qraft.scan.QrDecoder
 import org.qraft.scan.ScanActionKind
 import org.qraft.scan.ScanActions
 
 @Composable
-fun ScanScreen(modifier: Modifier = Modifier) {
+fun ScanScreen(
+    modifier: Modifier = Modifier,
+    onSaved: () -> Unit = {},
+    onSaveFailed: () -> Unit = {},
+    onEditOnHome: (String) -> Unit = {},
+) {
     val context = LocalContext.current
     val view = LocalView.current
+    val motionOff = reduceMotion()
     val scope = rememberCoroutineScope()
     val repo = remember { DataStoreProfileRepository(context) }
     var payload by remember { mutableStateOf<String?>(null) }
     var format by remember { mutableStateOf("QR_CODE") }
-    var status by remember { mutableStateOf(context.getString(R.string.scan_hint_point)) }
+    var status by remember { mutableStateOf("") }
     var saving by remember { mutableStateOf(false) }
     var decoding by remember { mutableStateOf(false) }
     var torchOn by remember { mutableStateOf(false) }
@@ -79,7 +97,7 @@ fun ScanScreen(modifier: Modifier = Modifier) {
         )
         ScanHistoryStore.push(context, text, fmt)
         history = ScanHistoryStore.all(context)
-        if (fromCamera && text != lastPayload) {
+        if (fromCamera && text != lastPayload && !motionOff) {
             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
         }
         lastPayload = text
@@ -114,12 +132,13 @@ fun ScanScreen(modifier: Modifier = Modifier) {
         if (uri != null) decodePickedUri(uri)
     }
     Column(
-        modifier = modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = modifier.fillMaxSize().padding(SpacingMd),
+        verticalArrangement = Arrangement.spacedBy(SpacingMd),
     ) {
         Text(stringResource(R.string.scan_title), style = MaterialTheme.typography.titleLarge)
-        Text(stringResource(R.string.scan_hint_point), style = MaterialTheme.typography.bodyMedium)
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        val hint = stringResource(R.string.scan_hint_point)
+        Text(hint, style = MaterialTheme.typography.bodyMedium)
+        Row(horizontalArrangement = Arrangement.spacedBy(SpacingSm)) {
             Button(
                 onClick = {
                     if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(context)) {
@@ -144,7 +163,7 @@ fun ScanScreen(modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .heightIn(max = 160.dp)
                     .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                verticalArrangement = Arrangement.spacedBy(SpacingXs),
             ) {
                 if (history.isEmpty()) {
                     Text(stringResource(R.string.scan_history_empty))
@@ -160,11 +179,12 @@ fun ScanScreen(modifier: Modifier = Modifier) {
                             text = "${entry.format}: ${entry.text.take(80)}",
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .heightIn(min = MinTouchDp)
                                 .clickable {
                                     acceptHit(entry.text, entry.format, fromCamera = false)
                                     showHistory = false
                                 }
-                                .padding(vertical = 4.dp),
+                                .padding(vertical = SpacingXs),
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
@@ -172,7 +192,7 @@ fun ScanScreen(modifier: Modifier = Modifier) {
             }
         }
         if (cameraOn) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(SpacingSm)) {
                 Button(
                     onClick = { torchOn = !torchOn },
                     enabled = torchAvailable,
@@ -196,9 +216,19 @@ fun ScanScreen(modifier: Modifier = Modifier) {
                 Text(stringResource(R.string.scan_grant_camera))
             }
         }
-        if (status.isNotEmpty()) Text(status)
+        if (CopyHonesty.showScanStatus(status, hint)) {
+            Text(
+                text = status,
+                modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
+            )
+        }
         val current = payload
-        if (current != null) {
+        AnimatedVisibility(
+            visible = current != null,
+            enter = fadeIn(animationSpec = tween(if (motionOff) 0 else 120)),
+        ) {
+            if (current == null) return@AnimatedVisibility
+            Column(verticalArrangement = Arrangement.spacedBy(SpacingSm)) {
             Text(
                 text = stringResource(R.string.scan_format, format),
                 style = MaterialTheme.typography.labelMedium,
@@ -208,7 +238,6 @@ fun ScanScreen(modifier: Modifier = Modifier) {
                     text = current,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f, fill = false)
                         .verticalScroll(rememberScrollState()),
                 )
             }
@@ -221,14 +250,16 @@ fun ScanScreen(modifier: Modifier = Modifier) {
                     scope.launch {
                         val saved = GalleryScanClone.save(context, repo, current)
                         saving = false
-                        status = if (saved != null) {
-                            context.getString(R.string.scan_saved_gallery)
+                        if (saved != null) {
+                            onSaved()
                         } else {
-                            context.getString(R.string.scan_save_failed)
+                            onSaveFailed()
                         }
                     }
                 },
+                onEditOnHome = { onEditOnHome(current) },
             )
+            }
         }
     }
 }
@@ -238,23 +269,29 @@ private fun ScanActionRow(
     payload: String,
     saving: Boolean,
     onSave: () -> Unit,
+    onEditOnHome: () -> Unit,
 ) {
     val context = LocalContext.current
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = { ScanActions.copy(context, payload) }) {
-            Text(stringResource(R.string.scan_copy))
-        }
-        Button(onClick = onSave, enabled = !saving) {
-            Text(stringResource(R.string.scan_save_gallery))
-        }
-        when (ScanActions.kind(payload)) {
-            ScanActionKind.Open -> Button(onClick = { ScanActions.open(context, payload) }) {
-                Text(stringResource(R.string.scan_open))
+    Column(verticalArrangement = Arrangement.spacedBy(SpacingSm)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(SpacingSm)) {
+            Button(onClick = { ScanActions.copy(context, payload) }) {
+                Text(stringResource(R.string.scan_copy))
             }
-            ScanActionKind.JoinWifi -> Button(onClick = { ScanActions.joinWifi(context, payload) }) {
-                Text(stringResource(R.string.scan_join_wifi))
+            Button(onClick = onSave, enabled = !saving) {
+                Text(stringResource(R.string.scan_save_gallery))
             }
-            else -> Unit
+            when (ScanActions.kind(payload)) {
+                ScanActionKind.Open -> Button(onClick = { ScanActions.open(context, payload) }) {
+                    Text(stringResource(R.string.scan_open))
+                }
+                ScanActionKind.JoinWifi -> Button(onClick = { ScanActions.joinWifi(context, payload) }) {
+                    Text(stringResource(R.string.scan_join_wifi))
+                }
+                else -> Unit
+            }
+        }
+        Button(onClick = onEditOnHome) {
+            Text(stringResource(R.string.scan_edit_home))
         }
     }
 }

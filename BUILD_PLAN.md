@@ -19,9 +19,9 @@
 
 ## Child Repo Playbook
 
-No open sprint rows. History → [`COMPLETED_TASKS.md`](COMPLETED_TASKS.md).
+> **Sprint 13 — UX audit leftovers** archived in COMPLETED_TASKS.md @ `9511b00`.
 
-> **Competitor gap closure (FOSS, no ads)** archived in COMPLETED_TASKS.md.
+History → [`COMPLETED_TASKS.md`](COMPLETED_TASKS.md).
 
 ---
 

@@ -50,6 +50,7 @@ object WallpaperComposer {
         marginFraction: Double = WallpaperSafeZone.DEFAULT_MARGIN_FRACTION,
         leftoverArgb: Int? = null,
         applyCaption: Boolean = false,
+        payloadHint: String = "",
     ): WallpaperImage {
         require(totalWidthPx > 0 && totalHeightPx > 0)
         val margin = WallpaperSafeZone.clampUserMargin(marginFraction)
@@ -61,7 +62,7 @@ object WallpaperComposer {
         } else {
             WallpaperSafeZone.qrContentRect(totalWidthPx, totalHeightPx, margin).width
         }
-        val (src, srcW, srcH) = rasterBlock(matrix, side, style, withCaption)
+        val (src, srcW, srcH) = rasterBlock(matrix, side, style, withCaption, payloadHint)
         val left = safe.left + (safe.width - srcW) / 2
         val top = safe.top + (safe.height - srcH) / 2
         val pixels = IntArray(totalWidthPx * totalHeightPx) { fill }
@@ -76,6 +77,7 @@ object WallpaperComposer {
         totalHeightPx: Int,
         style: QrStyle = QrStyle.DEFAULT,
         marginFraction: Double = WallpaperSafeZone.DEFAULT_MARGIN_FRACTION,
+        payloadHint: String = "",
     ): WallpaperImage = compose(
         matrix = matrix,
         totalWidthPx = totalWidthPx,
@@ -84,6 +86,7 @@ object WallpaperComposer {
         marginFraction = marginFraction,
         leftoverArgb = LOCK_LEFTOVER_ARGB,
         applyCaption = true,
+        payloadHint = payloadHint,
     )
 
     /** Largest QR side that fits with a snug caption band inside [maxW]×[maxH]. */
@@ -109,8 +112,9 @@ object WallpaperComposer {
         side: Int,
         style: QrStyle,
         withCaption: Boolean,
+        payloadHint: String,
     ): Triple<IntArray, Int, Int> {
-        val raster = StyledQrRasterizer.rasterize(matrix, side, style)
+        val raster = StyledQrRasterizer.rasterize(matrix, side, style, payloadHint = payloadHint)
         if (!withCaption) return Triple(raster.pixels, raster.width, raster.height)
         val base = Bitmap.createBitmap(raster.pixels, raster.width, raster.height, Bitmap.Config.ARGB_8888)
         val tall = StyledQrRenderer.withCaption(base, style, recycleSource = true)

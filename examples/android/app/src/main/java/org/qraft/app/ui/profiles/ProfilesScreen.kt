@@ -1,11 +1,11 @@
 package org.qraft.app.ui.profiles
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,11 +16,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,9 +35,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import org.qraft.app.R
 import org.qraft.app.display.highRefreshScroll
+import org.qraft.app.gallery.GalleryNav
 import org.qraft.app.gallery.GalleryThumbs
-import org.qraft.app.ui.editor.MenuField
+import org.qraft.app.ui.theme.ElevationLevel0
+import org.qraft.app.ui.theme.ElevationLevel2
 import org.qraft.app.ui.theme.SpacingMd
+import org.qraft.app.ui.theme.SpacingXs
 import org.qraft.data.ProfileSearch
 import org.qraft.data.QrProfile
 
@@ -51,27 +51,28 @@ fun ProfilesScreen(
     onDelete: (String) -> Unit,
     onBackup: (String) -> Unit,
     onRestore: (String) -> Unit,
+    onSaveVault: (String) -> Unit,
+    onOpenVault: (String) -> Unit,
     onUndo: () -> Unit,
     onExportJson: (QrProfile) -> Unit,
     onExportPng: (QrProfile) -> Unit,
     onExportSvg: (QrProfile) -> Unit,
     onExportPdf: (QrProfile) -> Unit,
     onAddWidget: (QrProfile) -> Unit,
-    onSaveEdit: (QrProfile, String, String, org.qraft.app.editor.EditorDraft, org.qraft.render.QrStyle) -> Unit,
     onEditOnHome: (QrProfile) -> Unit,
-    onSetWallpaper: (QrProfile) -> Unit = {},
     onCopyPayload: (QrProfile) -> Unit = {},
     onPrint: (QrProfile) -> Unit = {},
     onZip: (QrProfile) -> Unit = {},
     onBatchPdf: () -> Unit = {},
-    onPngSize: (org.qraft.app.share.ExportPngSize) -> Unit = {},
-    pngSize: org.qraft.app.share.ExportPngSize = org.qraft.app.share.ExportPngSize.DEFAULT,
+    vaultBusy: Boolean = false,
+    onOpenHome: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    var passphrase by rememberSaveable { mutableStateOf("") }
+    var passphrase by remember { mutableStateOf("") }
     var openId by rememberSaveable { mutableStateOf<String?>(null) }
     val shown = ProfileSearch.sort(ProfileSearch.filter(profiles, chrome.query), chrome.sort)
     val open = profiles.find { it.id == openId }
+    BackHandler(enabled = GalleryNav.consumeBack(openId)) { openId = null }
 
     // Editing must NOT live inside LazyVerticalGrid — TextField + live preview there crashes.
     if (open != null) {
@@ -91,14 +92,14 @@ fun ProfilesScreen(
                 onPassphrase = { passphrase = it },
                 onBackup = onBackup,
                 onRestore = onRestore,
+                onSaveVault = onSaveVault,
+                onOpenVault = onOpenVault,
                 onUndo = onUndo,
                 onBatchPdf = onBatchPdf,
+                vaultBusy = vaultBusy,
             )
             GalleryCard(
                 profile = open,
-                onSaveEdit = { name, tags, draft, style ->
-                    onSaveEdit(open, name, tags, draft, style)
-                },
                 onEditOnHome = { onEditOnHome(open); openId = null },
                 onDelete = { onDelete(open.id); openId = null },
                 onExportJson = { onExportJson(open) },
@@ -106,12 +107,9 @@ fun ProfilesScreen(
                 onExportSvg = { onExportSvg(open) },
                 onExportPdf = { onExportPdf(open) },
                 onAddWidget = { onAddWidget(open) },
-                onSetWallpaper = { onSetWallpaper(open) },
                 onCopyPayload = { onCopyPayload(open) },
                 onPrint = { onPrint(open) },
                 onZip = { onZip(open) },
-                onPngSize = onPngSize,
-                pngSize = pngSize,
                 onClose = { openId = null },
             )
         }
@@ -134,20 +132,29 @@ fun ProfilesScreen(
                 onPassphrase = { passphrase = it },
                 onBackup = onBackup,
                 onRestore = onRestore,
+                onSaveVault = onSaveVault,
+                onOpenVault = onOpenVault,
                 onUndo = onUndo,
                 onBatchPdf = onBatchPdf,
+                vaultBusy = vaultBusy,
             )
         }
-        if (shown.isEmpty()) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
+        when (galleryListKind(profiles.size, shown.size)) {
+            GalleryListKind.Empty -> item(span = { GridItemSpan(maxLineSpan) }) {
+                GalleryEmptyState(
+                    vaultBusy = vaultBusy,
+                    onCreateHome = onOpenHome,
+                    onRestoreBackup = { chrome.openBackup() },
+                )
+            }
+            GalleryListKind.Miss -> item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
-                    text = stringResource(R.string.profiles_empty),
+                    text = stringResource(R.string.profiles_no_matches),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-        } else {
-            items(shown, key = { it.id }) { profile ->
+            GalleryListKind.Grid -> items(shown, key = { it.id }) { profile ->
                 GalleryGridTile(profile = profile, selected = false, onOpen = { openId = profile.id })
             }
         }
@@ -155,89 +162,22 @@ fun ProfilesScreen(
 }
 
 @Composable
-private fun GalleryChromePanels(
-    chrome: GalleryChromeState,
-    shown: Int,
-    total: Int,
-    passphrase: String,
-    onPassphrase: (String) -> Unit,
-    onBackup: (String) -> Unit,
-    onRestore: (String) -> Unit,
-    onUndo: () -> Unit,
-    onBatchPdf: () -> Unit,
+private fun GalleryEmptyState(
+    vaultBusy: Boolean,
+    onCreateHome: () -> Unit,
+    onRestoreBackup: () -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(SpacingMd)) {
         Text(
-            text = stringResource(R.string.profiles_count, shown, total),
-            style = MaterialTheme.typography.bodySmall,
+            text = stringResource(R.string.profiles_empty),
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        if (chrome.searchOpen) {
-            OutlinedTextField(
-                value = chrome.query,
-                onValueChange = { chrome.query = it },
-                label = { Text(stringResource(R.string.profiles_search)) },
-                placeholder = { Text(stringResource(R.string.profiles_search_hint)) },
-                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
+        Button(onClick = onCreateHome, enabled = !vaultBusy) {
+            Text(stringResource(R.string.profiles_create_home))
         }
-        if (chrome.filterOpen) {
-            GalleryFilterPanel(
-                sort = chrome.sort,
-                onSort = { chrome.sort = it },
-                passphrase = passphrase,
-                onPassphrase = onPassphrase,
-                onBackup = onBackup,
-                onRestore = onRestore,
-                onUndo = onUndo,
-                onBatchPdf = onBatchPdf,
-            )
-        }
-    }
-}
-
-@Composable
-private fun GalleryFilterPanel(
-    sort: ProfileSearch.Sort,
-    onSort: (ProfileSearch.Sort) -> Unit,
-    passphrase: String,
-    onPassphrase: (String) -> Unit,
-    onBackup: (String) -> Unit,
-    onRestore: (String) -> Unit,
-    onUndo: () -> Unit,
-    onBatchPdf: () -> Unit,
-) {
-    val sortLabels = mapOf(
-        ProfileSearch.Sort.NAME to stringResource(R.string.profiles_sort_name),
-        ProfileSearch.Sort.NEWEST to stringResource(R.string.profiles_sort_newest),
-    )
-    Column(verticalArrangement = Arrangement.spacedBy(SpacingMd)) {
-        MenuField(
-            label = stringResource(R.string.profiles_sort),
-            value = sort,
-            options = ProfileSearch.Sort.entries.toList(),
-            labelOf = { sortLabels.getValue(it) },
-            onSelect = onSort,
-            modifier = Modifier.fillMaxWidth(),
-        )
-        OutlinedTextField(
-            value = passphrase,
-            onValueChange = onPassphrase,
-            label = { Text(stringResource(R.string.profiles_passphrase)) },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(SpacingMd)) {
-            TextButton(onClick = { onBackup(passphrase) }) {
-                Text(stringResource(R.string.profiles_backup))
-            }
-            TextButton(onClick = { onRestore(passphrase) }) {
-                Text(stringResource(R.string.profiles_restore))
-            }
-            TextButton(onClick = onUndo) { Text(stringResource(R.string.profiles_undo)) }
-            TextButton(onClick = onBatchPdf) { Text(stringResource(R.string.export_batch_pdf)) }
+        TextButton(onClick = onRestoreBackup, enabled = !vaultBusy) {
+            Text(stringResource(R.string.profiles_restore_backup))
         }
     }
 }
@@ -248,21 +188,22 @@ private fun GalleryGridTile(profile: QrProfile, selected: Boolean, onOpen: () ->
     val bitmap = remember(profile.id, profile.updatedAt) {
         GalleryThumbs.bitmap(context, profile)
     }
+    val openLabel = stringResource(R.string.profiles_open_card)
     Surface(
-        tonalElevation = if (selected) 6.dp else SpacingMd,
+        tonalElevation = if (selected) ElevationLevel2 else ElevationLevel0,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onOpen)
-            .padding(4.dp),
+            .clickable(onClickLabel = openLabel, onClick = onOpen)
+            .padding(SpacingXs),
     ) {
         Column(
             modifier = Modifier.padding(SpacingMd),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(SpacingXs),
         ) {
             if (bitmap != null) {
                 Image(
                     bitmap = bitmap.asImageBitmap(),
-                    contentDescription = profile.name,
+                    contentDescription = null,
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                 )

@@ -16,7 +16,9 @@ object StyledQrRasterizer {
         sizePx: Int,
         style: QrStyle = QrStyle.DEFAULT,
         extras: RasterExtras = RasterExtras(),
+        payloadHint: String = "",
     ): SquareRasterizer.Result {
+        val extras = extras.withGeneratedInlay(style, payloadHint)
         if (canUseSquare(style, extras)) {
             return SquareRasterizer.rasterize(
                 matrix,
@@ -47,11 +49,15 @@ object StyledQrRasterizer {
             val side = modulePx * matrix.size
             val cx = originX + quiet * modulePx + side / 2.0
             val cy = originY + quiet * modulePx + side / 2.0
-            val radius = (side * style.logoCutout.clampedFraction) / 2.0
-            RasterDraw.fillCircle(pixels, sizePx, cx, cy, radius, style.backgroundArgb)
+            val half = (side * style.logoCutout.clampedFraction) / 2.0
+            val plate = maxOf(1, (half * 2).toInt())
+            val left = (cx - half).toInt()
+            val top = (cy - half).toInt()
+            val corner = (plate * CenterMarkIcons.CORNER).toInt().coerceAtLeast(1)
+            RasterDraw.fillRoundedRect(pixels, sizePx, left, top, plate, plate, corner, style.backgroundArgb)
             val inlay = extras.inlayPixels
             if (inlay != null && extras.inlayWidth > 0) {
-                CenterInlay.blit(pixels, sizePx, cx, cy, radius, inlay, extras.inlayWidth, extras.inlayHeight)
+                CenterInlay.blit(pixels, sizePx, cx, cy, half, inlay, extras.inlayWidth, extras.inlayHeight)
             }
         }
         if (style.cornerBadge) {

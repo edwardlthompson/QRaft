@@ -91,11 +91,13 @@ class QrGlanceWidget : GlanceAppWidget() {
         )
         val quiet = style.quietZoneModules.coerceAtLeast(0)
         val px = WidgetQrCanvas.snapToModules(targetPx, matrix.size + 2 * quiet)
-        val key = CACHE.key(profileId, "$styleJson#bg=${style.backgroundArgb}", px)
+        val key = CACHE.key(profileId, "$styleJson#bg=${style.backgroundArgb}#$payload", px)
         CACHE.get(key)?.let { hit ->
             return Bitmap.createBitmap(hit.pixels, hit.width, hit.height, Bitmap.Config.ARGB_8888)
         }
-        val bmp = StyledQrRenderer.render(matrix, px, style, applyCaption = false)
+        val bmp = StyledQrRenderer.render(
+            matrix, px, style, applyCaption = false, payloadHint = payload,
+        )
         val pixels = IntArray(bmp.width * bmp.height)
         bmp.getPixels(pixels, 0, bmp.width, 0, 0, bmp.width, bmp.height)
         CACHE.put(key, bmp.width, bmp.height, pixels)

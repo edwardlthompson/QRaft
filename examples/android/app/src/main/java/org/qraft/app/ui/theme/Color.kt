@@ -1,5 +1,5 @@
 // GENERATED — do not edit; run scripts/sync-design-tokens.py
-// source-hash: 091bb9f1760f
+// source-hash: 79eeecfee464
 package org.qraft.app.ui.theme
 
 import androidx.compose.material3.darkColorScheme
@@ -32,7 +32,7 @@ private val GpDarkError = Color(0xFFFFB4AB)
 private val GpLightOnError = Color(0xFFFFFFFF)
 private val GpDarkOnError = Color(0xFF690005)
 private val GpLightBackground = Color(0xFFFFFFFF)
-private val GpDarkBackground = Color(0xFF12121F)
+private val GpDarkBackground = Color(0xFF000000)
 private val GpLightOnBackground = Color(0xFF1A1A2E)
 private val GpDarkOnBackground = Color(0xFFE6E6F0)
 private val GpLightSurface = Color(0xFFF5F5FA)

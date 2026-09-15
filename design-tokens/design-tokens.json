@@ -17,7 +17,7 @@
     "onTertiary": { "light": "#FFFFFF", "dark": "#1a1a2e" },
     "error": { "light": "#BA1A1A", "dark": "#FFB4AB" },
     "onError": { "light": "#FFFFFF", "dark": "#690005" },
-    "background": { "light": "#FFFFFF", "dark": "#12121f" },
+    "background": { "light": "#FFFFFF", "dark": "#000000" },
     "onBackground": { "light": "#1a1a2e", "dark": "#E6E6F0" },
     "surface": { "light": "#F5F5FA", "dark": "#1a1a2e" },
     "onSurface": { "light": "#1a1a2e", "dark": "#E6E6F0" },
@@ -35,7 +35,7 @@
       "labelLarge": { "sizeSp": 14, "sizeRem": 0.875, "lineHeight": 1.43, "weight": 500 }
     }
   },
-  "spacing": { "xs": 4, "sm": 8, "md": 16, "lg": 24, "xl": 32 },
+  "spacing": { "xs": 4, "sm": 8, "md": 16, "lg": 24, "xl": 32, "minTouch": 48 },
   "radius": { "sm": 4, "md": 8, "lg": 16 },
   "elevation": { "level0": 0, "level1": 1, "level2": 3 }
 }

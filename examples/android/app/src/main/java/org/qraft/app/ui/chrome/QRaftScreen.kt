@@ -3,16 +3,16 @@ package org.qraft.app.ui.chrome
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -22,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import org.qraft.app.R
 import org.qraft.app.about.AppUpdates
@@ -38,8 +40,8 @@ import org.qraft.app.ui.nav.Nav
 import org.qraft.app.ui.nav.NavState
 import org.qraft.app.ui.product.ProductPages
 import org.qraft.app.ui.profiles.GalleryChromeState
-import org.qraft.app.ui.scan.ScanScreen
 import org.qraft.app.ui.settings.SettingsScreen
+import org.qraft.app.ui.theme.MinTouchDp
 import org.qraft.app.ui.theme.ThemeMode
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -95,26 +97,42 @@ fun QRaftScreen(
                 },
                 actions = {
                     if (route == GpRoute.Profiles) {
-                        IconButton(onClick = { galleryChrome.toggleSearch() }) {
+                        val expanded = stringResource(R.string.editor_expanded)
+                        val collapsed = stringResource(R.string.editor_collapsed)
+                        FilledTonalIconToggleButton(
+                            checked = galleryChrome.searchOpen,
+                            onCheckedChange = { galleryChrome.toggleSearch() },
+                            modifier = Modifier
+                                .heightIn(min = MinTouchDp)
+                                .semantics {
+                                    stateDescription = ChromeSelected.stateDescription(
+                                        galleryChrome.searchOpen,
+                                        expanded,
+                                        collapsed,
+                                    )
+                                },
+                        ) {
                             Icon(
                                 imageVector = Icons.Filled.Search,
                                 contentDescription = stringResource(R.string.profiles_search_open),
-                                tint = if (galleryChrome.searchOpen) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    LocalContentColor.current
-                                },
                             )
                         }
-                        IconButton(onClick = { galleryChrome.toggleFilter() }) {
+                        FilledTonalIconToggleButton(
+                            checked = galleryChrome.filterOpen,
+                            onCheckedChange = { galleryChrome.toggleFilter() },
+                            modifier = Modifier
+                                .heightIn(min = MinTouchDp)
+                                .semantics {
+                                    stateDescription = ChromeSelected.stateDescription(
+                                        galleryChrome.filterOpen,
+                                        expanded,
+                                        collapsed,
+                                    )
+                                },
+                        ) {
                             Icon(
                                 imageVector = Icons.Filled.FilterList,
                                 contentDescription = stringResource(R.string.profiles_filter_open),
-                                tint = if (galleryChrome.filterOpen) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    LocalContentColor.current
-                                },
                             )
                         }
                     }
@@ -180,10 +198,10 @@ fun QRaftScreen(
                 onScroll = { onScroll(GpRoute.About, it) },
                 modifier = panelMod,
             )
-            GpRoute.Scan -> ScanScreen(modifier = panelMod)
-            GpRoute.Home, GpRoute.Profiles, GpRoute.Wallpaper ->
+            GpRoute.Scan, GpRoute.Home, GpRoute.Profiles, GpRoute.Wallpaper ->
                 ProductPages(
                     route = route,
+                    snackbarHostState = snackbarHostState,
                     modifier = panelMod,
                     galleryChrome = galleryChrome,
                     onOpenGallery = { onPushRoute(GpRoute.Profiles, null) },
@@ -192,6 +210,7 @@ fun QRaftScreen(
             GpRoute.Style ->
                 ProductPages(
                     route = GpRoute.Home,
+                    snackbarHostState = snackbarHostState,
                     modifier = panelMod,
                     galleryChrome = galleryChrome,
                     onOpenGallery = { onPushRoute(GpRoute.Profiles, null) },

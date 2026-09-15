@@ -13,8 +13,9 @@ object StyledQrRenderer {
         style: QrStyle = QrStyle.DEFAULT,
         extras: RasterExtras = RasterExtras(),
         applyCaption: Boolean = true,
+        payloadHint: String = "",
     ): Bitmap {
-        val square = StyledQrRasterizer.rasterize(matrix, sizePx, style, extras)
+        val square = StyledQrRasterizer.rasterize(matrix, sizePx, style, extras, payloadHint)
         val base = Bitmap.createBitmap(square.pixels, square.width, square.height, Bitmap.Config.ARGB_8888)
         return if (applyCaption) withCaption(base, style, recycleSource = true) else base
     }

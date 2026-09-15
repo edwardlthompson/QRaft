@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import java.io.File
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -97,5 +98,37 @@ class DataStoreProfileRepositoryTest {
         assertEquals(3, repo.all().size)
         repo.importJson(repo.exportJson())
         assertEquals(3, repo.all().size)
+    }
+
+    @Test
+    fun importMergesByUpdatedAtAndKeepsLocalOnly() = runBlocking {
+        val repo = DataStoreProfileRepository(context)
+        repo.upsert(QrProfile("a", "Local", "old", updatedAt = 10))
+        repo.upsert(QrProfile("keep", "Stay", "x", updatedAt = 1))
+        repo.importJson(
+            ProfileCodec.encodeList(
+                listOf(
+                    QrProfile("a", "Remote", "new", updatedAt = 20),
+                    QrProfile("a", "Stale", "stale", updatedAt = 5),
+                    QrProfile("b", "New", "y", updatedAt = 1),
+                ),
+            ),
+        )
+        val all = repo.all().associateBy { it.id }
+        assertEquals("new", all.getValue("a").payloadText)
+        assertEquals("Stay", all.getValue("keep").name)
+        assertEquals("New", all.getValue("b").name)
+    }
+
+    @Test
+    fun importClearsMissingBackgroundPath() = runBlocking {
+        val repo = DataStoreProfileRepository(context)
+        val missing = "/no/such/qraft-import-bg.png"
+        repo.importJson(
+            ProfileCodec.encodeList(
+                listOf(QrProfile("p", "P", "https://a", styleJson = """{"imageBackgroundPath":"$missing"}""")),
+            ),
+        )
+        assertFalse(repo.get("p")!!.styleJson.contains(missing))
     }
 }

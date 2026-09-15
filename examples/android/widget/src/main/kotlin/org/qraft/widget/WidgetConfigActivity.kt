@@ -4,6 +4,7 @@ import android.app.Activity
 import android.appwidget.AppWidgetManager
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.LinearLayout
@@ -11,7 +12,6 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.ScrollView
 import android.widget.TextView
-import android.widget.Toast
 import kotlinx.coroutines.runBlocking
 import org.qraft.data.DataStoreProfileRepository
 
@@ -72,16 +72,23 @@ class WidgetConfigActivity : Activity() {
             isChecked = WidgetPrefs.transparentBg(this@WidgetConfigActivity, widgetId)
         }
         root.addView(caption); root.addView(carousel); root.addView(sensitive); root.addView(transparent)
+        val pickError = TextView(this).apply {
+            text = getString(R.string.widget_config_pick_required)
+            visibility = View.GONE
+            setPadding(0, 16, 0, 8)
+        }
+        root.addView(pickError)
         root.addView(
             Button(this).apply {
                 text = getString(R.string.widget_save)
                 setOnClickListener {
                     val id = group.findViewById<RadioButton>(group.checkedRadioButtonId)?.tag as? String
-                    if (id == null) {
-                        Toast.makeText(this@WidgetConfigActivity, R.string.widget_config_pick_required, Toast.LENGTH_SHORT).show()
+                    if (WidgetConfigPick.showPickError(id)) {
+                        pickError.visibility = View.VISIBLE
                         return@setOnClickListener
                     }
-                    WidgetPrefs.setSelectedId(this@WidgetConfigActivity, id, widgetId)
+                    pickError.visibility = View.GONE
+                    WidgetPrefs.setSelectedId(this@WidgetConfigActivity, requireNotNull(id), widgetId)
                     WidgetPrefs.clearPendingId(this@WidgetConfigActivity)
                     WidgetPrefs.setCaptionEnabled(this@WidgetConfigActivity, caption.isChecked, widgetId)
                     WidgetPrefs.setCarouselEnabled(this@WidgetConfigActivity, carousel.isChecked, widgetId)

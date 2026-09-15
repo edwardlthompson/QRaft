@@ -24,10 +24,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import org.qraft.app.R
+import org.qraft.app.ui.theme.VisualHierarchy
 import org.qraft.scan.DecodeHit
 import org.qraft.scan.QrDecoder
 import java.util.concurrent.Executors
@@ -59,7 +64,8 @@ fun ScanCameraPreview(
         }
     }
 
-    Box(modifier = modifier) {
+    val previewCd = stringResource(R.string.scan_preview_cd)
+    Box(modifier = modifier.semantics { contentDescription = previewCd }) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { ctx ->
@@ -127,7 +133,7 @@ fun ScanCameraPreview(
                 .align(Alignment.Center)
                 .fillMaxWidth(0.72f)
                 .aspectRatio(1f)
-                .padding(8.dp)
+                .padding(VisualHierarchy.ScanFinderPad)
                 .border(
                     width = 2.dp,
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.85f),
