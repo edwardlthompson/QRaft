@@ -1,0 +1,1 @@
+QRaft 1.3.0: encrypted gallery vault, Home Content/Look/Save stepper, and Sprint 13 UX leftovers. Sideload with adb install -r.

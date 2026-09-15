@@ -216,3 +216,12 @@
 | **Fix** | JPEG under 500 KB (`readme-hero.jpg`, `social-preview.jpg`); `hero_asset()` prefers small PNG then JPEG then SVG |
 | **Prevention** | Run `check-repo-hygiene` after `git add` of rasters, not only while they are untracked |
 
+### KB-026 — `setup-android` default `tools` package is gone
+
+| Field | Detail |
+|-------|--------|
+| **Symptom** | CodeQL `Analyze (java-kotlin)` fails: `Failed to find package 'tools'` from `sdkmanager` |
+| **Cause** | `android-actions/setup-android@v4` defaults `packages` to `tools platform-tools`; cmdline-tools 20.0 no longer ships legacy `tools` |
+| **Fix** | `packages: platform-tools` on every `setup-android@v4` (CI + CodeQL) |
+| **Prevention** | Do not restore the default `tools` package; Gradle still downloads platforms/build-tools |
+
