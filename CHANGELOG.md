@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0](https://github.com/edwardlthompson/QRaft/compare/v1.2.0...v1.3.0) (2026-09-15)
+
+
+### Added
+
+* **android:** add vault, Home stepper, and Sprint 13 UX leftovers ([6f43fff](https://github.com/edwardlthompson/QRaft/commit/6f43fff613cb518c01c3be215daabac4f43b78cb))
+
+
+### Fixed
+
+* **ci:** skip obsolete SDK tools package in setup-android ([5a1ca36](https://github.com/edwardlthompson/QRaft/commit/5a1ca3607f89160bfaf138bced6075fca7f6a41a))
+
 ## [Unreleased]
 
 ## [1.2.0](https://github.com/edwardlthompson/QRaft/compare/v1.1.0...v1.2.0) (2026-09-13)
