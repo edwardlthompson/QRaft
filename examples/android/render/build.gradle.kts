@@ -30,7 +30,7 @@ android {
 dependencies {
     api(project(":core-qr"))
 
-    implementation("androidx.core:core-ktx:1.19.0")
+    implementation("androidx.core:core-ktx:1.19.1")
 
     testImplementation("junit:junit:4.13.2")
     testImplementation("androidx.test:core:1.7.0")

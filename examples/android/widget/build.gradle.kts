@@ -41,8 +41,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime")
     implementation("androidx.compose.ui:ui")
 
-    implementation("androidx.core:core-ktx:1.19.0")
-    implementation("androidx.fragment:fragment-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.19.1")
+    implementation("androidx.fragment:fragment-ktx:1.9.1")
     implementation("androidx.biometric:biometric:1.1.0")
     implementation("androidx.glance:glance-appwidget:1.1.1")
     implementation("androidx.glance:glance-material3:1.1.1")

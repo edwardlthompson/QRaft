@@ -30,7 +30,7 @@ android {
 dependencies {
     // FOSS Apache-2.0 — decode only; encode stays Nayuki in :core-qr
     implementation("com.google.zxing:core:3.5.4")
-    implementation("androidx.core:core-ktx:1.19.0")
+    implementation("androidx.core:core-ktx:1.19.1")
     implementation("androidx.exifinterface:exifinterface:1.4.2")
 
     testImplementation("junit:junit:4.13.2")
