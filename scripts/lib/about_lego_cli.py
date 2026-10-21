@@ -54,7 +54,9 @@ def restore(src: Path, root: Path) -> None:
             shutil.copy2(bak, dest)
             copied = True
     if not copied:
-        raise SystemExit("about CLI backup missing")
+        # Child repos may prune rust/go/node/python; empty backup is a no-op.
+        if any((root / rel).is_file() for rel in TRACKED):
+            raise SystemExit("about CLI backup missing")
 
 
 def _drop(text: str, pattern: str) -> str:
@@ -65,27 +67,50 @@ def _drop(text: str, pattern: str) -> str:
 
 
 def strip(root: Path) -> None:
-    (root / "examples/rust/src/about.rs").unlink(missing_ok=True)
-    lib = (root / "examples/rust/src/lib.rs").read_text(encoding="utf-8")
-    write_lf(root / "examples/rust/src/lib.rs", lib.replace("pub mod about;\n", ""))
-    _copy_stub("rust-main.rs", root / "examples/rust/src/main.rs")
-    (root / "examples/go/about.go").unlink(missing_ok=True)
-    _copy_stub("go-main.go", root / "examples/go/main.go")
-    go_test = root / "examples/go/about_test.go"
-    write_lf(go_test, _drop(go_test.read_text(encoding="utf-8"), r"\nfunc TestAboutSummary\([\s\S]*?\n\}\n"))
-    for rel in ("examples/node/src/about.ts", "examples/node/src/about.test.ts"):
-        (root / rel).unlink(missing_ok=True)
-    _copy_stub("node-app.ts", root / "examples/node/src/app.ts")
-    node_test = root / "examples/node/src/app.test.ts"
-    write_lf(
-        node_test,
-        _drop(node_test.read_text(encoding="utf-8"), r"\n  it\(\"returns About payload\"[\s\S]*?\n  \}\);\n"),
-    )
-    for rel in ("examples/python/src/hello/about.py", "examples/python/tests/test_about.py"):
-        (root / rel).unlink(missing_ok=True)
-    _copy_stub("python-cli.py", root / "examples/python/src/hello/cli.py")
-    py_test = root / "examples/python/tests/test_cli.py"
-    write_lf(py_test, _drop(py_test.read_text(encoding="utf-8"), r"\n\ndef test_main_about[\s\S]*\Z"))
+    rust_lib = root / "examples/rust/src/lib.rs"
+    if rust_lib.is_file():
+        (root / "examples/rust/src/about.rs").unlink(missing_ok=True)
+        lib = rust_lib.read_text(encoding="utf-8")
+        write_lf(rust_lib, lib.replace("pub mod about;\n", ""))
+        _copy_stub("rust-main.rs", root / "examples/rust/src/main.rs")
+
+    go_main = root / "examples/go/main.go"
+    if go_main.is_file():
+        (root / "examples/go/about.go").unlink(missing_ok=True)
+        _copy_stub("go-main.go", go_main)
+        go_test = root / "examples/go/about_test.go"
+        if go_test.is_file():
+            write_lf(
+                go_test,
+                _drop(go_test.read_text(encoding="utf-8"), r"\nfunc TestAboutSummary\([\s\S]*?\n\}\n"),
+            )
+
+    node_app = root / "examples/node/src/app.ts"
+    if node_app.is_file():
+        for rel in ("examples/node/src/about.ts", "examples/node/src/about.test.ts"):
+            (root / rel).unlink(missing_ok=True)
+        _copy_stub("node-app.ts", node_app)
+        node_test = root / "examples/node/src/app.test.ts"
+        if node_test.is_file():
+            write_lf(
+                node_test,
+                _drop(
+                    node_test.read_text(encoding="utf-8"),
+                    r"\n  it\(\"returns About payload\"[\s\S]*?\n  \}\);\n",
+                ),
+            )
+
+    py_cli = root / "examples/python/src/hello/cli.py"
+    if py_cli.is_file():
+        for rel in ("examples/python/src/hello/about.py", "examples/python/tests/test_about.py"):
+            (root / rel).unlink(missing_ok=True)
+        _copy_stub("python-cli.py", py_cli)
+        py_test = root / "examples/python/tests/test_cli.py"
+        if py_test.is_file():
+            write_lf(
+                py_test,
+                _drop(py_test.read_text(encoding="utf-8"), r"\n\ndef test_main_about[\s\S]*\Z"),
+            )
 
 
 def main() -> None:

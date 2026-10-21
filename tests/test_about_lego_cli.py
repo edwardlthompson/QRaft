@@ -17,6 +17,14 @@ from about_lego_cli import TRACKED, backup, restore, strip  # noqa: E402
 
 
 class AboutLegoCliTests(unittest.TestCase):
+    def test_strip_noop_when_cli_stacks_pruned(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bak = root / "backup"
+            backup(bak, root)
+            strip(root)  # must not raise when rust/go/node/python are absent
+            restore(bak, root)
+
     def test_strip_removes_about_and_restore_roundtrips(self) -> None:
         missing = [rel for rel in TRACKED if not (ROOT / rel).is_file()]
         if missing:
