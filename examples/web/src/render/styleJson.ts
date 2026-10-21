@@ -25,6 +25,7 @@ export function encodeStyleJson(style: QrStyle): string {
     centerMark: style.centerMark,
     caption: style.caption.text,
     imageBackgroundPath: style.imageBackgroundPath,
+    logoImagePath: style.logoImagePath,
     frame: style.frame,
     cornerBadge: style.cornerBadge,
   });
@@ -102,6 +103,7 @@ export function decodeStyleJson(json: string): QrStyle {
       ),
       caption: { text: typeof o.caption === "string" ? o.caption : "" },
       imageBackgroundPath: typeof o.imageBackgroundPath === "string" ? o.imageBackgroundPath : "",
+      logoImagePath: typeof o.logoImagePath === "string" ? o.logoImagePath : "",
       frame: enumOr(o.frame, ["NONE", "THIN", "BOLD", "ROUNDED"] as const, "NONE"),
       cornerBadge: Boolean(o.cornerBadge),
     };

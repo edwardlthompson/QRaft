@@ -30,6 +30,7 @@ describe("QrStyleJson parity", () => {
       centerMark: "LINK",
       caption: "Hi",
       imageBackgroundPath: "",
+      logoImagePath: "data:image/png;base64,xx",
       frame: "THIN",
       cornerBadge: true,
     };
@@ -37,8 +38,10 @@ describe("QrStyleJson parity", () => {
     expect(style.moduleShape).toBe("DOT");
     expect(style.logoCutout.enabled).toBe(true);
     expect(style.centerMark).toBe("LINK");
+    expect(style.logoImagePath).toBe("data:image/png;base64,xx");
     expect(style.frame).toBe("THIN");
     expect(style.cornerBadge).toBe(true);
+    expect(JSON.parse(encodeStyleJson(style)).logoImagePath).toBe("data:image/png;base64,xx");
   });
 });
 

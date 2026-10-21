@@ -3,11 +3,11 @@ import type { EditorDraft } from "../data/draftStore";
 import { shareTargetFromParams } from "../data/shareIntake";
 import { t } from "../i18n";
 import type { GpRoute } from "../nav";
-import { composeWallpaperPng, type QrStyle, renderMatrixToCanvas } from "../render";
+import type { QrStyle } from "../render";
 import { decodeStyleJson } from "../render/styleJson";
-import { encodeDraft } from "./encodeDraft";
 import { bindHome } from "./homeBind";
 import { homeHtml } from "./homeHtml";
+import { refreshProductPreview } from "./previewRefresh";
 import { bindProfiles, profilesHtml } from "./profilesView";
 import { bindWallpaper, wallpaperHtml } from "./wallpaperView";
 
@@ -46,24 +46,8 @@ export function mountProductWorkspace(
     status = msg;
     render();
   };
-
-  function refreshPreview(): void {
-    const preview = root.querySelector<HTMLElement>("[data-preview]");
-    if (!preview) return;
-    preview.innerHTML = "";
-    try {
-      const matrix = encodeDraft(draft, style);
-      const canvas =
-        route === "wallpaper"
-          ? composeWallpaperPng(matrix, style, wallW, wallH, margin)
-          : renderMatrixToCanvas(matrix, style, 280);
-      canvas.className = "qr-preview-canvas";
-      canvas.setAttribute("data-testid", "qr-preview");
-      preview.appendChild(canvas);
-    } catch {
-      preview.textContent = t("editor.encode_error");
-    }
-  }
+  const refreshPreview = () =>
+    refreshProductPreview(root, route, () => ({ draft, style, wallW, wallH, margin }));
 
   function render(): void {
     const view = route === "profiles" || route === "wallpaper" ? route : "home";
@@ -85,6 +69,11 @@ export function mountProductWorkspace(
         callbacks.onRoute((btn as HTMLElement).dataset.tab as GpRoute),
       );
     });
+    bindView(view);
+    refreshPreview();
+  }
+
+  function bindView(view: string): void {
     if (view === "home") {
       bindHome(root, {
         get: () => ({ draft, style, saveName, profiles }),
@@ -141,7 +130,6 @@ export function mountProductWorkspace(
         render,
       });
     }
-    refreshPreview();
   }
 
   render();

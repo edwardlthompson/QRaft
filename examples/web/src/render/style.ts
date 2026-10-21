@@ -38,6 +38,8 @@ export type QrStyle = {
   centerMark: CenterMark;
   caption: CaptionSpec;
   imageBackgroundPath: string;
+  /** Filesystem path (Android) or data URL (web) for custom center logo. */
+  logoImagePath: string;
   frame: QrFrame;
   cornerBadge: boolean;
 };
@@ -56,12 +58,18 @@ export const DEFAULT_STYLE: QrStyle = {
   centerMark: "NONE",
   caption: { text: "" },
   imageBackgroundPath: "",
+  logoImagePath: "",
   frame: "NONE",
   cornerBadge: false,
 };
 
 export function styleHasOverlay(style: QrStyle): boolean {
-  return style.logoCutout.enabled || style.centerMark !== "NONE" || style.cornerBadge;
+  return (
+    style.logoCutout.enabled ||
+    style.centerMark !== "NONE" ||
+    style.cornerBadge ||
+    style.logoImagePath.trim() !== ""
+  );
 }
 
 const THEME_COLORS: Record<ColorTheme, [number, number, number]> = {

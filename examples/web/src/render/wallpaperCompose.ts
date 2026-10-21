@@ -10,6 +10,7 @@ export function composeWallpaperPng(
   width: number,
   height: number,
   marginFraction: number,
+  payloadHint = "",
 ): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -20,7 +21,13 @@ export function composeWallpaperPng(
   ctx.fillRect(0, 0, width, height);
 
   const rect = qrContentRect(width, height, marginFraction);
-  const qrCanvas = renderMatrixToCanvas(matrix, { ...style, caption: { text: "" } }, rect.width);
+  const qrCanvas = renderMatrixToCanvas(
+    matrix,
+    { ...style, caption: { text: "" } },
+    rect.width,
+    undefined,
+    payloadHint,
+  );
   ctx.drawImage(qrCanvas, rect.left, rect.top, rect.width, rect.height);
 
   if (style.caption.text.trim()) {

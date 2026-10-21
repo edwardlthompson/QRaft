@@ -1,15 +1,10 @@
 import { type AppShellState, createAppShell } from "./AppShell";
-import {
-  APP_VERSION,
-  assetPrefixOf,
-  handleRestartGuard,
-  loadAppUpdateConfig,
-} from "./about/aboutSession";
+import { APP_VERSION, handleRestartGuard } from "./about/aboutSession";
 import { applyPwaUpdate } from "./about/applyUpdate";
 import { loadDonations, primaryDonateUrl } from "./about/donations";
-import { decideLaunchPrompt, type LaunchPrompt } from "./about/runAppUpdates";
 import { markUpdateChecked, markVersionSeen } from "./about/updatePrefs";
 import { assetUrl } from "./assetUrl";
+import { maybeOpenLaunchPrompt } from "./bootstrapLaunch";
 import { installCrashHandler } from "./crash-capture/installHandler";
 import { readPendingCrash } from "./crash-capture/pendingCrash";
 import { getSaveCrashes } from "./feedback/saveCrashes";
@@ -21,6 +16,12 @@ import {
   loadNav,
   syncHistoryToNav,
 } from "./nav";
+import {
+  canInstallPwa,
+  initPwaInstall,
+  onInstallAvailability,
+  promptPwaInstall,
+} from "./pwaInstall";
 import { shareTargetDescription } from "./share-target";
 import { initTheme, subscribeThemeChange } from "./theme";
 
@@ -30,6 +31,7 @@ export function bootstrapApp(appRoot: HTMLDivElement): void {
   popAbort?.abort();
   popAbort = new AbortController();
   initTheme();
+  initPwaInstall();
   installCrashHandler(() => getSaveCrashes());
   const shared = shareTargetDescription(new URLSearchParams(window.location.search));
   const intent = applyFeedbackIntents(loadNav(), {
@@ -45,6 +47,12 @@ export function bootstrapApp(appRoot: HTMLDivElement): void {
     updateStatus: t("about.update.current"),
     donations: { enabled: false, message: "", links: [] },
     launchPrompt: null,
+    canInstall: canInstallPwa(),
+  };
+
+  const patchState = (patch: Partial<AppShellState>) => {
+    state = { ...state, ...patch };
+    render();
   };
 
   function applyNav(next: typeof intent.nav): void {
@@ -59,10 +67,7 @@ export function bootstrapApp(appRoot: HTMLDivElement): void {
 
   function render(): void {
     createAppShell(appRoot, state, {
-      onState: (patch) => {
-        state = { ...state, ...patch };
-        render();
-      },
+      onState: patchState,
       onPushRoute: (route, kind) => {
         const next = navCtl.pushRoute(route, kind);
         if (next) applyNav(next);
@@ -72,19 +77,24 @@ export function bootstrapApp(appRoot: HTMLDivElement): void {
         void handleApplyUpdate();
       },
       onDonate: openDonate,
+      onInstall: () => {
+        void promptPwaInstall().then(() => patchState({ canInstall: canInstallPwa() }));
+      },
       onLaunchPrompt: handleLaunchPrompt,
       canApplyUpdate: false,
     });
   }
 
+  onInstallAvailability((available) => {
+    if (state.canInstall !== available) patchState({ canInstall: available });
+  });
+
   async function handleApplyUpdate(): Promise<void> {
     if (!("serviceWorker" in navigator)) return;
     const registration = await navigator.serviceWorker.getRegistration();
     if (!registration) return;
-    const applied = await applyPwaUpdate(registration);
-    if (applied) {
-      state = { ...state, updateStatus: t("about.update.restarting") };
-      render();
+    if (await applyPwaUpdate(registration)) {
+      patchState({ updateStatus: t("about.update.restarting") });
     }
   }
 
@@ -111,26 +121,9 @@ export function bootstrapApp(appRoot: HTMLDivElement): void {
   });
 
   render();
-  void loadDonations().then((d) => {
-    state = { ...state, donations: d };
-    render();
-  });
-
+  void loadDonations().then((d) => patchState({ donations: d }));
   if (!handleRestartGuard()) {
-    void (async () => {
-      const config = await loadAppUpdateConfig();
-      const prompt: LaunchPrompt | null = await decideLaunchPrompt({
-        currentVersion: APP_VERSION,
-        kind: "exe",
-        prefix: assetPrefixOf(config),
-        releaseRepo: config?.release_repo ?? "",
-        userAgent: `GoldenPath/${APP_VERSION}`,
-      });
-      state = { ...state, releaseRepo: config?.release_repo ?? "" };
-      if (!prompt) return;
-      state = { ...state, launchPrompt: prompt, nav: navCtl.openPrompt() };
-      render();
-    })();
+    void maybeOpenLaunchPrompt(navCtl, patchState);
   }
 
   window.addEventListener("online", render);

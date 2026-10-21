@@ -1,14 +1,32 @@
 import type { PayloadKind } from "../core-qr/payload";
 import type { EditorDraft } from "../data/draftStore";
 import { t } from "../i18n";
-import type { ColorTheme, ModuleShape, QrStyle } from "../render";
+import type { CenterMark, ColorTheme, ModuleShape, QrStyle } from "../render";
 import { escapeAttr } from "./dom";
 import { payloadFieldsHtml } from "./payloadFieldsHtml";
+
+const CENTER_MARKS: CenterMark[] = [
+  "NONE",
+  "CUTOUT",
+  "AUTO",
+  "LINK",
+  "WIFI",
+  "PERSON",
+  "EMAIL",
+  "PHONE",
+  "SMS",
+  "CRYPTO",
+  "GITHUB",
+  "MASTODON",
+  "MATRIX",
+  "GLOBE",
+];
 
 export function homeHtml(draft: EditorDraft, style: QrStyle, saveName: string): string {
   const kinds: PayloadKind[] = ["url", "text", "wifi", "vcard", "email", "sms", "phone", "crypto"];
   const themes: ColorTheme[] = ["CLASSIC", "OLED", "INVERT", "BLUE", "FOREST", "SUNSET"];
   const shapes: ModuleShape[] = ["SQUARE", "ROUNDED", "DOT", "DIAMOND", "PILL_H", "PILL_V", "BLOB"];
+  const hasLogo = style.logoImagePath.trim() !== "";
   return `
       <section class="qr-pane qr-pane-preview" data-preview aria-label="${t("editor.preview")}"></section>
       <section class="qr-pane qr-pane-controls">
@@ -27,6 +45,14 @@ export function homeHtml(draft: EditorDraft, style: QrStyle, saveName: string): 
         <label>${t("style.module")}
           <select data-field="module">${shapes.map((s) => `<option value="${s}" ${style.moduleShape === s ? "selected" : ""}>${s}</option>`).join("")}</select>
         </label>
+        <label>${t("style.center")}
+          <select data-field="centerMark" title="${t("style.center")}">${CENTER_MARKS.map((m) => `<option value="${m}" ${style.centerMark === m ? "selected" : ""}>${t(`style.center.${m.toLowerCase()}`)}</option>`).join("")}</select>
+        </label>
+        <div class="qr-actions qr-logo-actions">
+          <button type="button" data-act="logo-pick" title="${t("style.logo_image")}">${t("style.logo_image")}</button>
+          ${hasLogo ? `<button type="button" data-act="logo-clear" title="${t("style.logo_image_clear")}">${t("style.logo_image_clear")}</button>` : ""}
+        </div>
+        <input type="file" accept="image/*" data-logo-import hidden />
         <label>${t("style.caption")}
           <input data-field="caption" value="${escapeAttr(style.caption.text)}" />
         </label>

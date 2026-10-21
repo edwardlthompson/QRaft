@@ -8,6 +8,7 @@ import {
   matrixToSvg,
   renderMatrixToCanvas,
 } from "../render";
+import { ensureStyleLogos } from "../render/ensureLogos";
 import { downloadBlob } from "./dom";
 import { encodeDraft, payloadTextOf } from "./encodeDraft";
 import type { HomeHooks } from "./homeBind";
@@ -16,7 +17,9 @@ export function bindHomeExports(root: HTMLElement, hooks: HomeHooks): void {
   root.querySelector("[data-act=png]")?.addEventListener("click", async () => {
     try {
       const { draft, style } = hooks.get();
-      const canvas = renderMatrixToCanvas(encodeDraft(draft, style), style, 1024);
+      const hint = payloadTextOf(draft);
+      await ensureStyleLogos(style, hint);
+      const canvas = renderMatrixToCanvas(encodeDraft(draft, style), style, 1024, undefined, hint);
       downloadBlob(await canvasToPngBlob(canvas), "qraft.png");
       hooks.setStatus(t("editor.exported"));
     } catch {
@@ -40,7 +43,9 @@ export function bindHomeExports(root: HTMLElement, hooks: HomeHooks): void {
   root.querySelector("[data-act=pdf]")?.addEventListener("click", async () => {
     try {
       const { draft, style } = hooks.get();
-      const canvas = renderMatrixToCanvas(encodeDraft(draft, style), style, 512);
+      const hint = payloadTextOf(draft);
+      await ensureStyleLogos(style, hint);
+      const canvas = renderMatrixToCanvas(encodeDraft(draft, style), style, 512, undefined, hint);
       downloadBlob(await canvasToPdfBlob(canvas), "qraft.pdf");
       hooks.setStatus(t("editor.exported"));
     } catch {

@@ -41,7 +41,19 @@ describe("createAppShell nav render", () => {
     expect(root.querySelector("img.gp-logo")).toBeTruthy();
     expect(root.querySelector("[data-donate-open]")).toBeNull();
     expect(root.querySelector(".gp-theme-toggle")).toBeNull();
+    expect(root.querySelector("[data-install-open]")).toBeNull();
     expect(root.querySelector("[data-settings-open]")?.getAttribute("title")).toBe("settings.open");
+  });
+
+  it("shows install control when canInstall is set", () => {
+    const root = document.createElement("div");
+    const cb = handlers();
+    cb.onInstall = vi.fn();
+    createAppShell(root, { ...baseState(), canInstall: true }, cb);
+    const btn = root.querySelector<HTMLButtonElement>("[data-install-open]");
+    expect(btn?.getAttribute("title")).toBe("app.install");
+    btn?.click();
+    expect(cb.onInstall).toHaveBeenCalled();
   });
 
   it("renders settings from current(nav), not boolean flags", () => {

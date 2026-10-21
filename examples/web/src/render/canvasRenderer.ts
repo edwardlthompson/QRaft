@@ -1,4 +1,5 @@
 import { moduleAt, type QrMatrix } from "../core-qr/types";
+import { drawCenterPlate } from "./centerPlate";
 import { argbToCss, type QrStyle } from "./style";
 
 /** Square raster of modules (+ quiet zone). Finder styling simplified to eye color. */
@@ -7,6 +8,7 @@ export function renderMatrixToCanvas(
   style: QrStyle,
   pixelSize: number,
   canvas?: HTMLCanvasElement,
+  payloadHint = "",
 ): HTMLCanvasElement {
   const qz = Math.max(0, style.quietZoneModules);
   const modules = matrix.size + qz * 2;
@@ -50,16 +52,7 @@ export function renderMatrixToCanvas(
     }
   }
 
-  if (style.logoCutout.enabled || style.centerMark !== "NONE") {
-    const frac = Math.min(0.28, Math.max(0.1, style.logoCutout.diameterFraction));
-    const d = side * frac;
-    const cx = side / 2;
-    const cy = side / 2;
-    ctx.fillStyle = argbToCss(style.backgroundArgb);
-    ctx.beginPath();
-    ctx.arc(cx, cy, d / 2, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  drawCenterPlate(ctx, style, side, payloadHint);
 
   if (style.caption.text.trim()) {
     const band = Math.max(24, Math.floor(side * 0.08));

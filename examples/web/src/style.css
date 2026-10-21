@@ -147,6 +147,7 @@ main,
   margin-block-start: var(--gp-space-md);
 }
 
+.gp-install-btn,
 .gp-about-btn {
   min-width: 2.75rem;
   min-height: 2.75rem;
@@ -377,6 +378,7 @@ main,
   .qr-actions,
   .qr-hint,
   .qr-status,
+  .gp-install-btn,
   .gp-settings-btn,
   .gp-about-btn,
   .gp-theme-toggle,
