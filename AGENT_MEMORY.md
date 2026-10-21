@@ -7,12 +7,12 @@
 
 | Layer | Technology | Version | Notes |
 |-------|-----------|---------|-------|
-| Platform | Android (QRaft product; template baseline 1.3.0) | app 1.3.0 | examples/android (`:app`, `:core-qr`, `:render`, `:widget`, `:wallpaper`, `:data`, `:scan`) |
+| Platform | Android + Web PWA (template 1.4.0) | app/web 1.4.0 | examples/android + examples/web (`:app`, `:core-qr`, `:render`, `:widget`, `:wallpaper`, `:data`, `:scan`) |
 | License | Apache-2.0 | - | Pure FOSS; F-Droid-friendly |
 | Distribution | GitHub Releases + GitHub Pages demo | - | F-Droid/Winget stubs for child repos |
 ## Active Modules
 
-- ❌ Web / PWA (pruned)
+- ✅ Web / PWA (`examples/web/`)
 - ❌ Python (pruned)
 - ✅ Android / F-Droid (`modules/android/MODULE.md`, `examples/android/`)
 - ❌ Node API (pruned)
@@ -34,7 +34,7 @@
 
 ### Project Purpose
 
-QRaft: offline F-Droid-friendly Android QR crafting (widgets, lock-screen Glance, wallpapers). Bootstrapped from agent-project-bootstrap; android-only prune.
+QRaft: offline F-Droid-friendly Android QR crafting (widgets, lock-screen Glance, wallpapers). Bootstrapped from agent-project-bootstrap; android + web (multi).
 
 ### Key Constraints
 
@@ -50,6 +50,7 @@ Golden Path Settings/About/Feedback are a route stack, not three booleans. Web H
 
 ## Session Retrospectives
 
+| 2026-10-21 | /ship 1.4.0 | Android copy PNG/kind hints/dirty confirms; desktop UX; about CLI strip no-op; CodeQL @v4; Playwright QRaft | Never apply codeql-action@vcodeql-bundle-*; e2e must match product chrome |
 | 2026-09-14 | /ship vault+UX | feat commit for vault, stepper, Sprint 13 UX; Unreleased emptied for RP 1.3.0 | Do not apply CodeQL `vcodeql-bundle-*`; sideload `install -r` only |
 | 2026-09-14 | Sprint 13 UX leftovers | Confirm overwrite, tour Scan/Wallpaper, Look fold, true-black chrome, hierarchy, motion, overflow, footer-only nav | Sideload with `adb install -r` only; debug APK still signature-mismatched |
 | 2026-09-14 | UX audit leftovers queued | Eight Sequential AGENT rows from the ship-list plan (confirm, tour tabs, Look fold, OLED, hierarchy, motion, overflow, single nav) | QS tile + share-sheet already shipped; do not re-queue |

@@ -35,6 +35,14 @@
 - **Alternatives considered:** Tabs instead of steps (rejected — users skip Look). Forced-linear wizard without jump chips (rejected). Shrinking the shared preview (rejected — wallpaper/gallery).
 - **Consequences:** `EditorSteps` is the testable machine. `GpRoute.Style` stays aliased to Home. Follow-up: remember last step in DataStore.
 
+## 2026-10-21 — /ship Android parity + desktop UX + 1.4.0
+
+- **Status:** Accepted
+- **Context:** Worth-closing Android gaps (copy PNG, kind hints, dirty confirms) after desktop PWA UX. Local pre-release failed when about_lego_cli.strip assumed rust/go/node/python trees. upd re-applied bogus CodeQL vcodeql-bundle-* tags. Playwright still asserted Golden Path chrome; Home section titles skipped h2.
+- **Decision:** Skip missing CLI stacks in about lego strip/restore. Keep CodeQL @v4. Align e2e + heading order (h2 sections) for QRaft. Empty Unreleased; Release Please cut 1.4.0.
+- **Alternatives considered:** Leave Golden Path e2e stubs (rejected — CI Playwright). Soft-fail connectedDebug emulator (deferred — rerun-failed for this ship).
+- **Consequences:** Do not apply CodeQL bundle release names as action tags. Child android/web repos must keep CLI about strip no-op-safe.
+
 ## Format
 
 ```markdown
