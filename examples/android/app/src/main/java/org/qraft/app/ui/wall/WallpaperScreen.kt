@@ -1,12 +1,8 @@
 package org.qraft.app.ui.wall
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
@@ -16,14 +12,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import org.qraft.app.R
-import org.qraft.app.display.highRefreshScroll
 import org.qraft.app.editor.EditorDraft
+import org.qraft.app.ui.adaptive.AdaptiveTwoPane
+import org.qraft.app.ui.adaptive.rememberQraftWidthClass
 import org.qraft.app.ui.editor.EditorPreview
 import org.qraft.app.ui.editor.MenuField
+import org.qraft.app.ui.insets.bottomInsetPadding
 import org.qraft.app.ui.theme.SpacingMd
 import org.qraft.render.QrStyle
 import org.qraft.wallpaper.WallpaperSafeZone
@@ -51,22 +48,17 @@ fun WallpaperScreen(
     val lockLabel = stringResource(R.string.wallpaper_set_lock)
     val homeLabel = stringResource(R.string.wallpaper_set_home)
     val canSet = WallpaperEmpty.canSet(draft)
-    Column(
-        modifier = modifier.fillMaxSize().padding(SpacingMd),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(SpacingMd),
-    ) {
-        Surface(tonalElevation = SpacingMd, modifier = Modifier.fillMaxWidth()) {
-            EditorPreview(draft = draft, style = style)
-        }
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .highRefreshScroll()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(SpacingMd),
-        ) {
+    val demo = WallpaperSafeZone.qrContentRect(widthPx, heightPx, clamped.toDouble())
+    val widthClass = rememberQraftWidthClass()
+    AdaptiveTwoPane(
+        widthClass = widthClass,
+        modifier = modifier.fillMaxSize().padding(SpacingMd).bottomInsetPadding(),
+        preview = {
+            Surface(tonalElevation = SpacingMd, modifier = Modifier.fillMaxWidth()) {
+                EditorPreview(draft = draft, style = style)
+            }
+        },
+        content = {
             Text(
                 text = stringResource(R.string.wallpaper_margin, pct),
                 style = MaterialTheme.typography.bodyMedium,
@@ -91,6 +83,11 @@ fun WallpaperScreen(
                 labelOf = { lock -> if (lock) lockLabel else homeLabel },
                 onSelect = { previewLock = it },
             )
+            Text(
+                text = stringResource(R.string.wallpaper_safe_size, demo.width, demo.height),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
             if (!canSet) {
                 Text(
                     text = stringResource(R.string.editor_payload_empty),
@@ -112,6 +109,6 @@ fun WallpaperScreen(
                 onPair = onPair,
                 enabled = canSet,
             )
-        }
-    }
+        },
+    )
 }

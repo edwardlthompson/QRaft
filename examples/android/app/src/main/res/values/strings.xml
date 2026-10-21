@@ -197,6 +197,7 @@
     <string name="profiles_vault_empty">That backup has no gallery cards</string>
     <string name="profiles_restored">Gallery updated</string>
     <string name="profiles_empty">Nothing saved yet. Create a QR, or restore a backup.</string>
+    <string name="profiles_select_hint">Select a gallery card to view details.</string>
     <string name="style_modules">Module shape</string>
     <string name="style_finder">Finder shape</string>
     <string name="style_oled">OLED black background</string>

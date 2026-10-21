@@ -1,11 +1,12 @@
 {
-  "stack": "android",
-  "pruned": true,
+  "stack": "multi",
+  "pruned": false,
   "active_modules": [
-    "android"
+    "android",
+    "web"
   ],
-  "parallel_scope_note": "Sprint 1 Parallel: Android FOSS scope only (`examples/android/**`)",
-  "selected_at": "2026-09-08T03:57:45+00:00",
+  "parallel_scope_note": "Sprint 13 Parallel: web encode/render/data/ui and android adaptive UX \u2014 non-overlapping path scopes",
+  "selected_at": "2026-10-21T13:00:00+00:00",
   "distribution_tier": "foss",
   "cursor_features_enabled": [
     "rules",
@@ -32,5 +33,5 @@
     "mcp_commercial_example",
     "android_commercial_patterns"
   ],
-  "cursor_features_synced_at": "2026-09-08T03:57:45+00:00"
+  "cursor_features_synced_at": "2026-10-21T13:00:00+00:00"
 }

@@ -6,8 +6,8 @@
 
 **Product:** QRaft
 **Tagline:** Craft custom QR codes for widgets, lock-screen glance panels, and full-screen wallpapers.
-**Purpose:** Offline, F-Droid-friendly Android app (LineageOS / AOSP first) for custom QR generation, Glance widgets, and device-fitted QR wallpapers.
-**Users:** LineageOS / AOSP users who want a scannable QR on lock-screen glance panels or as wallpaper without network or accounts.
+**Purpose:** Offline, F-Droid-friendly Android app (LineageOS / AOSP first) plus FOSS PWA for custom QR generation, Glance widgets, device-fitted QR wallpapers, and desktop/browser creator parity.
+**Users:** LineageOS / AOSP users and anyone on PC/Mac/mobile browsers who want a scannable QR without accounts; Android retains widgets/wallpaper APIs.
 **License:** Apache-2.0
 **Package:** `org.qraft.app`
 

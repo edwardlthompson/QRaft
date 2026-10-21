@@ -6,7 +6,7 @@
 
 <h1 align="center">QRaft</h1>
 
-<p align="center"><strong>Craft custom QR codes for widgets, lock-screen glance panels, and full-screen wallpapers.</strong></p>
+<p align="center"><strong>Craft custom QR codes for widgets, wallpapers, and the web — offline on every device.</strong></p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-Apache--2.0-2ea043?style=flat-square" alt="Apache-2.0" />
@@ -17,11 +17,12 @@
   <a href="https://codespaces.new/edwardlthompson/QRaft"><img src="https://img.shields.io/badge/Codespaces-Open-181717?style=flat-square&logo=github" alt="Open in GitHub Codespaces" /></a>
 
   <img src="https://img.shields.io/badge/android-stack-3DDC84?style=flat-square" alt="android" />
+  <img src="https://img.shields.io/badge/web-stack-646cff?style=flat-square" alt="web" />
 </p>
 
 ## Pitch
 
-QRaft is a free, open-source Android app (LineageOS / AOSP first) that generates highly customized QR codes, shows them as home and lock-screen widgets, and can set a device-fitted QR wallpaper — 100% offline and F-Droid-friendly.
+QRaft is a free, open-source Android app (LineageOS / AOSP first) and FOSS PWA that generates highly customized QR codes, shows them as home and lock-screen widgets, sets device-fitted QR wallpapers, and runs the same creator on GitHub Pages — offline and F-Droid-friendly.
 
 ## LineageOS lock-screen widget
 
@@ -67,7 +68,8 @@ examples/android/
 - Custom module and finder styling on top of a single boolean matrix
 - Jetpack Glance widgets for home and LineageOS lock-screen panels
 - Wallpaper engine with DisplayMetrics and zoom safe-zone padding
-- Zero INTERNET permission — all data stays on-device
+- FOSS PWA on GitHub Pages with offline editor, profiles, and export
+- Zero INTERNET permission on Android — all data stays on-device
 
 ## Quick start
 

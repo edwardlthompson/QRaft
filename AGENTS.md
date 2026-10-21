@@ -15,8 +15,8 @@
 
 <!-- bootstrap-project-card -->
 **Product:** QRaft
-**Purpose:** Craft custom QR codes for widgets, lock-screen glance panels, and full-screen wallpapers. Offline F-Droid-friendly Android app.
-**Stack:** android
+**Purpose:** Craft custom QR codes for widgets, lock-screen glance panels, full-screen wallpapers, and a FOSS PWA. Offline F-Droid-friendly Android + GitHub Pages.
+**Stack:** multi (android, web)
 <!-- /bootstrap-project-card -->
 This repository is the **QRaft** product app, bootstrapped from [agent-project-bootstrap](https://github.com/edwardlthompson/agent-project-bootstrap). Edit `AGENTS.md`, then `bash scripts/bootstrap-lifecycle.sh --sync-adapters`.
 

@@ -6,10 +6,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -22,10 +25,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -37,6 +40,8 @@ import org.qraft.app.R
 import org.qraft.app.display.highRefreshScroll
 import org.qraft.app.gallery.GalleryNav
 import org.qraft.app.gallery.GalleryThumbs
+import org.qraft.app.ui.adaptive.rememberQraftWidthClass
+import org.qraft.app.ui.insets.bottomInsetPadding
 import org.qraft.app.ui.theme.ElevationLevel0
 import org.qraft.app.ui.theme.ElevationLevel2
 import org.qraft.app.ui.theme.SpacingMd
@@ -72,7 +77,115 @@ fun ProfilesScreen(
     var openId by rememberSaveable { mutableStateOf<String?>(null) }
     val shown = ProfileSearch.sort(ProfileSearch.filter(profiles, chrome.query), chrome.sort)
     val open = profiles.find { it.id == openId }
+    val widthClass = rememberQraftWidthClass()
     BackHandler(enabled = GalleryNav.consumeBack(openId)) { openId = null }
+
+    val chromePanels: @Composable () -> Unit = {
+        GalleryChromePanels(
+            chrome = chrome,
+            shown = shown.size,
+            total = profiles.size,
+            passphrase = passphrase,
+            onPassphrase = { passphrase = it },
+            onBackup = onBackup,
+            onRestore = onRestore,
+            onSaveVault = onSaveVault,
+            onOpenVault = onOpenVault,
+            onUndo = onUndo,
+            onBatchPdf = onBatchPdf,
+            vaultBusy = vaultBusy,
+        )
+    }
+
+    val openCard: @Composable (QrProfile) -> Unit = { profile ->
+        GalleryCard(
+            profile = profile,
+            onEditOnHome = { onEditOnHome(profile); openId = null },
+            onDelete = { onDelete(profile.id); openId = null },
+            onExportJson = { onExportJson(profile) },
+            onExportPng = { onExportPng(profile) },
+            onExportSvg = { onExportSvg(profile) },
+            onExportPdf = { onExportPdf(profile) },
+            onAddWidget = { onAddWidget(profile) },
+            onCopyPayload = { onCopyPayload(profile) },
+            onPrint = { onPrint(profile) },
+            onZip = { onZip(profile) },
+            onClose = { openId = null },
+        )
+    }
+
+    if (widthClass.isTwoPane) {
+        Row(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(SpacingMd)
+                .bottomInsetPadding(),
+            horizontalArrangement = Arrangement.spacedBy(SpacingMd),
+        ) {
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 360.dp)
+                    .weight(0.42f)
+                    .fillMaxHeight(),
+            ) {
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(minSize = 140.dp),
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(bottom = SpacingMd),
+                    horizontalArrangement = Arrangement.spacedBy(SpacingMd),
+                    verticalArrangement = Arrangement.spacedBy(SpacingMd),
+                ) {
+                    item(span = { GridItemSpan(maxLineSpan) }) { chromePanels() }
+                    when (galleryListKind(profiles.size, shown.size)) {
+                        GalleryListKind.Empty -> item(span = { GridItemSpan(maxLineSpan) }) {
+                            GalleryEmptyState(
+                                vaultBusy = vaultBusy,
+                                onCreateHome = onOpenHome,
+                                onRestoreBackup = { chrome.openBackup() },
+                            )
+                        }
+                        GalleryListKind.Miss -> item(span = { GridItemSpan(maxLineSpan) }) {
+                            Text(
+                                text = stringResource(R.string.profiles_no_matches),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        GalleryListKind.Grid -> items(shown, key = { it.id }) { profile ->
+                            GalleryGridTile(
+                                profile = profile,
+                                selected = profile.id == open?.id,
+                                onOpen = { openId = profile.id },
+                            )
+                        }
+                    }
+                }
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .highRefreshScroll()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(SpacingMd),
+            ) {
+                when {
+                    open != null -> openCard(open)
+                    shown.isEmpty() -> Text(
+                        text = stringResource(R.string.profiles_empty),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    else -> Text(
+                        text = stringResource(R.string.profiles_select_hint),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+        return
+    }
 
     // Editing must NOT live inside LazyVerticalGrid — TextField + live preview there crashes.
     if (open != null) {
@@ -81,64 +194,24 @@ fun ProfilesScreen(
                 .fillMaxSize()
                 .highRefreshScroll()
                 .verticalScroll(rememberScrollState())
-                .padding(SpacingMd),
+                .padding(SpacingMd)
+                .bottomInsetPadding(),
             verticalArrangement = Arrangement.spacedBy(SpacingMd),
         ) {
-            GalleryChromePanels(
-                chrome = chrome,
-                shown = shown.size,
-                total = profiles.size,
-                passphrase = passphrase,
-                onPassphrase = { passphrase = it },
-                onBackup = onBackup,
-                onRestore = onRestore,
-                onSaveVault = onSaveVault,
-                onOpenVault = onOpenVault,
-                onUndo = onUndo,
-                onBatchPdf = onBatchPdf,
-                vaultBusy = vaultBusy,
-            )
-            GalleryCard(
-                profile = open,
-                onEditOnHome = { onEditOnHome(open); openId = null },
-                onDelete = { onDelete(open.id); openId = null },
-                onExportJson = { onExportJson(open) },
-                onExportPng = { onExportPng(open) },
-                onExportSvg = { onExportSvg(open) },
-                onExportPdf = { onExportPdf(open) },
-                onAddWidget = { onAddWidget(open) },
-                onCopyPayload = { onCopyPayload(open) },
-                onPrint = { onPrint(open) },
-                onZip = { onZip(open) },
-                onClose = { openId = null },
-            )
+            chromePanels()
+            openCard(open)
         }
         return
     }
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 160.dp),
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().bottomInsetPadding(),
         contentPadding = PaddingValues(SpacingMd),
         horizontalArrangement = Arrangement.spacedBy(SpacingMd),
         verticalArrangement = Arrangement.spacedBy(SpacingMd),
     ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            GalleryChromePanels(
-                chrome = chrome,
-                shown = shown.size,
-                total = profiles.size,
-                passphrase = passphrase,
-                onPassphrase = { passphrase = it },
-                onBackup = onBackup,
-                onRestore = onRestore,
-                onSaveVault = onSaveVault,
-                onOpenVault = onOpenVault,
-                onUndo = onUndo,
-                onBatchPdf = onBatchPdf,
-                vaultBusy = vaultBusy,
-            )
-        }
+        item(span = { GridItemSpan(maxLineSpan) }) { chromePanels() }
         when (galleryListKind(profiles.size, shown.size)) {
             GalleryListKind.Empty -> item(span = { GridItemSpan(maxLineSpan) }) {
                 GalleryEmptyState(

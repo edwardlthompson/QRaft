@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Redo
 import androidx.compose.material.icons.automirrored.filled.Undo
@@ -41,12 +40,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import org.qraft.app.R
-import org.qraft.app.display.highRefreshScroll
 import org.qraft.app.display.reduceMotion
 import org.qraft.app.editor.EditorDraft
 import org.qraft.app.editor.EditorStep
 import org.qraft.app.editor.EditorSteps
 import org.qraft.app.share.ExportPngSize
+import org.qraft.app.ui.adaptive.AdaptiveTwoPane
+import org.qraft.app.ui.adaptive.rememberQraftWidthClass
+import org.qraft.app.ui.insets.bottomInsetPadding
 import org.qraft.app.ui.theme.MinTouchDp
 import org.qraft.app.ui.theme.SpacingMd
 import org.qraft.app.ui.theme.VisualHierarchy
@@ -102,6 +103,7 @@ fun EditorScreen(
     var advancedCollapsed by rememberSaveable { mutableStateOf(false) }
     var confirmStyleQr by rememberSaveable { mutableStateOf(false) }
     val imeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+    val widthClass = rememberQraftWidthClass()
     LaunchedEffect(draft.kind) {
         if (EditorSteps.showMoreTypes(draft.kind) && !moreCollapsed) moreOpen = true
         if (!EditorSteps.showMoreTypes(draft.kind)) moreCollapsed = false
@@ -131,7 +133,12 @@ fun EditorScreen(
             },
         )
     }
-    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxSize()
+            .imePadding()
+            .bottomInsetPadding(),
+    ) {
         val cap = maxHeight.value * 0.4f
         val motionOff = reduceMotion()
         val previewTarget = if (imeVisible || !enlarged) {
@@ -147,65 +154,57 @@ fun EditorScreen(
             ),
             label = "previewSize",
         )
-        Column(
+        AdaptiveTwoPane(
+            widthClass = widthClass,
             modifier = Modifier.fillMaxSize().padding(SpacingMd),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(SpacingMd),
-        ) {
-            Surface(tonalElevation = VisualHierarchy.PreviewElevation, modifier = Modifier.fillMaxWidth()) {
-                EditorPreview(
-                    draft = draft,
-                    style = style,
-                    sizeDp = previewDp,
-                    maxSizeDp = cap,
-                    showEcc = EditorSteps.showEcc(step, style.hasOverlay),
-                    modifier = Modifier
-                        .clickable(
-                            onClickLabel = stringResource(R.string.editor_preview_toggle),
-                        ) { if (!imeVisible) enlarged = !enlarged }
-                        .padding(SpacingMd),
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(SpacingMd),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (EditorSteps.SHOW_CHIPS) {
-                    val shown = EditorSteps.shown(step)
-                    EditorSteps.CHIPS.forEach { item ->
-                        FilterChip(
-                            selected = item == shown,
-                            onClick = { onStep(item) },
-                            label = { Text(stringResource(stepLabel(item))) },
-                            modifier = Modifier.widthIn(min = MinTouchDp),
-                        )
+            preview = {
+                Surface(tonalElevation = VisualHierarchy.PreviewElevation, modifier = Modifier.fillMaxWidth()) {
+                    EditorPreview(
+                        draft = draft,
+                        style = style,
+                        sizeDp = previewDp,
+                        maxSizeDp = cap,
+                        showEcc = EditorSteps.showEcc(step, style.hasOverlay),
+                        modifier = Modifier
+                            .clickable(
+                                onClickLabel = stringResource(R.string.editor_preview_toggle),
+                            ) { if (!imeVisible) enlarged = !enlarged }
+                            .padding(SpacingMd),
+                    )
+                }
+            },
+            content = {
+                Row(
+                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(SpacingMd),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (EditorSteps.SHOW_CHIPS) {
+                        val shown = EditorSteps.shown(step)
+                        EditorSteps.CHIPS.forEach { item ->
+                            FilterChip(
+                                selected = item == shown,
+                                onClick = { onStep(item) },
+                                label = { Text(stringResource(stepLabel(item))) },
+                                modifier = Modifier.widthIn(min = MinTouchDp),
+                            )
+                        }
+                    }
+                    IconButton(
+                        onClick = onUndo,
+                        enabled = canUndo,
+                        modifier = Modifier.widthIn(min = MinTouchDp),
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = stringResource(R.string.editor_undo))
+                    }
+                    IconButton(
+                        onClick = onRedo,
+                        enabled = canRedo,
+                        modifier = Modifier.widthIn(min = MinTouchDp),
+                    ) {
+                        Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = stringResource(R.string.editor_redo))
                     }
                 }
-                IconButton(
-                    onClick = onUndo,
-                    enabled = canUndo,
-                    modifier = Modifier.widthIn(min = MinTouchDp),
-                ) {
-                    Icon(Icons.AutoMirrored.Filled.Undo, contentDescription = stringResource(R.string.editor_undo))
-                }
-                IconButton(
-                    onClick = onRedo,
-                    enabled = canRedo,
-                    modifier = Modifier.widthIn(min = MinTouchDp),
-                ) {
-                    Icon(Icons.AutoMirrored.Filled.Redo, contentDescription = stringResource(R.string.editor_redo))
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-                    .imePadding()
-                    .highRefreshScroll()
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(SpacingMd),
-            ) {
                 val pane: @Composable (EditorStep) -> Unit = { current ->
                     when (current) {
                         EditorStep.Content -> EditorStepContent(
@@ -258,25 +257,25 @@ fun EditorScreen(
                         label = "editorStep",
                     ) { current -> pane(current) }
                 }
-            }
-            EditorStepFooter(
-                step = step,
-                canSave = canSave,
-                onStep = onStep,
-                onSave = onSave,
-                onExportPng = onExportPng,
-                onExportJson = onExportJson,
-                onExportSvg = onExportSvg,
-                onExportPdf = onExportPdf,
-                onStyleQr = onStyleQr,
-                onAddWidget = onAddWidget,
-                onImportJson = onImportJson,
-                onPrint = onPrint,
-                onZip = onZip,
-                onConfirmStyleQr = { confirmStyleQr = true },
-                onDuplicate = onDuplicate,
-                onNew = onNew,
-            )
-        }
+                EditorStepFooter(
+                    step = step,
+                    canSave = canSave,
+                    onStep = onStep,
+                    onSave = onSave,
+                    onExportPng = onExportPng,
+                    onExportJson = onExportJson,
+                    onExportSvg = onExportSvg,
+                    onExportPdf = onExportPdf,
+                    onStyleQr = onStyleQr,
+                    onAddWidget = onAddWidget,
+                    onImportJson = onImportJson,
+                    onPrint = onPrint,
+                    onZip = onZip,
+                    onConfirmStyleQr = { confirmStyleQr = true },
+                    onDuplicate = onDuplicate,
+                    onNew = onNew,
+                )
+            },
+        )
     }
 }

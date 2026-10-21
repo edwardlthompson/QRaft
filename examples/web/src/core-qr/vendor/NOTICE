@@ -1,0 +1,6 @@
+QR Code generator library (TypeScript / JavaScript)
+Copyright (c) Project Nayuki
+License: MIT
+https://www.nayuki.io/page/qr-code-generator-library
+
+Vendored as qrcodegen.js (compiled from upstream qrcodegen.ts) for ESM import.

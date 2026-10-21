@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "project_name": "QRaft",
-  "purpose": "Craft custom QR codes for widgets, lock-screen glance panels, and full-screen wallpapers. Offline F-Droid-friendly Android app.",
-  "stack": "android",
+  "purpose": "Craft custom QR codes for widgets, lock-screen glance panels, full-screen wallpapers, and a FOSS PWA. Offline F-Droid-friendly Android + GitHub Pages.",
+  "stack": "multi",
   "license": "Apache-2.0",
   "distribution_tier": "foss",
   "agent_adapters": {

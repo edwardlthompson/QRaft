@@ -8,7 +8,8 @@ Milestones for QRaft after Sprint 0 bootstrap.
 4. **Glance widget** — live QR image, BrightenActivity, config, TalkBack, carousel Next ✅ Sprint 7
 5. **Wallpaper engine** — DisplayMetrics overlay, set home/lock/both, SAF PNG ✅ Sprint 8
 6. **Polish** — PNG/PDF/SVG/JSON, style-JSON QR, packs, Fastlane slots ✅ Sprint 9
+7. **PWA + adaptive UX** — GitHub Pages FOSS PWA (creator parity, wallpaper PNG download, Share Target, print) + WindowSizeClass / CSS two-pane on Android and web ✅ Sprint 13
 
-North-star: Content then Look on Home (compact live preview) → Place save → lock-screen widget → wallpaper → Share export.
+North-star: Content then Look on Home (pinned preview) → Place save → lock-screen widget → wallpaper → Share export — same creator on PC/Mac via PWA.
 
-See `BUILD_PLAN.md` (Sprint 5–9 AGENT archived) and `docs/COMPETITOR_GAPS.md`.
+See `BUILD_PLAN.md` (Sprint 5–9 AGENT archived; Sprint 13 PWA) and `docs/COMPETITOR_GAPS.md`.
