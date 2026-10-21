@@ -41,7 +41,7 @@
 - **Context:** v1.3.0/v1.4.0 GitHub Releases had no APK; phones on upload-signed 1.2.0 need `adb install -r` with the same cert. Local `qraft-upload.jks` was missing from the machine.
 - **Decision:** Port HermesLauncher signing: `ci-write-android-keystore.sh` + `set-android-signing-secrets.sh`; Release workflow signs and uploads `qraft-{versionName}.apk`. PR CI `assembleRelease` stays unsigned. App `versionName`/`versionCode` → 1.4.0 / 4.
 - **Alternatives considered:** Debug sideload (rejected — signature mismatch / wipe). Generate a new upload keystore (rejected — cannot `-r` over 1.2.0).
-- **Consequences:** Human must place `qraft-upload.jks` + `keystore.properties`, run `set-android-signing-secrets.sh`, then dispatch Release to backfill v1.4.0 and sideload.
+- **Consequences:** Keystore recovered from Linux GPT/ext4 partition via raw read (`/home/edward/Repo/QRaft/examples/android/`). Secrets set; Release uploaded `qraft-1.4.0.apk`; both phones `adb install -r` to 1.4.0.
 
 ## 2026-10-21 — /ship Android parity + desktop UX + 1.4.0
 
