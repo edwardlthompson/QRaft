@@ -3,11 +3,21 @@ package org.qraft.app.ui.product
 import android.content.ClipboardManager
 import android.content.Context
 import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 import org.qraft.app.R
+import org.qraft.app.editor.DraftDirty
 import org.qraft.app.editor.DraftHistory
 import org.qraft.app.editor.DraftSnap
 import org.qraft.app.editor.EditorDraft
@@ -22,6 +32,7 @@ import org.qraft.app.share.WidgetPin
 import org.qraft.app.ui.editor.EditorScreen
 import org.qraft.app.ui.restorePreviousWallpaper
 import org.qraft.app.ui.setWallpaperFromDraft
+import org.qraft.app.ui.theme.MinTouchDp
 import org.qraft.app.ui.wall.WallpaperEmpty
 import org.qraft.app.wifi.CurrentWifi
 import org.qraft.coreqr.QrMatrix
@@ -69,6 +80,8 @@ internal fun ProductHomeEditor(
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val scope = rememberCoroutineScope()
+    var confirmNew by rememberSaveable { mutableStateOf(false) }
+    var confirmClearLogo by rememberSaveable { mutableStateOf(false) }
     fun applyWall(target: WallpaperTarget, pair: Boolean = false) {
         if (!WallpaperEmpty.canSet(draft)) return
         scope.launch {
@@ -76,6 +89,52 @@ internal fun ProductHomeEditor(
                 setWallpaperFromDraft(context, draft, style, wallSize, wallMargin, target, pairDarkLight = pair)
             }.onFailure { onNotice(R.string.wallpaper_apply_failed) }
         }
+    }
+    fun resetDraft() {
+        onDraft(EditorDraft())
+        onStyleJson(QrStyleJson.encode(QrStyle.DEFAULT))
+        onSaveName(context.getString(R.string.editor_new_name))
+        onStep(EditorStep.Content)
+    }
+    fun clearLogo() {
+        onStyleJson(QrStyleJson.encode(style.copy(logoImagePath = "")))
+    }
+    if (confirmNew) {
+        AlertDialog(
+            onDismissRequest = { confirmNew = false },
+            title = { Text(stringResource(R.string.editor_new)) },
+            text = { Text(stringResource(R.string.editor_new_confirm)) },
+            confirmButton = {
+                TextButton(
+                    onClick = { confirmNew = false; resetDraft() },
+                    modifier = Modifier.heightIn(min = MinTouchDp),
+                ) { Text(stringResource(R.string.editor_new)) }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { confirmNew = false },
+                    modifier = Modifier.heightIn(min = MinTouchDp),
+                ) { Text(stringResource(R.string.editor_dialog_cancel)) }
+            },
+        )
+    }
+    if (confirmClearLogo) {
+        AlertDialog(
+            onDismissRequest = { confirmClearLogo = false },
+            text = { Text(stringResource(R.string.style_logo_clear_confirm)) },
+            confirmButton = {
+                TextButton(
+                    onClick = { confirmClearLogo = false; clearLogo() },
+                    modifier = Modifier.heightIn(min = MinTouchDp),
+                ) { Text(stringResource(R.string.style_logo_image_clear)) }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { confirmClearLogo = false },
+                    modifier = Modifier.heightIn(min = MinTouchDp),
+                ) { Text(stringResource(R.string.editor_dialog_cancel)) }
+            },
+        )
     }
     EditorScreen(
         draft = draft,
@@ -115,11 +174,25 @@ internal fun ProductHomeEditor(
                 QrShare.sharePdf(context, it, style, draft.toPayload()?.encodeText().orEmpty())
             }
         },
+        onCopyImage = {
+            val matrix = matrixOrNull()
+            if (matrix == null) {
+                onNotice(R.string.editor_payload_empty)
+            } else {
+                val ok = QrShare.copyPngToClipboard(
+                    context, matrix, style, extrasOf(), pngSize.px,
+                    payloadHint = draft.toPayload()?.encodeText().orEmpty(),
+                )
+                onNotice(if (ok) R.string.editor_copied_png else R.string.editor_payload_empty)
+            }
+        },
         onStyleQr = { onDraft(EditorDraft(primary = StyleJsonQr.payload(style))) },
         onPickBackground = { pickBg.launch(arrayOf("image/*")) },
         onClearBackground = { onStyleJson(QrStyleJson.encode(style.copy(imageBackgroundPath = ""))) },
         onPickLogo = { pickLogo.launch(arrayOf("image/*")) },
-        onClearLogo = { onStyleJson(QrStyleJson.encode(style.copy(logoImagePath = ""))) },
+        onClearLogo = {
+            if (style.logoImagePath.isNotBlank()) confirmClearLogo = true else clearLogo()
+        },
         onAddWidget = {
             if (!WidgetPin.requestPick(context)) {
                 onNotice(R.string.widget_pin_refused)
@@ -179,10 +252,7 @@ internal fun ProductHomeEditor(
             onStep(EditorStep.Content)
         },
         onNew = {
-            onDraft(EditorDraft())
-            onStyleJson(QrStyleJson.encode(QrStyle.DEFAULT))
-            onSaveName(context.getString(R.string.editor_new_name))
-            onStep(EditorStep.Content)
+            if (DraftDirty.needsNewConfirm(draft, style)) confirmNew = true else resetDraft()
         },
         canUndo = past.size > 1,
         canRedo = future.isNotEmpty(),

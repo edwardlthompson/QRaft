@@ -13,6 +13,8 @@ class ExportMenuTest {
         assertTrue(items.indexOf(ExportPick.Json) < items.indexOf(ExportPick.Duplicate))
         assertTrue(ExportPick.New in items)
         assertTrue(ExportPick.AddWidget in items)
+        assertTrue(ExportPick.CopyImage in items)
+        assertEquals(ExportGroup.Takeaway, ExportMenu.groupOf(ExportPick.CopyImage))
     }
 
     @Test
@@ -22,6 +24,7 @@ class ExportMenuTest {
         assertTrue(ExportPick.New !in items)
         assertTrue(ExportPick.ImportJson !in items)
         assertTrue(ExportPick.AddWidget in items)
+        assertTrue(ExportPick.CopyImage in items)
         assertEquals(ExportGroup.Takeaway, ExportMenu.groupOf(ExportPick.Png))
         assertEquals(ExportGroup.Library, ExportMenu.groupOf(ExportPick.Json))
         val groups = ExportMenu.grouped(ExportMenu.home())

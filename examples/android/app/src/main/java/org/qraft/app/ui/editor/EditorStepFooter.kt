@@ -35,6 +35,7 @@ internal fun EditorStepFooter(
     onConfirmStyleQr: () -> Unit,
     onDuplicate: () -> Unit,
     onNew: () -> Unit,
+    onCopyImage: () -> Unit = {},
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -65,6 +66,7 @@ internal fun EditorStepFooter(
                     onAddWidget = onAddWidget,
                     onImportJson = onImportJson,
                     onCopyPayload = {},
+                    onCopyImage = onCopyImage,
                     onPrint = onPrint,
                     onZip = onZip,
                     onSetWallpaper = {},

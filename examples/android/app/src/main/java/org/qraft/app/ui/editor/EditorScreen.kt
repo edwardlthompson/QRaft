@@ -68,6 +68,7 @@ fun EditorScreen(
     onExportPng: () -> Unit,
     onExportSvg: () -> Unit,
     onExportPdf: () -> Unit,
+    onCopyImage: () -> Unit = {},
     onStyleQr: () -> Unit,
     onPickBackground: () -> Unit,
     onClearBackground: () -> Unit,
@@ -274,6 +275,7 @@ fun EditorScreen(
                     onConfirmStyleQr = { confirmStyleQr = true },
                     onDuplicate = onDuplicate,
                     onNew = onNew,
+                    onCopyImage = onCopyImage,
                 )
             },
         )

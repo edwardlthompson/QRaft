@@ -3,6 +3,7 @@ package org.qraft.app.editor
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.qraft.render.QrStyle
 
 class DraftDirtyTest {
     @Test
@@ -30,5 +31,17 @@ class DraftDirtyTest {
         val draft = EditorDraft(primary = url)
         assertFalse(DraftDirty.isDirty(draft, listOf(url)))
         assertFalse(DraftDirty.isDirty(draft, listOf("https://other", url)))
+    }
+
+    @Test
+    fun newConfirmWhenCustomDraftOrStyle() {
+        assertFalse(DraftDirty.needsNewConfirm(EditorDraft(), QrStyle.DEFAULT))
+        assertTrue(DraftDirty.needsNewConfirm(EditorDraft(primary = "https://x.test"), QrStyle.DEFAULT))
+        assertTrue(
+            DraftDirty.needsNewConfirm(
+                EditorDraft(),
+                QrStyle.DEFAULT.copy(logoImagePath = "file:///logo.png"),
+            ),
+        )
     }
 }

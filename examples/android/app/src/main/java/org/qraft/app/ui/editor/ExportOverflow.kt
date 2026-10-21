@@ -27,6 +27,7 @@ internal fun ExportOverflow(
     onAddWidget: () -> Unit,
     onImportJson: () -> Unit,
     onCopyPayload: () -> Unit,
+    onCopyImage: () -> Unit = {},
     onPrint: () -> Unit,
     onZip: () -> Unit,
     onSetWallpaper: () -> Unit,
@@ -41,6 +42,7 @@ internal fun ExportOverflow(
         ExportPick.Svg to stringResource(R.string.export_svg),
         ExportPick.Pdf to stringResource(R.string.export_pdf),
         ExportPick.StyleQr to stringResource(R.string.export_style_qr),
+        ExportPick.CopyImage to stringResource(R.string.editor_copy_png),
         ExportPick.AddWidget to stringResource(R.string.export_add_widget),
         ExportPick.ImportJson to stringResource(R.string.import_json),
         ExportPick.CopyPayload to stringResource(R.string.export_copy_payload),
@@ -82,6 +84,7 @@ internal fun ExportOverflow(
                                 ExportPick.AddWidget -> onAddWidget()
                                 ExportPick.ImportJson -> onImportJson()
                                 ExportPick.CopyPayload -> onCopyPayload()
+                                ExportPick.CopyImage -> onCopyImage()
                                 ExportPick.Print -> onPrint()
                                 ExportPick.Zip -> onZip()
                                 ExportPick.Wallpaper -> onSetWallpaper()

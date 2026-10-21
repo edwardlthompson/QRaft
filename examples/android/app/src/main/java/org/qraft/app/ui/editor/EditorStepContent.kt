@@ -22,6 +22,7 @@ import androidx.compose.ui.semantics.stateDescription
 import org.qraft.app.R
 import org.qraft.app.editor.EditorDraft
 import org.qraft.app.editor.EditorSteps
+import org.qraft.app.editor.KindHints
 import org.qraft.app.editor.PayloadKind
 import org.qraft.app.ui.theme.MinTouchDp
 import org.qraft.app.ui.theme.SpacingMd
@@ -102,6 +103,11 @@ internal fun EditorStepContent(
                 }
             }
         }
+        Text(
+            text = stringResource(KindHints.of(draft.kind)),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
         PayloadFields(draft = draft, onDraftChange = onDraftChange)
         if (validation != null) {
             Text(text = validation, color = MaterialTheme.colorScheme.error)

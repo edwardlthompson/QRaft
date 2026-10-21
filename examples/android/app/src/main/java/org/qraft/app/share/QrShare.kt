@@ -1,5 +1,7 @@
 package org.qraft.app.share
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -46,6 +48,22 @@ object QrShare {
         val file = pngFile(context, matrix, style, extras, sizePx, payloadHint)
         shareFile(context, file, "image/png")
     }
+
+    /** Copy PNG via FileProvider URI (rich clipboard content). */
+    fun copyPngToClipboard(
+        context: Context,
+        matrix: QrMatrix,
+        style: QrStyle,
+        extras: RasterExtras = RasterExtras(),
+        sizePx: Int = ExportPngSize.DEFAULT.px,
+        payloadHint: String = "",
+    ): Boolean = runCatching {
+        val file = pngFile(context, matrix, style, extras, sizePx, payloadHint)
+        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+        val clip = ClipData.newUri(context.contentResolver, "QRaft", uri)
+        context.getSystemService(ClipboardManager::class.java).setPrimaryClip(clip)
+        true
+    }.getOrDefault(false)
 
     fun shareBitmap(context: Context, bitmap: Bitmap, fileName: String = "qraft-poster.png") {
         val dir = File(context.cacheDir, "qr_export").apply { mkdirs() }

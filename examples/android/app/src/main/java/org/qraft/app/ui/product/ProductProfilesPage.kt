@@ -189,6 +189,14 @@ internal fun ProductProfilesPage(
             onOpenHome()
         },
         onCopyPayload = { p -> clip(p.payloadText) },
+        onCopyImage = { p ->
+            val s = QrStyleJson.decode(p.styleJson)
+            val kind = ProfileApply.fromProfile(p).first.kind
+            val ok = matrixOf(p)?.let {
+                QrShare.copyPngToClipboard(context, it, s, extrasOf(s, kind), pngSize.px, p.payloadText)
+            } == true
+            notice(if (ok) R.string.editor_copied_png else R.string.editor_payload_empty)
+        },
         onPrint = { p ->
             matrixOf(p)?.let {
                 QrPrint.printSvg(context, p.name, QrShare.svgText(it, QrStyleJson.decode(p.styleJson), p.payloadText))

@@ -1,5 +1,7 @@
 package org.qraft.app.editor
 
+import org.qraft.render.QrStyle
+
 /** Whether Home has unsaved payload work that Edit on Home would replace. */
 object DraftDirty {
     fun isDirty(draft: EditorDraft, savedPayloads: Collection<String>): Boolean {
@@ -22,4 +24,8 @@ object DraftDirty {
             draft.org == def.org &&
             draft.url == def.url
     }
+
+    /** New QR would wipe custom draft and/or style. */
+    fun needsNewConfirm(draft: EditorDraft, style: QrStyle): Boolean =
+        !isFactoryDefault(draft) || style != QrStyle.DEFAULT || style.logoImagePath.isNotBlank()
 }
