@@ -1,4 +1,4 @@
-import { DEFAULT_PRIMARY, type PayloadKind } from "../core-qr/payload";
+import { DEFAULT_PRIMARY, type PayloadKind, type WifiSecurity } from "../core-qr/payload";
 import { type QrProfile, upsertProfile } from "../data";
 import { DEFAULT_DRAFT, type EditorDraft } from "../data/draftStore";
 import { t } from "../i18n";
@@ -61,16 +61,34 @@ export function bindHome(root: HTMLElement, hooks: HomeHooks): void {
 }
 
 function onField(ev: Event, hooks: HomeHooks): void {
-  const el = ev.target as HTMLInputElement | HTMLSelectElement;
+  const el = ev.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
   const field = el.dataset.field;
   if (!field) return;
   const { draft, style } = hooks.get();
   if (field === "kind") {
     const kind = el.value as PayloadKind;
-    hooks.set({ draft: { ...draft, kind, primary: DEFAULT_PRIMARY[kind] } });
-  } else if (field === "primary") hooks.set({ draft: { ...draft, primary: el.value } });
+    hooks.set({
+      draft: {
+        ...DEFAULT_DRAFT,
+        kind,
+        primary: DEFAULT_PRIMARY[kind],
+        version: draft.version,
+      },
+    });
+    hooks.persist();
+    hooks.render(); // rebuild kind-specific fields
+    return;
+  }
+  if (field === "primary") hooks.set({ draft: { ...draft, primary: el.value } });
   else if (field === "secondary") hooks.set({ draft: { ...draft, secondary: el.value } });
   else if (field === "tertiary") hooks.set({ draft: { ...draft, tertiary: el.value } });
+  else if (field === "org") hooks.set({ draft: { ...draft, org: el.value } });
+  else if (field === "url") hooks.set({ draft: { ...draft, url: el.value } });
+  else if (field === "security")
+    hooks.set({ draft: { ...draft, security: el.value as WifiSecurity } });
+  else if (field === "hidden")
+    hooks.set({ draft: { ...draft, hidden: (el as HTMLInputElement).checked } });
+  else if (field === "scheme") hooks.set({ draft: { ...draft, scheme: el.value } });
   else if (field === "saveName") hooks.set({ saveName: el.value });
   else if (field === "theme") hooks.set({ style: applyColorTheme(el.value as ColorTheme, style) });
   else if (field === "module")

@@ -276,6 +276,23 @@ main,
   font-size: var(--gp-text-body-medium-size);
 }
 
+.qr-payload-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gp-space-sm);
+}
+
+.qr-pane textarea {
+  min-height: 4.5rem;
+  padding: var(--gp-space-sm);
+  border-radius: var(--gp-radius-sm);
+  border: 1px solid var(--gp-color-outline);
+  background: var(--gp-color-surface);
+  color: var(--gp-color-on-surface);
+  font: inherit;
+  resize: vertical;
+}
+
 .qr-pane input,
 .qr-pane select {
   min-height: 2.5rem;

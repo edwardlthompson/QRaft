@@ -3,6 +3,7 @@ import type { EditorDraft } from "../data/draftStore";
 import { t } from "../i18n";
 import type { ColorTheme, ModuleShape, QrStyle } from "../render";
 import { escapeAttr } from "./dom";
+import { payloadFieldsHtml } from "./payloadFieldsHtml";
 
 export function homeHtml(draft: EditorDraft, style: QrStyle, saveName: string): string {
   const kinds: PayloadKind[] = ["url", "text", "wifi", "vcard", "email", "sms", "phone", "crypto"];
@@ -12,17 +13,11 @@ export function homeHtml(draft: EditorDraft, style: QrStyle, saveName: string): 
       <section class="qr-pane qr-pane-preview" data-preview aria-label="${t("editor.preview")}"></section>
       <section class="qr-pane qr-pane-controls">
         <label>${t("editor.kind")}
-          <select data-field="kind">${kinds.map((k) => `<option value="${k}" ${draft.kind === k ? "selected" : ""}>${t(`kind.${k}`)}</option>`).join("")}</select>
+          <select data-field="kind" title="${t("editor.kind")}">${kinds.map((k) => `<option value="${k}" ${draft.kind === k ? "selected" : ""}>${t(`kind.${k}`)}</option>`).join("")}</select>
         </label>
-        <label>${t("editor.primary")}
-          <input data-field="primary" value="${escapeAttr(draft.primary)}" />
-        </label>
-        <label>${t("editor.secondary")}
-          <input data-field="secondary" value="${escapeAttr(draft.secondary)}" />
-        </label>
-        <label>${t("editor.tertiary")}
-          <input data-field="tertiary" value="${escapeAttr(draft.tertiary)}" />
-        </label>
+        <div class="qr-payload-fields" data-payload-fields>
+          ${payloadFieldsHtml(draft)}
+        </div>
         <label>${t("editor.save_name")}
           <input data-field="saveName" value="${escapeAttr(saveName)}" />
         </label>
