@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0](https://github.com/edwardlthompson/QRaft/compare/v1.4.0...v1.5.0) (2026-10-21)
+
+
+### Added
+
+* **android:** sign release APKs in GitHub Actions ([ebf7394](https://github.com/edwardlthompson/QRaft/commit/ebf7394f7000d283df3a773e33f7d277804faa65))
+
 ## [Unreleased]
 
 ## [1.4.0](https://github.com/edwardlthompson/QRaft/compare/v1.3.0...v1.4.0) (2026-10-21)
