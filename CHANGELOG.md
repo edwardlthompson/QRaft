@@ -8,6 +8,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0](https://github.com/edwardlthompson/QRaft/compare/v1.3.0...v1.4.0) (2026-10-21)
+
+
+### Added
+
+* **android:** copy PNG, kind hints, and discard confirms ([a47fb1d](https://github.com/edwardlthompson/QRaft/commit/a47fb1d315c4f1bc3cd9e59e0b0fa23bac78d063))
+* **web:** adapt payload fields when kind changes ([49c53aa](https://github.com/edwardlthompson/QRaft/commit/49c53aabf709100823e3bedb10e2fa28192dfd22))
+* **web:** Chrome install button, logos, donate, and kind names ([18e7e7a](https://github.com/edwardlthompson/QRaft/commit/18e7e7a16ece5f95f957808e89095bddb1739a60))
+* **web:** column Profiles gallery with larger previews ([480a731](https://github.com/edwardlthompson/QRaft/commit/480a73191e0a3ee8c771708a4347f395ee31abe2))
+* **web:** expanded desktop Home, style studio, and profile batch export ([8cb348d](https://github.com/edwardlthompson/QRaft/commit/8cb348d2044de878cdc16703cf63b5a269547e1b))
+* **web:** Share column, larger profile thumbs, 4K wallpaper default ([17381ea](https://github.com/edwardlthompson/QRaft/commit/17381ea8fa055b5753b60983338c972373c42fea))
+* **web:** ship QRaft PWA with adaptive UX on web and Android ([746b473](https://github.com/edwardlthompson/QRaft/commit/746b473806fb3ed6e022b103aec6c24b72e76f53))
+
+
+### Fixed
+
+* **about:** skip CLI lego strip when stacks are pruned ([93fe78f](https://github.com/edwardlthompson/QRaft/commit/93fe78f76e99d05e7043a2851a71f77045134968))
+* **ci:** restore CodeQL action pins to v4 ([86a129f](https://github.com/edwardlthompson/QRaft/commit/86a129f2852dfbc1843dd7992f03195b78ce3ab1))
+* **web:** align Playwright e2e with QRaft shell and heading order ([50689b7](https://github.com/edwardlthompson/QRaft/commit/50689b7ff426518ec7db3ef5a8a3e97e4a756a56))
+* **web:** export logos, Auto center default, Export menu ([1d0cf91](https://github.com/edwardlthompson/QRaft/commit/1d0cf9169837b6761a9d9821449b63f81171dc0f))
+* **web:** Export menu popup and action hierarchy ([261bd93](https://github.com/edwardlthompson/QRaft/commit/261bd93b98b58cb1211a2921e59cd5eeef9b5fea))
+* **web:** give Profiles Gallery leftover space so cards do not spill ([b1d4fa7](https://github.com/edwardlthompson/QRaft/commit/b1d4fa7cbdb0f7216d9154f52b7ba8b98c5df54f))
+* **web:** keep Profiles Selected pane from overlapping Gallery ([e9a8a4a](https://github.com/edwardlthompson/QRaft/commit/e9a8a4a6753f1a0f87d43a84ff69619550c5e689))
+* **web:** polish PWA chrome — logos, tooltips, settings theme ([4d8778b](https://github.com/edwardlthompson/QRaft/commit/4d8778bd10d35d98f4b89ac7f6cb8667a4f3caaf))
+
 ## [1.3.0](https://github.com/edwardlthompson/QRaft/compare/v1.2.0...v1.3.0) (2026-09-15)
 
 
