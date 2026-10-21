@@ -26,6 +26,7 @@ export function mountProductWorkspace(
   let query = "";
   let sort: ProfileSort = "NEWEST";
   let selectedId: string | null = null;
+  let checkedIds = new Set<string>();
   let wallW = 1080;
   let wallH = 1920;
   let margin = 0.1;
@@ -59,7 +60,7 @@ export function mountProductWorkspace(
       </nav>
       <div class="qr-adaptive" data-view="${view}">
         ${view === "home" ? homeHtml(draft, style, saveName) : ""}
-        ${view === "profiles" ? profilesHtml(profiles, query, sort, selectedId) : ""}
+        ${view === "profiles" ? profilesHtml(profiles, query, sort, selectedId, checkedIds) : ""}
         ${view === "wallpaper" ? wallpaperHtml(wallW, wallH, margin) : ""}
       </div>
       ${status ? `<p class="qr-status" role="status">${status}</p>` : ""}
@@ -107,11 +108,16 @@ export function mountProductWorkspace(
         setSelectedId: (id) => {
           selectedId = id;
         },
+        getCheckedIds: () => checkedIds,
+        setCheckedIds: (ids) => {
+          checkedIds = ids;
+        },
         setDraftStyle: (d, s) => {
           draft = d;
           style = s;
         },
         persist,
+        setStatus,
         onRoute: callbacks.onRoute,
         render,
       });

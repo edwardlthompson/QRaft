@@ -6,6 +6,7 @@ export function bindLogoControls(root: HTMLElement, hooks: HomeHooks): void {
   const input = root.querySelector<HTMLInputElement>("[data-logo-import]");
   root.querySelector("[data-act=logo-pick]")?.addEventListener("click", () => input?.click());
   root.querySelector("[data-act=logo-clear]")?.addEventListener("click", () => {
+    if (!window.confirm(t("style.logo_clear_confirm"))) return;
     const { style } = hooks.get();
     hooks.set({
       style: {

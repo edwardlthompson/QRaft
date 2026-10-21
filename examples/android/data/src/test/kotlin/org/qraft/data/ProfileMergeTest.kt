@@ -51,9 +51,11 @@ class ProfileMergeTest {
     fun sanitizeKeepsExistingFile() {
         val file = File.createTempFile("qraft-bg", ".png")
         file.writeText("x")
-        val style = """{"imageBackgroundPath":"${file.absolutePath}"}"""
+        // Escape backslashes so Windows absolute paths remain valid JSON.
+        val pathJson = file.absolutePath.replace("\\", "\\\\")
+        val style = """{"imageBackgroundPath":"$pathJson"}"""
         val kept = ProfileMerge.sanitize(QrProfile("p", "P", "https://a", styleJson = style))
-        assertTrue(kept.styleJson.contains(file.absolutePath))
+        assertTrue(kept.styleJson.contains(file.absolutePath) || kept.styleJson.contains(pathJson))
         file.delete()
     }
 }

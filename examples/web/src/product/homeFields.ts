@@ -51,6 +51,19 @@ export function onHomeField(ev: Event, hooks: HomeHooks): void {
         },
       },
     });
+  } else if (field === "quietZone") {
+    const n = Math.min(16, Math.max(4, Number(el.value) || 4));
+    hooks.set({ style: { ...style, quietZoneModules: n } });
+  } else if (field === "logoDiameter") {
+    const pct = Math.min(28, Math.max(10, Number(el.value) || 20));
+    const label = el.closest(".qr-controls-style")?.querySelector("[data-logo-size-label]");
+    if (label) label.textContent = `${pct}%`;
+    hooks.set({
+      style: {
+        ...style,
+        logoCutout: { ...style.logoCutout, diameterFraction: pct / 100, enabled: true },
+      },
+    });
   } else if (field === "caption") hooks.set({ style: { ...style, caption: { text: el.value } } });
   hooks.persist();
   hooks.refreshPreview();

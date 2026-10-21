@@ -13,6 +13,7 @@ import { logoDataUrlForStyle } from "../render/logoDataUrl";
 import { downloadBlob } from "./dom";
 import { encodeDraft, payloadTextOf } from "./encodeDraft";
 import type { HomeHooks } from "./homeBind";
+import { bindHomeShare } from "./homeShare";
 
 const exportAbort = new WeakMap<HTMLElement, AbortController>();
 
@@ -84,6 +85,7 @@ export function bindHomeExports(root: HTMLElement, hooks: HomeHooks): void {
   root.querySelector("[data-act=png]")?.addEventListener("click", () => void runExport("png"));
   root.querySelector("[data-act=svg]")?.addEventListener("click", () => void runExport("svg"));
   root.querySelector("[data-act=pdf]")?.addEventListener("click", () => void runExport("pdf"));
+  bindHomeShare(root, hooks);
 
   root.querySelector("[data-act=json]")?.addEventListener("click", async () => {
     try {
