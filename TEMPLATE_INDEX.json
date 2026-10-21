@@ -1203,6 +1203,20 @@
       "owner": "maintainer"
     },
     {
+      "path": "scripts/ci-write-android-keystore.sh",
+      "purpose": "Write gitignored release keystore from GitHub Actions secrets",
+      "read_when": "milestone_boundary",
+      "update_when": "milestone_boundary",
+      "owner": "maintainer"
+    },
+    {
+      "path": "scripts/set-android-signing-secrets.sh",
+      "purpose": "Upload local gitignored keystore files to GitHub Actions secrets",
+      "read_when": "milestone_boundary",
+      "update_when": "milestone_boundary",
+      "owner": "maintainer"
+    },
+    {
       "path": "scripts/check-file-encoding.py",
       "purpose": "Cross-platform UTF-8/UTF-16 BOM validation",
       "read_when": "bootstrap_session_start",

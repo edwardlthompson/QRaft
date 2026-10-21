@@ -103,6 +103,73 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && inputs.tag == ''
         run: bash scripts/pre-release-gate.sh
 
+      - uses: actions/setup-java@v6
+        if: hashFiles('examples/android/app/build.gradle.kts') != ''
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: android-actions/setup-android@v4
+        if: hashFiles('examples/android/app/build.gradle.kts') != ''
+        with:
+          packages: platform-tools
+
+      - name: Accept Android SDK licenses
+        if: hashFiles('examples/android/app/build.gradle.kts') != ''
+        run: yes | sdkmanager --licenses
+
+      - name: Write upload keystore from repository secrets
+        if: hashFiles('examples/android/app/build.gradle.kts') != ''
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: bash scripts/ci-write-android-keystore.sh
+
+      - name: assembleRelease with SOURCE_DATE_EPOCH
+        if: hashFiles('examples/android/app/build.gradle.kts') != ''
+        working-directory: examples/android
+        env:
+          SOURCE_DATE_EPOCH: "1700000000"
+        run: chmod +x gradlew && ./gradlew assembleRelease --no-daemon
+
+      - name: Verify release APK is signed
+        if: hashFiles('examples/android/app/build.gradle.kts') != ''
+        run: |
+          APK=$(find examples/android/app/build/outputs/apk/release -name '*.apk' | head -1)
+          if [ -z "$APK" ]; then
+            echo "FAIL: no release APK produced"
+            exit 1
+          fi
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort | tail -1)
+          if [ -z "$APKSIGNER" ]; then
+            echo "FAIL: apksigner not found under ANDROID_HOME"
+            exit 1
+          fi
+          "$APKSIGNER" verify --min-sdk-version 26 "$APK"
+
+      - name: Upload signed APK to GitHub Release
+        if: hashFiles('examples/android/app/build.gradle.kts') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${EFFECTIVE_TAG:-${{ steps.tag.outputs.tag || steps.tag_ver.outputs.tag }}}"
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            echo "FAIL: release $TAG not found (merge Release Please PR first)"
+            exit 1
+          fi
+          APK=$(find examples/android/app/build/outputs/apk/release -name '*.apk' | head -1)
+          if [ -z "$APK" ]; then
+            echo "FAIL: no release APK produced"
+            exit 1
+          fi
+          APP_VERSION=$(sed -n 's/.*versionName = "\([^"]*\)".*/\1/p' examples/android/app/build.gradle.kts | head -1)
+          NAME="qraft-${APP_VERSION}.apk"
+          cp "$APK" "$NAME"
+          gh release upload "$TAG" "$NAME" --clobber
+          echo "Uploaded $NAME to $TAG"
+
       - name: Generate root SBOM
         uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
         with:

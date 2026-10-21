@@ -37,3 +37,17 @@ cd examples/android
 ## FOSS compliance
 
 No Google Play Services, Firebase, or closed telemetry. No `INTERNET` permission. Vendored Nayuki QR-Code-generator (MIT) under `core-qr/`.
+
+## Signed GitHub Release APK
+
+PR CI `assembleRelease` stays unsigned (hash check). The `Release` workflow signs `qraft-{versionName}.apk` from repository secrets:
+
+`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`
+
+Copy `keystore.properties` and `qraft-upload.jks` into this folder (gitignored), then:
+
+```bash
+bash scripts/set-android-signing-secrets.sh
+```
+
+Do not commit the keystore. Do not paste passwords into chat. Sideload with `adb install -r` so gallery profiles stay intact.

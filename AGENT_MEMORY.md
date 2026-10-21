@@ -50,6 +50,7 @@ Golden Path Settings/About/Feedback are a route stack, not three booleans. Web H
 
 ## Session Retrospectives
 
+| 2026-10-21 | CI signed APK | Release uploads `qraft-{version}.apk` from `ANDROID_KEYSTORE_*` secrets; versionCode 4 / 1.4.0 | Place `qraft-upload.jks` + props; `set-android-signing-secrets.sh`; never new upload cert |
 | 2026-10-21 | /ship 1.4.0 | Android copy PNG/kind hints/dirty confirms; desktop UX; about CLI strip no-op; CodeQL @v4; Playwright QRaft | Never apply codeql-action@vcodeql-bundle-*; e2e must match product chrome |
 | 2026-09-14 | /ship vault+UX | feat commit for vault, stepper, Sprint 13 UX; Unreleased emptied for RP 1.3.0 | Do not apply CodeQL `vcodeql-bundle-*`; sideload `install -r` only |
 | 2026-09-14 | Sprint 13 UX leftovers | Confirm overwrite, tour Scan/Wallpaper, Look fold, true-black chrome, hierarchy, motion, overflow, footer-only nav | Sideload with `adb install -r` only; debug APK still signature-mismatched |
