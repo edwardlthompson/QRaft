@@ -10,6 +10,12 @@ describe("QrStyleJson parity", () => {
     expect(back.moduleShape).toBe("SQUARE");
     expect(back.quietZoneModules).toBe(4);
     expect(back.colorTheme).toBe("CLASSIC");
+    expect(back.centerMark).toBe("AUTO");
+  });
+
+  it("maps legacy OLED theme to INVERT", () => {
+    const style = decodeStyleJson(JSON.stringify({ colorTheme: "OLED" }));
+    expect(style.colorTheme).toBe("INVERT");
   });
 
   it("decodes Android-shaped style object", () => {

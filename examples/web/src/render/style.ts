@@ -52,10 +52,10 @@ export const DEFAULT_STYLE: QrStyle = {
   eyeColorArgb: 0xff000000,
   backgroundArgb: 0xffffffff,
   quietZoneModules: MIN_QUIET_ZONE_MODULES,
-  logoCutout: { enabled: false, diameterFraction: 0.2 },
+  logoCutout: { enabled: true, diameterFraction: 0.2 },
   colorTheme: "CLASSIC",
   gradient: { enabled: false, startArgb: 0xff000000, endArgb: 0xff1565c0 },
-  centerMark: "NONE",
+  centerMark: "AUTO",
   caption: { text: "" },
   imageBackgroundPath: "",
   logoImagePath: "",
@@ -74,6 +74,7 @@ export function styleHasOverlay(style: QrStyle): boolean {
 
 const THEME_COLORS: Record<ColorTheme, [number, number, number]> = {
   CLASSIC: [0xff000000, 0xffffffff, 0xff000000],
+  /** @deprecated Same as INVERT — kept for Android styleJson round-trip. */
   OLED: [0xffffffff, 0xff000000, 0xffffffff],
   INVERT: [0xffffffff, 0xff000000, 0xffffffff],
   BLUE: [0xff0d47a1, 0xffffffff, 0xff0d47a1],
@@ -81,9 +82,23 @@ const THEME_COLORS: Record<ColorTheme, [number, number, number]> = {
   SUNSET: [0xffbf360c, 0xfffff3e0, 0xffe65100],
 };
 
+/** Themes offered in the PWA editor (OLED removed — identical to INVERT). */
+export const EDITOR_COLOR_THEMES: ColorTheme[] = ["CLASSIC", "INVERT", "BLUE", "FOREST", "SUNSET"];
+
+export function normalizeColorTheme(theme: ColorTheme): ColorTheme {
+  return theme === "OLED" ? "INVERT" : theme;
+}
+
 export function applyColorTheme(theme: ColorTheme, style: QrStyle): QrStyle {
-  const [fg, bg, eye] = THEME_COLORS[theme];
-  return { ...style, colorTheme: theme, foregroundArgb: fg, backgroundArgb: bg, eyeColorArgb: eye };
+  const normalized = normalizeColorTheme(theme);
+  const [fg, bg, eye] = THEME_COLORS[normalized];
+  return {
+    ...style,
+    colorTheme: normalized,
+    foregroundArgb: fg,
+    backgroundArgb: bg,
+    eyeColorArgb: eye,
+  };
 }
 
 export function argbToCss(argb: number): string {

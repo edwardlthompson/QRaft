@@ -52,11 +52,6 @@ export function onHomeField(ev: Event, hooks: HomeHooks): void {
       },
     });
   } else if (field === "caption") hooks.set({ style: { ...style, caption: { text: el.value } } });
-  else if (field === "oled") {
-    hooks.set({
-      style: applyColorTheme((el as HTMLInputElement).checked ? "OLED" : "CLASSIC", style),
-    });
-  }
   hooks.persist();
   hooks.refreshPreview();
 }

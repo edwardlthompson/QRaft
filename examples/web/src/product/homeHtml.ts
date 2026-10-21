@@ -1,14 +1,15 @@
 import type { PayloadKind } from "../core-qr/payload";
 import type { EditorDraft } from "../data/draftStore";
 import { t } from "../i18n";
-import type { CenterMark, ColorTheme, ModuleShape, QrStyle } from "../render";
+import type { CenterMark, ModuleShape, QrStyle } from "../render";
+import { EDITOR_COLOR_THEMES } from "../render/style";
 import { escapeAttr } from "./dom";
 import { payloadFieldsHtml } from "./payloadFieldsHtml";
 
 const CENTER_MARKS: CenterMark[] = [
+  "AUTO",
   "NONE",
   "CUTOUT",
-  "AUTO",
   "LINK",
   "WIFI",
   "PERSON",
@@ -24,7 +25,6 @@ const CENTER_MARKS: CenterMark[] = [
 
 export function homeHtml(draft: EditorDraft, style: QrStyle, saveName: string): string {
   const kinds: PayloadKind[] = ["url", "text", "wifi", "vcard", "email", "sms", "phone", "crypto"];
-  const themes: ColorTheme[] = ["CLASSIC", "OLED", "INVERT", "BLUE", "FOREST", "SUNSET"];
   const shapes: ModuleShape[] = ["SQUARE", "ROUNDED", "DOT", "DIAMOND", "PILL_H", "PILL_V", "BLOB"];
   const hasLogo = style.logoImagePath.trim() !== "";
   return `
@@ -40,7 +40,7 @@ export function homeHtml(draft: EditorDraft, style: QrStyle, saveName: string): 
           <input data-field="saveName" value="${escapeAttr(saveName)}" />
         </label>
         <label>${t("style.theme")}
-          <select data-field="theme">${themes.map((th) => `<option value="${th}" ${style.colorTheme === th ? "selected" : ""}>${th}</option>`).join("")}</select>
+          <select data-field="theme">${EDITOR_COLOR_THEMES.map((th) => `<option value="${th}" ${style.colorTheme === th ? "selected" : ""}>${th}</option>`).join("")}</select>
         </label>
         <label>${t("style.module")}
           <select data-field="module">${shapes.map((s) => `<option value="${s}" ${style.moduleShape === s ? "selected" : ""}>${s}</option>`).join("")}</select>
@@ -56,12 +56,16 @@ export function homeHtml(draft: EditorDraft, style: QrStyle, saveName: string): 
         <label>${t("style.caption")}
           <input data-field="caption" value="${escapeAttr(style.caption.text)}" />
         </label>
-        <label class="qr-check"><input type="checkbox" data-field="oled" ${style.colorTheme === "OLED" ? "checked" : ""}/> ${t("style.oled")}</label>
         <div class="qr-actions">
           <button type="button" data-act="save" title="${t("editor.save")}">${t("editor.save")}</button>
-          <button type="button" data-act="png" title="${t("editor.export_png")}">${t("editor.export_png")}</button>
-          <button type="button" data-act="svg" title="${t("editor.export_svg")}">${t("editor.export_svg")}</button>
-          <button type="button" data-act="pdf" title="${t("editor.export_pdf")}">${t("editor.export_pdf")}</button>
+          <div class="qr-export-wrap">
+            <button type="button" data-act="export-toggle" title="${t("editor.export")}" aria-haspopup="menu" aria-expanded="false">${t("editor.export")}</button>
+            <div class="qr-export-pop" data-export-pop hidden role="menu">
+              <button type="button" role="menuitem" data-act="png" title="${t("editor.export_png")}">${t("editor.export_png")}</button>
+              <button type="button" role="menuitem" data-act="svg" title="${t("editor.export_svg")}">${t("editor.export_svg")}</button>
+              <button type="button" role="menuitem" data-act="pdf" title="${t("editor.export_pdf")}">${t("editor.export_pdf")}</button>
+            </div>
+          </div>
           <button type="button" data-act="json" title="${t("editor.export_json")}">${t("editor.export_json")}</button>
           <button type="button" data-act="import" title="${t("editor.import_json")}">${t("editor.import_json")}</button>
           <button type="button" data-act="print" title="${t("editor.print")}">${t("editor.print")}</button>

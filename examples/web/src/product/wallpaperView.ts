@@ -1,8 +1,9 @@
 import type { EditorDraft } from "../data/draftStore";
 import { t } from "../i18n";
 import { canvasToPngBlob, composeWallpaperPng, type QrStyle } from "../render";
+import { ensureStyleLogos } from "../render/ensureLogos";
 import { downloadBlob } from "./dom";
-import { encodeDraft } from "./encodeDraft";
+import { encodeDraft, payloadTextOf } from "./encodeDraft";
 
 export function wallpaperHtml(wallW: number, wallH: number, margin: number): string {
   return `
@@ -55,7 +56,16 @@ export function bindWallpaper(root: HTMLElement, hooks: WallpaperHooks): void {
     try {
       const { draft, style } = hooks.getDraftStyle();
       const { wallW, wallH, margin } = hooks.getSize();
-      const canvas = composeWallpaperPng(encodeDraft(draft, style), style, wallW, wallH, margin);
+      const hint = payloadTextOf(draft);
+      await ensureStyleLogos(style, hint);
+      const canvas = composeWallpaperPng(
+        encodeDraft(draft, style),
+        style,
+        wallW,
+        wallH,
+        margin,
+        hint,
+      );
       downloadBlob(await canvasToPngBlob(canvas), `qraft-wallpaper-${wallW}x${wallH}.png`);
       hooks.setStatus(t("wallpaper.downloaded"));
     } catch {

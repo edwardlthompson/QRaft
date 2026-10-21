@@ -1,4 +1,4 @@
-import { DEFAULT_STYLE, type QrStyle } from "./style";
+import { DEFAULT_STYLE, normalizeColorTheme, type QrStyle } from "./style";
 
 function enumOr<T extends string>(raw: unknown, allowed: readonly T[], fallback: T): T {
   return typeof raw === "string" && (allowed as readonly string[]).includes(raw)
@@ -65,10 +65,12 @@ export function decodeStyleJson(json: string): QrStyle {
         enabled: Boolean(o.logoEnabled),
         diameterFraction: typeof o.logoDiameterFraction === "number" ? o.logoDiameterFraction : 0.2,
       },
-      colorTheme: enumOr(
-        o.colorTheme,
-        ["CLASSIC", "OLED", "INVERT", "BLUE", "FOREST", "SUNSET"] as const,
-        "CLASSIC",
+      colorTheme: normalizeColorTheme(
+        enumOr(
+          o.colorTheme,
+          ["CLASSIC", "OLED", "INVERT", "BLUE", "FOREST", "SUNSET"] as const,
+          "CLASSIC",
+        ),
       ),
       gradient: {
         enabled: Boolean(o.gradientEnabled),

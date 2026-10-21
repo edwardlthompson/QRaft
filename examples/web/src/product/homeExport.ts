@@ -9,12 +9,28 @@ import {
   renderMatrixToCanvas,
 } from "../render";
 import { ensureStyleLogos } from "../render/ensureLogos";
+import { logoDataUrlForStyle } from "../render/logoDataUrl";
 import { downloadBlob } from "./dom";
 import { encodeDraft, payloadTextOf } from "./encodeDraft";
 import type { HomeHooks } from "./homeBind";
 
 export function bindHomeExports(root: HTMLElement, hooks: HomeHooks): void {
+  const pop = root.querySelector<HTMLElement>("[data-export-pop]");
+  const toggle = root.querySelector<HTMLButtonElement>("[data-act=export-toggle]");
+  const setOpen = (open: boolean) => {
+    if (!pop || !toggle) return;
+    pop.hidden = !open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+  toggle?.addEventListener("click", (ev) => {
+    ev.stopPropagation();
+    setOpen(!!pop?.hidden);
+  });
+  root.addEventListener("click", () => setOpen(false));
+  pop?.addEventListener("click", (ev) => ev.stopPropagation());
+
   root.querySelector("[data-act=png]")?.addEventListener("click", async () => {
+    setOpen(false);
     try {
       const { draft, style } = hooks.get();
       const hint = payloadTextOf(draft);
@@ -27,11 +43,17 @@ export function bindHomeExports(root: HTMLElement, hooks: HomeHooks): void {
     }
   });
 
-  root.querySelector("[data-act=svg]")?.addEventListener("click", () => {
+  root.querySelector("[data-act=svg]")?.addEventListener("click", async () => {
+    setOpen(false);
     try {
       const { draft, style } = hooks.get();
+      const hint = payloadTextOf(draft);
+      await ensureStyleLogos(style, hint);
+      const logo = await logoDataUrlForStyle(style, hint);
       downloadBlob(
-        new Blob([matrixToSvg(encodeDraft(draft, style), style, 512)], { type: "image/svg+xml" }),
+        new Blob([matrixToSvg(encodeDraft(draft, style), style, 512, hint, logo)], {
+          type: "image/svg+xml",
+        }),
         "qraft.svg",
       );
       hooks.setStatus(t("editor.exported"));
@@ -41,6 +63,7 @@ export function bindHomeExports(root: HTMLElement, hooks: HomeHooks): void {
   });
 
   root.querySelector("[data-act=pdf]")?.addEventListener("click", async () => {
+    setOpen(false);
     try {
       const { draft, style } = hooks.get();
       const hint = payloadTextOf(draft);

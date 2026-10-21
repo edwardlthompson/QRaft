@@ -320,6 +320,33 @@ main,
   cursor: pointer;
 }
 
+.qr-export-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.qr-export-pop {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + var(--gp-space-xs));
+  inset-inline-start: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gp-space-xs);
+  min-width: 8rem;
+  padding: var(--gp-space-xs);
+  border-radius: var(--gp-radius-md);
+  border: 1px solid var(--gp-color-outline);
+  background: var(--gp-color-surface);
+}
+
+.qr-export-pop button {
+  width: 100%;
+  justify-content: flex-start;
+  background: var(--gp-color-surface);
+  color: var(--gp-color-on-surface);
+}
+
 .qr-preview-canvas {
   width: 100%;
   max-width: 20rem;
