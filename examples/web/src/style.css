@@ -472,13 +472,30 @@ main,
   box-shadow: 0 1px 0 color-mix(in srgb, var(--gp-color-outline) 40%, transparent);
 }
 
-/* Profiles: Library | Gallery | Detail — keep panes from overflowing neighbors */
+/* Profiles: Library (narrow) | Gallery (flex) | Selected (fixed) */
+.qr-adaptive[data-view="profiles"] {
+  grid-template-areas:
+    "library"
+    "gallery"
+    "detail";
+}
+
 .qr-adaptive[data-view="profiles"] > .qr-pane {
   min-width: 0;
   max-width: 100%;
 }
 
+.qr-adaptive[data-view="profiles"] .qr-pane-library {
+  grid-area: library;
+}
+
+.qr-adaptive[data-view="profiles"] .qr-pane-gallery {
+  grid-area: gallery;
+  overflow-x: clip;
+}
+
 .qr-adaptive[data-view="profiles"] .qr-pane-detail {
+  grid-area: detail;
   overflow-x: clip;
 }
 
@@ -486,6 +503,7 @@ main,
   width: 100%;
   max-width: 100%;
   height: auto;
+  display: block;
 }
 
 .qr-profile-detail-preview {
@@ -498,11 +516,14 @@ main,
 
 @media (min-width: 600px) {
   .qr-adaptive[data-view="profiles"] {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 20rem);
+    grid-template-areas:
+      "library library"
+      "gallery detail";
+    align-items: start;
   }
 
   .qr-adaptive[data-view="profiles"] .qr-pane-library {
-    grid-column: 1 / -1;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
     gap: var(--gp-space-sm);
@@ -516,12 +537,13 @@ main,
 
 @media (min-width: 840px) {
   .qr-adaptive[data-view="profiles"] {
-    grid-template-columns: minmax(11rem, 0.22fr) minmax(0, 0.48fr) minmax(14rem, 0.3fr);
+    /* Gallery gets leftover space; library/detail stay fixed-ish so cards fit */
+    grid-template-columns: minmax(11rem, 13rem) minmax(0, 1fr) minmax(16rem, 20rem);
+    grid-template-areas: "library gallery detail";
     align-items: start;
   }
 
   .qr-adaptive[data-view="profiles"] .qr-pane-library {
-    grid-column: auto;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -538,13 +560,13 @@ main,
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
   gap: var(--gp-space-sm);
 }
 
 @media (min-width: 840px) {
   .qr-profile-list {
-    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
   }
 }
 
