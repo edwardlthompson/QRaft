@@ -49,7 +49,7 @@ export function bindWallpaper(root: HTMLElement, hooks: WallpaperHooks): void {
     hooks.render();
   });
   root.querySelector("[data-act=preset-desktop]")?.addEventListener("click", () => {
-    hooks.setSize(1920, 1080, hooks.getSize().margin);
+    hooks.setSize(3840, 2160, hooks.getSize().margin);
     hooks.render();
   });
   root.querySelector("[data-act=download]")?.addEventListener("click", async () => {

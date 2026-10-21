@@ -27,8 +27,8 @@ export function mountProductWorkspace(
   let sort: ProfileSort = "NEWEST";
   let selectedId: string | null = null;
   let checkedIds = new Set<string>();
-  let wallW = 1080;
-  let wallH = 1920;
+  let wallW = 3840;
+  let wallH = 2160;
   let margin = 0.1;
   let status = "";
 
