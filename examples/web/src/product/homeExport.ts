@@ -14,67 +14,76 @@ import { downloadBlob } from "./dom";
 import { encodeDraft, payloadTextOf } from "./encodeDraft";
 import type { HomeHooks } from "./homeBind";
 
+const exportAbort = new WeakMap<HTMLElement, AbortController>();
+
 export function bindHomeExports(root: HTMLElement, hooks: HomeHooks): void {
+  exportAbort.get(root)?.abort();
+  const ac = new AbortController();
+  exportAbort.set(root, ac);
+  const { signal } = ac;
+
   const pop = root.querySelector<HTMLElement>("[data-export-pop]");
   const toggle = root.querySelector<HTMLButtonElement>("[data-act=export-toggle]");
+  const wrap = root.querySelector<HTMLElement>(".qr-export-wrap");
+
   const setOpen = (open: boolean) => {
     if (!pop || !toggle) return;
     pop.hidden = !open;
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
   };
-  toggle?.addEventListener("click", (ev) => {
-    ev.stopPropagation();
-    setOpen(!!pop?.hidden);
-  });
-  root.addEventListener("click", () => setOpen(false));
-  pop?.addEventListener("click", (ev) => ev.stopPropagation());
 
-  root.querySelector("[data-act=png]")?.addEventListener("click", async () => {
+  toggle?.addEventListener(
+    "click",
+    (ev) => {
+      ev.stopPropagation();
+      setOpen(!!pop?.hidden);
+    },
+    { signal },
+  );
+
+  document.addEventListener(
+    "click",
+    (ev) => {
+      if (!wrap?.contains(ev.target as Node)) setOpen(false);
+    },
+    { signal },
+  );
+  document.addEventListener(
+    "keydown",
+    (ev) => {
+      if (ev.key === "Escape") setOpen(false);
+    },
+    { signal },
+  );
+
+  const runExport = async (kind: "png" | "svg" | "pdf") => {
     setOpen(false);
     try {
       const { draft, style } = hooks.get();
       const hint = payloadTextOf(draft);
       await ensureStyleLogos(style, hint);
-      const canvas = renderMatrixToCanvas(encodeDraft(draft, style), style, 1024, undefined, hint);
-      downloadBlob(await canvasToPngBlob(canvas), "qraft.png");
+      const matrix = encodeDraft(draft, style);
+      if (kind === "svg") {
+        const logo = await logoDataUrlForStyle(style, hint);
+        downloadBlob(
+          new Blob([matrixToSvg(matrix, style, 512, hint, logo)], { type: "image/svg+xml" }),
+          "qraft.svg",
+        );
+      } else {
+        const size = kind === "png" ? 1024 : 512;
+        const canvas = renderMatrixToCanvas(matrix, style, size, undefined, hint);
+        const blob = kind === "png" ? await canvasToPngBlob(canvas) : await canvasToPdfBlob(canvas);
+        downloadBlob(blob, kind === "png" ? "qraft.png" : "qraft.pdf");
+      }
       hooks.setStatus(t("editor.exported"));
     } catch {
       hooks.setStatus(t("editor.encode_error"));
     }
-  });
+  };
 
-  root.querySelector("[data-act=svg]")?.addEventListener("click", async () => {
-    setOpen(false);
-    try {
-      const { draft, style } = hooks.get();
-      const hint = payloadTextOf(draft);
-      await ensureStyleLogos(style, hint);
-      const logo = await logoDataUrlForStyle(style, hint);
-      downloadBlob(
-        new Blob([matrixToSvg(encodeDraft(draft, style), style, 512, hint, logo)], {
-          type: "image/svg+xml",
-        }),
-        "qraft.svg",
-      );
-      hooks.setStatus(t("editor.exported"));
-    } catch {
-      hooks.setStatus(t("editor.encode_error"));
-    }
-  });
-
-  root.querySelector("[data-act=pdf]")?.addEventListener("click", async () => {
-    setOpen(false);
-    try {
-      const { draft, style } = hooks.get();
-      const hint = payloadTextOf(draft);
-      await ensureStyleLogos(style, hint);
-      const canvas = renderMatrixToCanvas(encodeDraft(draft, style), style, 512, undefined, hint);
-      downloadBlob(await canvasToPdfBlob(canvas), "qraft.pdf");
-      hooks.setStatus(t("editor.exported"));
-    } catch {
-      hooks.setStatus(t("editor.encode_error"));
-    }
-  });
+  root.querySelector("[data-act=png]")?.addEventListener("click", () => void runExport("png"));
+  root.querySelector("[data-act=svg]")?.addEventListener("click", () => void runExport("svg"));
+  root.querySelector("[data-act=pdf]")?.addEventListener("click", () => void runExport("pdf"));
 
   root.querySelector("[data-act=json]")?.addEventListener("click", async () => {
     try {

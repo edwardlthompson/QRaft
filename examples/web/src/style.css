@@ -310,30 +310,62 @@ main,
   gap: var(--gp-space-sm);
 }
 
-.qr-actions button {
+.qr-actions-primary {
+  margin-top: var(--gp-space-sm);
+}
+
+.qr-actions-secondary {
+  margin-top: 0;
+}
+
+.qr-logo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gp-space-sm);
+}
+
+.qr-actions button,
+.qr-btn-secondary {
   min-height: 2.75rem;
   padding-inline: var(--gp-space-md);
   border-radius: var(--gp-radius-md);
   border: 1px solid var(--gp-color-outline);
+  cursor: pointer;
+  font: inherit;
+}
+
+.qr-actions-primary > button,
+.qr-export-wrap > [data-act="export-toggle"] {
   background: var(--gp-color-primary);
   color: var(--gp-color-on-primary);
-  cursor: pointer;
+}
+
+.qr-btn-secondary,
+.qr-actions-secondary button {
+  background: var(--gp-color-surface);
+  color: var(--gp-color-on-surface);
 }
 
 .qr-export-wrap {
   position: relative;
   display: inline-flex;
+  vertical-align: top;
 }
 
-.qr-export-pop {
+/* Author `display:flex` must not override the hidden attribute. */
+.qr-export-pop[hidden] {
+  display: none !important;
+}
+
+.qr-export-pop:not([hidden]) {
   position: absolute;
-  z-index: 5;
-  top: calc(100% + var(--gp-space-xs));
+  z-index: 40;
+  bottom: calc(100% + var(--gp-space-xs));
   inset-inline-start: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--gp-space-xs);
-  min-width: 8rem;
+  gap: 0;
+  min-width: 9rem;
   padding: var(--gp-space-xs);
   border-radius: var(--gp-radius-md);
   border: 1px solid var(--gp-color-outline);
@@ -342,9 +374,18 @@ main,
 
 .qr-export-pop button {
   width: 100%;
-  justify-content: flex-start;
-  background: var(--gp-color-surface);
+  min-height: 2.5rem;
+  margin: 0;
+  border: 0;
+  border-radius: var(--gp-radius-sm);
+  background: transparent;
   color: var(--gp-color-on-surface);
+  text-align: start;
+}
+
+.qr-export-pop button:hover,
+.qr-export-pop button:focus-visible {
+  background: var(--gp-color-surface-variant);
 }
 
 .qr-preview-canvas {
