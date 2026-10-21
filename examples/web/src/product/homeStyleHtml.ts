@@ -28,7 +28,7 @@ export function homeStyleHtml(style: QrStyle): string {
   const hasLogo = style.logoImagePath.trim() !== "";
   const diameter = Math.round(style.logoCutout.diameterFraction * 100);
   return `
-    <h3 class="qr-section-title">${t("editor.section.look")}</h3>
+    <h2 class="qr-section-title">${t("editor.section.look")}</h2>
     <div class="qr-preset-strip" role="group" aria-label="${t("style.presets")}">
       ${STYLE_PRESETS.map(
         (p) =>

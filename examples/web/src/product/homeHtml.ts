@@ -14,7 +14,7 @@ export function homeHtml(draft: EditorDraft, style: QrStyle, saveName: string): 
       <section class="qr-pane qr-pane-controls">
         <div class="qr-controls-grid">
           <div class="qr-controls-col qr-controls-payload">
-            <h3 class="qr-section-title">${t("editor.section.payload")}</h3>
+            <h2 class="qr-section-title">${t("editor.section.payload")}</h2>
             <label>${t("editor.kind")}
               <select data-field="kind" title="${t("editor.kind")}">${kinds.map((k) => `<option value="${k}" ${draft.kind === k ? "selected" : ""}>${t(`kind.${k}`)}</option>`).join("")}</select>
             </label>

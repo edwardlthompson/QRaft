@@ -10,11 +10,11 @@ test("preview sends CSP and referrer policy", async ({ page }) => {
   expect(headers["permissions-policy"] ?? "").toContain("camera=()");
 });
 
-test("renders golden path heading", async ({ page }) => {
+test("renders QRaft shell and home editor", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Golden Path PWA" })).toBeVisible();
-  await expect(page.getByText("Hello, FOSS!")).toBeVisible();
-  await expect(page.getByTestId("status")).toContainText("Golden Path PWA");
+  await expect(page.getByRole("heading", { name: "QRaft" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
+  await expect(page.getByTestId("qr-preview")).toBeVisible();
 });
 
 test("rtl dir places the title after header actions", async ({ page }) => {
@@ -23,7 +23,7 @@ test("rtl dir places the title after header actions", async ({ page }) => {
     document.documentElement.setAttribute("dir", "rtl");
   });
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-  await expect(page.getByRole("heading", { name: "Golden Path PWA" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "QRaft" })).toBeVisible();
   const title = await page.locator(".gp-title").boundingBox();
   const actions = await page.locator(".gp-header-actions").boundingBox();
   expect(title).toBeTruthy();
@@ -31,10 +31,11 @@ test("rtl dir places the title after header actions", async ({ page }) => {
   expect(title!.x).toBeGreaterThan(actions!.x);
 });
 
-test("reduced motion shortens theme-toggle transitions", async ({ page }) => {
+test("reduced motion shortens settings theme control transitions", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  const duration = await page.locator(".gp-theme-toggle").evaluate((el) => {
+  await page.getByRole("button", { name: "Settings" }).click();
+  const duration = await page.locator("[data-settings-theme]").evaluate((el) => {
     return Number.parseFloat(getComputedStyle(el).transitionDuration);
   });
   expect(duration).toBeLessThan(0.02);
@@ -104,6 +105,7 @@ test("passes accessibility audit with about panel open", async ({ page }) => {
 test("homepage visual snapshot", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("main")).toBeVisible();
+  await expect(page.getByTestId("qr-preview")).toBeVisible();
   await expect(page).toHaveScreenshot("homepage.png", { maxDiffPixelRatio: 0.02 });
 });
 
@@ -146,9 +148,11 @@ test("opens About from Settings with donate links", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Donate via Venmo" })).toBeVisible();
 });
 
-test("shows quiet donate action in the header", async ({ page }) => {
+test("donate lives in About, not the header", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("button", { name: "Donate via Venmo" })).toBeVisible();
+  await expect(page.locator("[data-donate-open]")).toHaveCount(0);
+  await page.getByRole("button", { name: "About" }).click();
+  await expect(page.getByRole("link", { name: "Donate via Venmo" })).toBeVisible();
 });
 
 test.describe("donate nudge", () => {
@@ -189,12 +193,11 @@ test("serves cached shell offline via service worker", async ({ page, context })
   });
   await page.reload();
   await page.waitForLoadState("networkidle");
-  await expect(page.getByRole("heading", { name: "Golden Path PWA" })).toBeVisible();
-  await expect(page.getByText("Hello, FOSS!")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "QRaft" })).toBeVisible();
+  await expect(page.getByTestId("qr-preview")).toBeVisible();
 
   await context.setOffline(true);
   await page.reload();
-  await expect(page.getByRole("heading", { name: "Golden Path PWA" })).toBeVisible();
-  await expect(page.getByText("Hello, FOSS!")).toBeVisible();
-  await expect(page.getByTestId("status")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "QRaft" })).toBeVisible();
+  await expect(page.getByTestId("qr-preview")).toBeVisible();
 });

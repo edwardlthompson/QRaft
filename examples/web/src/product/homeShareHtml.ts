@@ -3,7 +3,7 @@ import { t } from "../i18n";
 /** Share / export / import actions — fourth column on expanded Home. */
 export function homeShareHtml(): string {
   return `
-    <h3 class="qr-section-title">${t("editor.section.share")}</h3>
+    <h2 class="qr-section-title">${t("editor.section.share")}</h2>
     <div class="qr-actions qr-actions-primary qr-actions-stack">
       <button type="button" data-act="save" title="${t("editor.save")}">${t("editor.save")}</button>
       <div class="qr-export-wrap">

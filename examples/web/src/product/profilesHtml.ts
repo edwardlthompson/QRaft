@@ -21,7 +21,7 @@ export function profilesHtml(
   const checkedCount = list.filter((p) => checkedIds.has(p.id)).length;
   return `
       <section class="qr-pane qr-pane-library">
-        <h3 class="qr-section-title">${t("profiles.section.library")}</h3>
+        <h2 class="qr-section-title">${t("profiles.section.library")}</h2>
         <label>${t("profiles.search")}
           <input data-field="query" placeholder="${t("profiles.search")}" value="${escapeAttr(query)}" />
         </label>
@@ -36,7 +36,7 @@ export function profilesHtml(
         </div>
       </section>
       <section class="qr-pane qr-pane-gallery">
-        <h3 class="qr-section-title">${t("profiles.section.gallery")}</h3>
+        <h2 class="qr-section-title">${t("profiles.section.gallery")}</h2>
         <ul class="qr-profile-list">
           ${list
             .map(
@@ -57,10 +57,10 @@ export function profilesHtml(
         ${list.length === 0 ? `<p class="qr-hint">${t("profiles.empty")}</p>` : ""}
       </section>
       <section class="qr-pane qr-pane-detail">
-        <h3 class="qr-section-title">${t("profiles.section.detail")}</h3>
+        <h2 class="qr-section-title">${t("profiles.section.detail")}</h2>
         ${
           selected
-            ? `<h2 class="qr-profile-detail-title">${escapeHtml(selected.name)}</h2>
+            ? `<p class="qr-profile-detail-title">${escapeHtml(selected.name)}</p>
                <p class="qr-mono">${escapeHtml(selected.payloadText.slice(0, 160))}</p>
                <div class="qr-profile-detail-preview" data-preview></div>
                <div class="qr-actions qr-actions-stack">

@@ -232,9 +232,9 @@ write_lf(
     e2e.joinpath("app.spec.ts"),
     """import { expect, test } from "@playwright/test";
 
-test("renders golden path heading without About slice", async ({ page }) => {
+test("renders shell heading without About slice", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Golden Path PWA" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "QRaft" })).toBeVisible();
   await expect(page.getByTestId("status")).toBeVisible();
 });
 """,
