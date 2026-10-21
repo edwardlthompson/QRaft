@@ -38,7 +38,7 @@ describe("normalizeDonations", () => {
   it("loadDonations keeps quiet Venmo when fetch fails", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
     const result = await loadDonations();
-    expect(result.enabled).toBe(true);
+    expect(result.enabled).toBe(false);
     expect(result.links[0]?.url).toBe(DEFAULT_VENMO_URL);
     vi.unstubAllGlobals();
   });
@@ -99,7 +99,7 @@ describe("normalizeDonations", () => {
   it("loadDonations keeps quiet Venmo when response is not ok", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false }));
     const result = await loadDonations();
-    expect(result.enabled).toBe(true);
+    expect(result.enabled).toBe(false);
     expect(result.links[0]?.url).toBe(DEFAULT_VENMO_URL);
     vi.unstubAllGlobals();
   });

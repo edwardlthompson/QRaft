@@ -37,14 +37,14 @@ export function homeHtml(draft: EditorDraft, style: QrStyle, saveName: string): 
         </label>
         <label class="qr-check"><input type="checkbox" data-field="oled" ${style.colorTheme === "OLED" ? "checked" : ""}/> ${t("style.oled")}</label>
         <div class="qr-actions">
-          <button type="button" data-act="save">${t("editor.save")}</button>
-          <button type="button" data-act="png">${t("editor.export_png")}</button>
-          <button type="button" data-act="svg">${t("editor.export_svg")}</button>
-          <button type="button" data-act="pdf">${t("editor.export_pdf")}</button>
-          <button type="button" data-act="json">${t("editor.export_json")}</button>
-          <button type="button" data-act="import">${t("editor.import_json")}</button>
-          <button type="button" data-act="print">${t("editor.print")}</button>
-          <button type="button" data-act="new">${t("editor.new")}</button>
+          <button type="button" data-act="save" title="${t("editor.save")}">${t("editor.save")}</button>
+          <button type="button" data-act="png" title="${t("editor.export_png")}">${t("editor.export_png")}</button>
+          <button type="button" data-act="svg" title="${t("editor.export_svg")}">${t("editor.export_svg")}</button>
+          <button type="button" data-act="pdf" title="${t("editor.export_pdf")}">${t("editor.export_pdf")}</button>
+          <button type="button" data-act="json" title="${t("editor.export_json")}">${t("editor.export_json")}</button>
+          <button type="button" data-act="import" title="${t("editor.import_json")}">${t("editor.import_json")}</button>
+          <button type="button" data-act="print" title="${t("editor.print")}">${t("editor.print")}</button>
+          <button type="button" data-act="new" title="${t("editor.new")}">${t("editor.new")}</button>
         </div>
         <input type="file" accept="application/json,.json" data-import hidden />
         <p class="qr-hint">${t("tips.install")}</p>

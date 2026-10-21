@@ -22,11 +22,14 @@ export function createThemeToggle(): HTMLButtonElement {
   button.type = "button";
   button.className = "gp-theme-toggle";
   button.setAttribute("aria-label", t("theme.toggle.label"));
+  button.title = t("theme.toggle.label");
 
   const sync = (): void => {
     const mode = getThemeMode();
     button.textContent = ICONS[mode];
-    button.setAttribute("aria-label", `${t("theme.toggle.label")}: ${themeAriaLabel(mode)}`);
+    const label = `${t("theme.toggle.label")}: ${themeAriaLabel(mode)}`;
+    button.setAttribute("aria-label", label);
+    button.title = label;
   };
 
   button.addEventListener("click", () => {

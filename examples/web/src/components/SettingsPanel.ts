@@ -21,25 +21,25 @@ export function createSettingsPanel(callbacks: SettingsPanelCallbacks): HTMLElem
   panel.innerHTML = `
     <header class="gp-settings-header">
       <h2>${t("settings.title")}</h2>
-      <button type="button" class="gp-settings-close" aria-label="${t("settings.close")}">×</button>
+      <button type="button" class="gp-settings-close" aria-label="${t("settings.close")}" title="${t("settings.close")}">×</button>
     </header>
     <label class="gp-settings-field">
       <span>${t("settings.theme.label")}</span>
-      <select data-settings-theme>
+      <select data-settings-theme title="${t("settings.theme.label")}" aria-label="${t("settings.theme.label")}">
         <option value="system">${t("settings.theme.mode.system")}</option>
         <option value="light">${t("settings.theme.mode.light")}</option>
         <option value="dark">${t("settings.theme.mode.dark")}</option>
       </select>
     </label>
     <label class="gp-settings-field">
-      <input type="checkbox" data-save-crashes />
+      <input type="checkbox" data-save-crashes title="${t("settings.feedback.save_crashes")}" />
       <span>${t("settings.feedback.save_crashes")}</span>
     </label>
     <div class="gp-settings-field">
-      <button type="button" data-settings-about>${t("settings.about")}</button>
+      <button type="button" data-settings-about title="${t("settings.about")}">${t("settings.about")}</button>
       <p class="gp-settings-hint" data-settings-about-hint>${t("settings.about_hint")}</p>
-      <button type="button" data-settings-export>${t("settings.export")}</button>
-      <button type="button" data-settings-import>${t("settings.import")}</button>
+      <button type="button" data-settings-export title="${t("settings.export")}">${t("settings.export")}</button>
+      <button type="button" data-settings-import title="${t("settings.import")}">${t("settings.import")}</button>
       <input type="file" accept="application/json" hidden data-settings-import-file />
     </div>
   `;

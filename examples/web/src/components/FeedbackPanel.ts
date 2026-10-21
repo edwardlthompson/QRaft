@@ -50,15 +50,18 @@ export function createFeedbackPanel(
   openBtn.type = "button";
   openBtn.dataset.testid = "feedback-open";
   openBtn.textContent = t("feedback.open");
+  openBtn.title = t("feedback.open");
   openBtn.disabled = true;
 
   const copyBtn = document.createElement("button");
   copyBtn.type = "button";
   copyBtn.textContent = t("feedback.copy");
+  copyBtn.title = t("feedback.copy");
 
   const discardBtn = document.createElement("button");
   discardBtn.type = "button";
   discardBtn.textContent = t("feedback.discard");
+  discardBtn.title = t("feedback.discard");
 
   const offline = document.createElement("p");
   offline.hidden = navigator.onLine;

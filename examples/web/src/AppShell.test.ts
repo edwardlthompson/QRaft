@@ -24,11 +24,32 @@ function baseState() {
 }
 
 describe("createAppShell nav render", () => {
+  it("shows brand logo and keeps donate/theme out of the header", () => {
+    const root = document.createElement("div");
+    createAppShell(
+      root,
+      {
+        ...baseState(),
+        donations: {
+          enabled: true,
+          message: "thanks",
+          links: [{ label: "Donate via Venmo", url: "https://venmo.com/u/x" }],
+        },
+      },
+      handlers(),
+    );
+    expect(root.querySelector("img.gp-logo")).toBeTruthy();
+    expect(root.querySelector("[data-donate-open]")).toBeNull();
+    expect(root.querySelector(".gp-theme-toggle")).toBeNull();
+    expect(root.querySelector("[data-settings-open]")?.getAttribute("title")).toBe("settings.open");
+  });
+
   it("renders settings from current(nav), not boolean flags", () => {
     const root = document.createElement("div");
     createAppShell(root, { ...baseState(), nav: push(homeNav(), "settings") }, handlers());
     expect(root.querySelector("[data-testid='settings-panel']")).toBeTruthy();
     expect(root.querySelector("[data-testid='about-panel']")).toBeNull();
+    expect(root.querySelector("[data-settings-theme]")).toBeTruthy();
   });
 
   it("Close and Escape bind to onPop", () => {

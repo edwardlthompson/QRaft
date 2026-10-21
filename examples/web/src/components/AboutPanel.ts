@@ -30,6 +30,7 @@ export function createAboutPanel(
   closeBtn.type = "button";
   closeBtn.className = "gp-about-close";
   closeBtn.setAttribute("aria-label", t("about.close"));
+  closeBtn.title = t("about.close");
   closeBtn.textContent = "×";
   closeBtn.addEventListener("click", onClose);
 
@@ -61,6 +62,7 @@ export function createAboutPanel(
     applyBtn.className = "gp-about-apply";
     applyBtn.dataset.testid = "about-apply";
     applyBtn.textContent = t("about.update.apply");
+    applyBtn.title = t("about.update.apply");
     applyBtn.addEventListener("click", onApplyUpdate);
     panel.append(applyBtn);
   }
@@ -85,6 +87,7 @@ export function createAboutPanel(
       anchor.target = "_blank";
       anchor.rel = "noopener noreferrer";
       anchor.dataset.testid = "about-donation-link";
+      anchor.title = link.label;
       anchor.textContent = link.label;
       item.append(anchor);
       donateList.append(item);
@@ -97,6 +100,7 @@ export function createAboutPanel(
     bugBtn.type = "button";
     bugBtn.dataset.testid = "about-report-bug";
     bugBtn.textContent = t("feedback.bug.title");
+    bugBtn.title = t("feedback.bug.title");
     bugBtn.addEventListener("click", onReportBug);
     panel.append(bugBtn);
   }
@@ -105,6 +109,7 @@ export function createAboutPanel(
     featBtn.type = "button";
     featBtn.dataset.testid = "about-request-feature";
     featBtn.textContent = t("feedback.feature.title");
+    featBtn.title = t("feedback.feature.title");
     featBtn.addEventListener("click", onRequestFeature);
     panel.append(featBtn);
   }

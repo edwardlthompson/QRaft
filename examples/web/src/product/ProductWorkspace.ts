@@ -69,9 +69,9 @@ export function mountProductWorkspace(
     const view = route === "profiles" || route === "wallpaper" ? route : "home";
     root.innerHTML = `
       <nav class="qr-tabs" aria-label="${t("nav.primary")}">
-        <button type="button" data-tab="home" class="${view === "home" ? "is-active" : ""}">${t("nav.home")}</button>
-        <button type="button" data-tab="profiles" class="${view === "profiles" ? "is-active" : ""}">${t("nav.profiles")}</button>
-        <button type="button" data-tab="wallpaper" class="${view === "wallpaper" ? "is-active" : ""}">${t("nav.wallpaper")}</button>
+        <button type="button" data-tab="home" class="${view === "home" ? "is-active" : ""}" title="${t("nav.home")}">${t("nav.home")}</button>
+        <button type="button" data-tab="profiles" class="${view === "profiles" ? "is-active" : ""}" title="${t("nav.profiles")}">${t("nav.profiles")}</button>
+        <button type="button" data-tab="wallpaper" class="${view === "wallpaper" ? "is-active" : ""}" title="${t("nav.wallpaper")}">${t("nav.wallpaper")}</button>
       </nav>
       <div class="qr-adaptive" data-view="${view}">
         ${view === "home" ? homeHtml(draft, style, saveName) : ""}

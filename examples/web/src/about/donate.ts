@@ -11,5 +11,5 @@ export function withQuietDonate(config: DonationConfig): DonationConfig {
         link.url === VENMO_DONATE_URL ? { ...link, label: DONATE_LABEL } : link,
       )
     : [...config.links, { label: DONATE_LABEL, url: VENMO_DONATE_URL }];
-  return { enabled: true, message: config.message, links };
+  return { enabled: config.enabled, message: config.message, links };
 }

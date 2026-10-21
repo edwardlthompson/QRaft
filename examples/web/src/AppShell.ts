@@ -2,10 +2,10 @@ import { APP_VERSION } from "./about/aboutSession";
 import { createLaunchPromptDialog } from "./about/launchPrompt";
 import type { LaunchPrompt } from "./about/runAppUpdates";
 import type { DonationConfig } from "./about/types";
+import { assetUrl } from "./assetUrl";
 import { createAboutPanel } from "./components/AboutPanel";
 import { createFeedbackPanel } from "./components/FeedbackPanel";
 import { createSettingsPanel } from "./components/SettingsPanel";
-import { createThemeToggle } from "./components/ThemeToggle";
 import { t } from "./i18n";
 import { applyPanelScroll, current, type FeedbackKind, type GpRoute, type NavState } from "./nav";
 import { PRODUCT_ROUTES } from "./nav/types";
@@ -41,25 +41,25 @@ export function createAppShell(
   callbacks: AppShellCallbacks,
 ): void {
   const route = current(state.nav);
-  const donateEnabled = state.donations.enabled && state.donations.links.length > 0;
 
   productCleanup?.();
   productCleanup = undefined;
   dialogCleanup?.();
   dialogCleanup = undefined;
 
+  const logoSrc = assetUrl("logo.svg");
   root.innerHTML = `
     <main class="qr-main">
       <div class="gp-header">
-        <h1 class="gp-title">${t("app.title")}</h1>
+        <div class="gp-brand">
+          <img class="gp-logo" src="${logoSrc}" width="40" height="40" alt="${t("app.logo.alt")}" />
+          <h1 class="gp-title">${t("app.title")}</h1>
+        </div>
         <div class="gp-header-actions">
-          ${
-            donateEnabled
-              ? `<button type="button" class="gp-donate-btn" data-donate-open>${t("about.donate")}</button>`
-              : ""
-          }
-          <button type="button" class="gp-settings-btn" data-settings-open aria-label="${t("settings.open")}">⚙</button>
-          <button type="button" class="gp-about-btn" data-about-open aria-label="${t("about.open")}">i</button>
+          <button type="button" class="gp-settings-btn" data-settings-open
+            aria-label="${t("settings.open")}" title="${t("settings.open")}">⚙</button>
+          <button type="button" class="gp-about-btn" data-about-open
+            aria-label="${t("about.open")}" title="${t("about.open")}">i</button>
         </div>
       </div>
       <div data-product-mount class="qr-product-mount"></div>
@@ -67,10 +67,6 @@ export function createAppShell(
     </main>
   `;
 
-  const actions = root.querySelector<HTMLDivElement>(".gp-header-actions");
-  if (actions) actions.insertBefore(createThemeToggle(), actions.firstChild);
-
-  root.querySelector("[data-donate-open]")?.addEventListener("click", () => callbacks.onDonate?.());
   root
     .querySelector("[data-about-open]")
     ?.addEventListener("click", () => toggleOrPush(route, "about", callbacks));

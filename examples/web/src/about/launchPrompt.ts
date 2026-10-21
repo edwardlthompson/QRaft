@@ -34,6 +34,8 @@ export function createLaunchPromptDialog(
     decline.textContent = t("about.update.later");
   }
 
+  accept.title = accept.textContent ?? "";
+  decline.title = decline.textContent ?? "";
   accept.addEventListener("click", () => onChoose(true));
   decline.addEventListener("click", () => onChoose(false));
   actions.append(accept, decline);

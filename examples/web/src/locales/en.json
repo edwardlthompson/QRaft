@@ -1,5 +1,6 @@
 {
   "app.title": "QRaft",
+  "app.logo.alt": "QRaft logo",
   "app.greeting": "Craft custom QR codes offline",
   "app.status.online": "Online — QRaft PWA",
   "app.status.offline": "Offline — QRaft PWA",

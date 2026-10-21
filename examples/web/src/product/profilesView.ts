@@ -31,7 +31,7 @@ export function profilesHtml(
           ${list
             .map(
               (p) =>
-                `<li><button type="button" data-profile="${p.id}" class="${p.id === selectedId ? "is-active" : ""}">${escapeHtml(p.name)}</button></li>`,
+                `<li><button type="button" data-profile="${p.id}" class="${p.id === selectedId ? "is-active" : ""}" title="${escapeAttr(p.name)}">${escapeHtml(p.name)}</button></li>`,
             )
             .join("")}
         </ul>
@@ -43,8 +43,8 @@ export function profilesHtml(
                <p class="qr-mono">${escapeHtml(selected.payloadText.slice(0, 120))}</p>
                <div data-preview></div>
                <div class="qr-actions">
-                 <button type="button" data-act="load">${t("profiles.load")}</button>
-                 <button type="button" data-act="delete">${t("profiles.delete")}</button>
+                 <button type="button" data-act="load" title="${t("profiles.load")}">${t("profiles.load")}</button>
+                 <button type="button" data-act="delete" title="${t("profiles.delete")}">${t("profiles.delete")}</button>
                </div>`
             : `<p>${t("profiles.select_hint")}</p>`
         }

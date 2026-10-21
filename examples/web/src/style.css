@@ -44,12 +44,32 @@ main,
   text-align: start;
 }
 
+.gp-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--gp-space-sm);
+  min-width: 0;
+}
+
+.gp-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: var(--gp-radius-md);
+}
+
 .gp-title {
   font-size: var(--gp-text-title-large-size);
   font-weight: var(--gp-text-title-large-weight);
   line-height: var(--gp-text-title-large-line);
   margin: 0;
   color: var(--gp-color-on-surface);
+}
+
+.gp-header-actions button[title],
+.qr-actions button[title],
+.qr-tabs button[title] {
+  cursor: pointer;
 }
 
 .gp-theme-toggle {

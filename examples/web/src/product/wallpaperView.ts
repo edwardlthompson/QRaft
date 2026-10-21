@@ -12,9 +12,9 @@ export function wallpaperHtml(wallW: number, wallH: number, margin: number): str
         <label>${t("wallpaper.height")} <input type="number" data-field="wallH" value="${wallH}" min="320" max="7680"/></label>
         <label>${t("wallpaper.margin")} <input type="number" data-field="margin" value="${margin}" min="0" max="0.2" step="0.01"/></label>
         <div class="qr-actions">
-          <button type="button" data-act="preset-phone">${t("wallpaper.preset_phone")}</button>
-          <button type="button" data-act="preset-desktop">${t("wallpaper.preset_desktop")}</button>
-          <button type="button" data-act="download">${t("wallpaper.download")}</button>
+          <button type="button" data-act="preset-phone" title="${t("wallpaper.preset_phone")}">${t("wallpaper.preset_phone")}</button>
+          <button type="button" data-act="preset-desktop" title="${t("wallpaper.preset_desktop")}">${t("wallpaper.preset_desktop")}</button>
+          <button type="button" data-act="download" title="${t("wallpaper.download")}">${t("wallpaper.download")}</button>
         </div>
         <p class="qr-hint">${t("tips.wallpaper")}</p>
       </section>

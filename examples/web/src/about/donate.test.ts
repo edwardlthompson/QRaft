@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { DONATE_LABEL, VENMO_DONATE_URL, withQuietDonate } from "./donate";
 
 describe("withQuietDonate", () => {
-  it("always adds the Venmo link", () => {
+  it("adds the Venmo link without forcing donations on", () => {
     const result = withQuietDonate({ enabled: false, message: "", links: [] });
-    expect(result.enabled).toBe(true);
+    expect(result.enabled).toBe(false);
     expect(result.links).toEqual([{ label: DONATE_LABEL, url: VENMO_DONATE_URL }]);
   });
 
