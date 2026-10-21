@@ -225,3 +225,20 @@
 | **Fix** | `packages: platform-tools` on every `setup-android@v4` (CI + CodeQL) |
 | **Prevention** | Do not restore the default `tools` package; Gradle still downloads platforms/build-tools |
 
+### KB-027 — CodeQL `vcodeql-bundle-*` is not an action tag
+
+| Field | Detail |
+|-------|--------|
+| **Symptom** | CodeQL workflow fails: `Unable to resolve action github/codeql-action@vcodeql-bundle-v2.27.x` |
+| **Cause** | `upd` / Dependabot confuse CodeQL *bundle* release names with `codeql-action` tags |
+| **Fix** | Pin `github/codeql-action/{init,analyze,upload-sarif}@v4` (or a real `v4.x.y` tag) |
+| **Prevention** | Never apply `vcodeql-bundle-*` to workflows; `validate-workflow-actions` before push |
+
+### KB-028 — About CLI strip and Playwright must match pruned product
+
+| Field | Detail |
+|-------|--------|
+| **Symptom** | Local about-feature-gate `FileNotFoundError` on `examples/rust/...`; CI Playwright looks for `Golden Path PWA` |
+| **Cause** | Child android/web repos prune CLI Golden Paths; product chrome uses QRaft i18n while e2e stayed on template strings |
+| **Fix** | `about_lego_cli.strip`/`restore` no-op when stacks missing; e2e asserts QRaft shell + h2 section titles |
+| **Prevention** | After branding/prune, update `e2e/app.spec.ts` and keep CLI about helpers stack-gated |
