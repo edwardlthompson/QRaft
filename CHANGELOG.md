@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
 ## [1.4.0](https://github.com/edwardlthompson/QRaft/compare/v1.3.0...v1.4.0) (2026-10-21)
 
 
@@ -30,8 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **web:** give Profiles Gallery leftover space so cards do not spill ([b1d4fa7](https://github.com/edwardlthompson/QRaft/commit/b1d4fa7cbdb0f7216d9154f52b7ba8b98c5df54f))
 * **web:** keep Profiles Selected pane from overlapping Gallery ([e9a8a4a](https://github.com/edwardlthompson/QRaft/commit/e9a8a4a6753f1a0f87d43a84ff69619550c5e689))
 * **web:** polish PWA chrome — logos, tooltips, settings theme ([4d8778b](https://github.com/edwardlthompson/QRaft/commit/4d8778bd10d35d98f4b89ac7f6cb8667a4f3caaf))
-
-## [Unreleased]
 
 ## [1.3.0](https://github.com/edwardlthompson/QRaft/compare/v1.2.0...v1.3.0) (2026-09-15)
 
