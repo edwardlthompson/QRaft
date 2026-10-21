@@ -13,8 +13,12 @@ const sample: QrProfile = {
 };
 
 describe("profilesHtml", () => {
-  it("renders thumbnails, kind chip, and batch export control", () => {
+  it("renders library, gallery, and detail columns", () => {
     const html = profilesHtml([sample], "", "NEWEST", null, new Set());
+    expect(html).toContain("qr-pane-library");
+    expect(html).toContain("qr-pane-gallery");
+    expect(html).toContain("qr-pane-detail");
+    expect(html).toContain("qr-profile-card");
     expect(html).toContain('data-thumb="p1"');
     expect(html).toContain("URL");
     expect(html).toContain('data-act="batch-pdf"');

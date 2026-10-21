@@ -40,7 +40,7 @@ async function fillThumbs(root: HTMLElement, profiles: QrProfile[]): Promise<voi
       const canvas = renderMatrixToCanvas(
         encodeDraft(draft, style),
         style,
-        192,
+        320,
         undefined,
         p.payloadText,
       );

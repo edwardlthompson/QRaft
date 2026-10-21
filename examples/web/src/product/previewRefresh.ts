@@ -31,7 +31,7 @@ export function refreshProductPreview(
       const canvas =
         route === "wallpaper"
           ? composeWallpaperPng(matrix, style, wallW, wallH, margin, hint)
-          : renderMatrixToCanvas(matrix, style, 280, undefined, hint);
+          : renderMatrixToCanvas(matrix, style, route === "profiles" ? 480 : 280, undefined, hint);
       canvas.className = "qr-preview-canvas";
       canvas.setAttribute("data-testid", "qr-preview");
       pane.appendChild(canvas);
