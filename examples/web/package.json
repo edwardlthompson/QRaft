@@ -38,7 +38,7 @@
     "@puppeteer/browsers": ">=3.2.0",
     "proxy-agent": ">=8.0.2",
     "postcss": ">=8.5.23",
-    "qs": ">=6.16.0",
+    "qs": ">=6.17.1",
     "basic-ftp": ">=6.2.1",
     "proxy-addr": ">=2.0.8"
   }
