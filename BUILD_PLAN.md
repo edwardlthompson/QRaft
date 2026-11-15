@@ -57,3 +57,8 @@ No open leftovers.
 ## Ongoing Maintenance
 
 Monday cron + Dependabot own weekly health (see workflows). Past ship-time checklist items → [`COMPLETED_TASKS.md`](COMPLETED_TASKS.md).
+
+## News inbox (synced)
+
+- 🔲 [AGENT] Audit the repo for wfx-loot IOCs — scope: .github/,scripts/ (news P1, 2026-11-14) https://blog.gitguardian.com/wfx-loot-a-ci-secret-stealer-pushed-with-stolen-github-credentials/
+- 🔲 [ADB] Test lock-screen glance panels with QPR2 widget editing (news P2, 2026-11-13) https://www.androidauthority.com/android-17-qpr2-stable-3733645/
