@@ -70,11 +70,22 @@ async function main() {
     console.error("home loaded");
     await page.getByTestId("qr-preview").waitFor({ state: "visible", timeout: 30_000 });
     console.error("qr preview visible");
-    await page.locator("[data-field='primary']").fill("https://github.com/edwardlthompson/QRaft");
-    await page.waitForFunction(() => {
-      const canvas = document.querySelector("[data-testid='qr-preview']");
-      return canvas instanceof HTMLCanvasElement && canvas.width > 0;
+    const payload = "https://github.com/edwardlthompson/QRaft";
+    const beforePreview = await page.getByTestId("qr-preview").evaluate((el) => {
+      return el instanceof HTMLCanvasElement ? el.toDataURL() : "";
     });
+    await page.locator("[data-field='primary']").fill(payload);
+    await page.waitForFunction(
+      ({ prev, url }) => {
+        const field = document.querySelector("[data-field='primary']");
+        const canvas = document.querySelector("[data-testid='qr-preview']");
+        if (!(field instanceof HTMLInputElement) || field.value !== url) return false;
+        if (!(canvas instanceof HTMLCanvasElement) || canvas.width === 0) return false;
+        return canvas.toDataURL() !== prev;
+      },
+      { prev: beforePreview, url: payload },
+      { timeout: 15_000 },
+    );
     await page.screenshot({
       path: path.join(shots, "01-home-editor.png"),
       type: "png",
