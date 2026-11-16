@@ -1,1 +1,1 @@
-chore: template upgrade 1.13.0
+QRaft 1.4.0: copy QR as PNG, payload kind hints, discard confirms, and signed GitHub Release APKs. Offline, no ads or Play Services.

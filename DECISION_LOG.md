@@ -3,6 +3,14 @@
 > Chronological register of major technical trade-offs, accepted architectures, and rejected alternatives.
 > **Treat past entries as immutable history; append only.**
 
+## 2026-11-16 — F-Droid source readiness
+
+- **Status:** Accepted
+- **Context:** fdroiddata fork branch `fdroid/org.qraft.app` builds tagged tree 1.3.0 / 3. Git tag `v1.4.0` is Release Please changelog-only (still `versionName 1.3.0` / `versionCode` 3). HEAD is 1.4.0 / 4 and untagged. Nested `examples/android/fastlane` had the Golden Path stub short_description; F-Droid scrapes repo-root Fastlane. `signingConfigs.getByName("release")` needs a prebuild sed after F-Droid strips signing.
+- **Decision:** Canonical listing at `fastlane/metadata/android/en-US/`. `maybeCreate`/`findByName` for release signing. Do not move or delete `v1.4.0`. Edward tags the post-merge commit as **`v1.4.0-4`**. Phone screenshots are the running FOSS PWA at a Pixel viewport (no emulator in this environment). Wire `build.gradle.kts` into Release Please extra-files so future `versionName` tracks tags.
+- **Alternatives considered:** Moving `v1.4.0` (rejected — never rewrite published tags). Bumping to 1.4.1 / 5 only to get a clean `v1.4.1` (deferred; new tag on the 1.4.0 / 4 tree is enough). Invented screenshot PNGs (rejected).
+- **Consequences:** Fork YAML should drop the `getByName`→`maybeCreate` prebuild sed, pin `commit: v1.4.0-4`, and set CurrentVersion 1.4.0 / 4 after Edward tags. Keep `AutoUpdateMode: None` while `v1.4.0` still names the 1.3.0 tree.
+
 ## 2026-09-14 — /ship vault and UX leftovers
 
 - **Status:** Accepted

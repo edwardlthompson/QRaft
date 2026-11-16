@@ -54,6 +54,12 @@ No open leftovers.
 
 ---
 
+## F-Droid source readiness
+
+#### Sequential
+
+1. ✅ [AGENT] Root Fastlane metadata, F-Droid-tolerant release signingConfig, real store screenshots, and tag-mismatch notes for Edward
+
 ## Ongoing Maintenance
 
 Monday cron + Dependabot own weekly health (see workflows). Past ship-time checklist items → [`COMPLETED_TASKS.md`](COMPLETED_TASKS.md).

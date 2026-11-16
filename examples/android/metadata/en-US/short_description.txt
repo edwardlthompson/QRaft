@@ -1,1 +1,1 @@
-Offline QR codes for home widgets, lock-screen glance panels, and wallpapers.
+Craft custom QR codes for widgets, lock-screen glance panels, and wallpapers

@@ -1,0 +1,14 @@
+QRaft is a free, open-source Android app (LineageOS / AOSP first) that
+generates highly customized QR codes, shows them as home and lock-screen
+widgets, and sets device-fitted QR wallpapers — offline and F-Droid-friendly.
+
+There is no INTERNET permission, no account, and no analytics. Profiles stay
+on the device.
+
+Type a website, Wi-Fi, vCard, or text payload. Style modules and finder
+eyes. Save a profile. Pin a Glance widget on the home screen or a LineageOS
+lock-screen panel. Tap to a full-screen bright QR. Set a safe-zone wallpaper
+that keeps finder patterns inside the zoom crop. The same creator also runs
+as a FOSS PWA on GitHub Pages.
+
+Apache-2.0. No Google Play Services, ads, or tracking.
