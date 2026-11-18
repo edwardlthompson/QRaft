@@ -1,5 +1,70 @@
 # Build Plan
 
+<!-- remaining-tally -->
+**Remaining:** (tally on next sync)
+<!-- /remaining-tally -->
+
+Live board. Canonical shape: agent-project-bootstrap `BUILD_PLAN_TEMPLATE.md`.
+Finished work: [`COMPLETED_TASKS.md`](COMPLETED_TASKS.md).
+
+**Who:** `AGENT` code · `HUMAN` person · `ADB` device · `AUTO` CI/scripts
+**Venue (AGENT only):** `[LOCAL]` This Computer · `[CLOUD]` Cursor Cloud
+**State:** 🔲 open · ✅ done · ❌ blocked
+
+Format: `🔲 [AGENT][LOCAL] Short task — scope: path/prefix`.
+
+### Open PRs (synced)
+
+> Auto-managed. Do not hand-edit inside the markers.
+
+<!-- open-prs-sync:begin -->
+_No open Dependabot or Release Please PRs._
+<!-- open-prs-sync:end -->
+
+### Template gaps (synced)
+
+> Auto-managed. Do not hand-edit inside the markers.
+
+<!-- template-gaps-sync:begin -->
+_No template gaps._
+<!-- template-gaps-sync:end -->
+
+### Waiting on a person
+
+2. 🔲 [HUMAN] Confirm Pages URL after first green `pages.yml` deploy; update README pitch if needed
+- 🔲 [ADB] Test lock-screen glance panels with QPR2 widget editing (news P2, 2026-11-13) https://www.androidauthority.com/android-17-qpr2-stable-3733645/
+
+### Local agent (This Computer)
+
+Standing queue for This Computer. Rows: `🔲 [AGENT][LOCAL] … — scope: path`.
+
+<!-- local-agent-lane:begin -->
+- | 🔲 | Open |
+- | ❌ | Blocked (reason after the dash) |
+- 🔲 [AGENT][LOCAL] Audit the repo for wfx-loot IOCs — scope: .github/,scripts/ (news P1, 2026-11-14) https://blog.gitguardian.com/wfx-loot-a-ci-secret-stealer-pushed-with-stolen-github-credentials/
+<!-- local-agent-lane:end -->
+
+### Cloud agent (Cursor Cloud)
+
+Standing queue for Cursor Cloud. Rows: `🔲 [AGENT][CLOUD] … — scope: path`.
+
+<!-- cloud-agent-lane:begin -->
+_No cloud agent items._
+<!-- cloud-agent-lane:end -->
+
+## Archive
+
+Older sprints: [`COMPLETED_TASKS.md`](COMPLETED_TASKS.md).
+
+## Preserved source board
+
+Quoted so no prior task is lost. Prefer the lanes above; do not invent work.
+
+<details>
+<summary>Previous board</summary>
+
+# Build Plan
+
 > **QRaft** task board. Finished work → [`COMPLETED_TASKS.md`](COMPLETED_TASKS.md). Stuck automation → [`HUMAN_BACKLOG.md`](HUMAN_BACKLOG.md).
 
 | Marker | Meaning |
@@ -62,3 +127,5 @@ Monday cron + Dependabot own weekly health (see workflows). Past ship-time check
 
 - 🔲 [AGENT] Audit the repo for wfx-loot IOCs — scope: .github/,scripts/ (news P1, 2026-11-14) https://blog.gitguardian.com/wfx-loot-a-ci-secret-stealer-pushed-with-stolen-github-credentials/
 - 🔲 [ADB] Test lock-screen glance panels with QPR2 widget editing (news P2, 2026-11-13) https://www.androidauthority.com/android-17-qpr2-stable-3733645/
+
+</details>
