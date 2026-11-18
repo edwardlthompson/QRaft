@@ -6,8 +6,10 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-META="$ROOT/examples/android/metadata/en-US"
+FASTLANE="$ROOT/fastlane/metadata/android/en-US"
+LEGACY="$ROOT/examples/android/metadata/en-US"
 GRADLE="$ROOT/examples/android/app/build.gradle.kts"
+STUB="Golden Path FOSS Android stub"
 ERRORS=0
 
 fail() {
@@ -19,19 +21,56 @@ ok() {
   echo "OK   $1"
 }
 
-if [ ! -d "$META" ]; then
-  fail "missing $META"
+if [ -d "$FASTLANE" ]; then
+  META="$FASTLANE"
+  ok "root fastlane metadata present"
+elif [ -d "$LEGACY" ]; then
+  META="$LEGACY"
+  ok "legacy examples/android/metadata present"
 else
-  ok "metadata directory present"
+  META=""
+  fail "missing fastlane/metadata/android/en-US"
 fi
 
-for f in title.txt short_description.txt full_description.txt; do
-  if [ ! -s "$META/$f" ]; then
-    fail "missing or empty $META/$f"
-  else
-    ok "$f present"
+if [ -n "$META" ]; then
+  for f in title.txt short_description.txt full_description.txt; do
+    if [ ! -s "$META/$f" ]; then
+      fail "missing or empty $META/$f"
+    else
+      ok "$f present"
+    fi
+  done
+
+  if [ -s "$META/short_description.txt" ]; then
+    SHORT="$(tr -d '\n' <"$META/short_description.txt")"
+    if echo "$SHORT" | grep -q "$STUB"; then
+      fail "placeholder short_description still present"
+    fi
+    SHORT_LEN="${#SHORT}"
+    if [ "$SHORT_LEN" -gt 80 ]; then
+      fail "short_description is ${SHORT_LEN} chars (F-Droid max 80)"
+    else
+      ok "short_description length ${SHORT_LEN}"
+    fi
   fi
-done
+
+  if [ -f "$META/images/icon.png" ]; then
+    ok "icon.png present"
+  else
+    fail "missing $META/images/icon.png"
+  fi
+
+  SHOT_DIR="$META/images/phoneScreenshots"
+  SHOTS=0
+  if [ -d "$SHOT_DIR" ]; then
+    SHOTS="$(find "$SHOT_DIR" -maxdepth 1 -type f -name '*.png' | wc -l | tr -d ' ')"
+  fi
+  if [ "${SHOTS:-0}" -lt 1 ]; then
+    fail "need at least one PNG in $SHOT_DIR"
+  else
+    ok "${SHOTS} phone screenshot(s)"
+  fi
+fi
 
 if [ ! -f "$GRADLE" ]; then
   fail "missing $GRADLE"
@@ -39,27 +78,25 @@ else
   VERSION_CODE="$(grep -E 'versionCode\s*=' "$GRADLE" | head -1 | sed -E 's/.*=\s*([0-9]+).*/\1/')"
   if [ -z "${VERSION_CODE:-}" ]; then
     fail "could not parse versionCode from build.gradle.kts"
-  elif [ ! -s "$META/changelogs/${VERSION_CODE}.txt" ]; then
+  elif [ -n "$META" ] && [ ! -s "$META/changelogs/${VERSION_CODE}.txt" ]; then
     fail "missing changelog $META/changelogs/${VERSION_CODE}.txt"
   else
     ok "changelog for versionCode ${VERSION_CODE}"
   fi
-fi
-
-if [ ! -d "$META/images" ]; then
-  fail "missing $META/images/ (add README + assets before submit)"
-else
-  ok "images directory present"
+  if grep -q 'maybeCreate("release")' "$GRADLE" && grep -q 'findByName("release")' "$GRADLE"; then
+    ok "release signingConfig is F-Droid-strip tolerant"
+  else
+    fail "signingConfigs must use maybeCreate/findByName(\"release\")"
+  fi
+  if grep -q 'getByName("release")' "$GRADLE"; then
+    fail "signingConfigs.getByName(\"release\") breaks F-Droid signing strip"
+  fi
 fi
 
 if [ -f "$ROOT/LICENSE" ]; then
-  ok "root LICENSE present (MIT for template)"
+  ok "root LICENSE present"
 else
   fail "missing root LICENSE"
-fi
-
-if [ -d "$ROOT/examples/android/fastlane/metadata/android/en-US" ]; then
-  ok "fastlane metadata mirror present"
 fi
 
 echo ""

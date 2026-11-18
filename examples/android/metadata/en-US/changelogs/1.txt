@@ -1,1 +1,1 @@
-Initial Golden Path Android stub for agent-project-bootstrap template.
+Initial QRaft Android release: offline QR encode, Glance widgets, and wallpaper safe-zone.

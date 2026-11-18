@@ -1,6 +1,7 @@
 # F-Droid / Fastlane images
 
-Add store listing assets before F-Droid submission:
+Canonical store listing assets live at repository-root
+`fastlane/metadata/android/en-US/images/` (what F-Droid scrapes).
 
 | File | Size (typical) |
 |------|----------------|
@@ -8,8 +9,7 @@ Add store listing assets before F-Droid submission:
 | `featureGraphic.png` | 1024×500 |
 | `phoneScreenshots/*.png` | 16:9 or device frames |
 
-Paths are referenced from `metadata/en-US/` (manual) or `fastlane/metadata/android/en-US/` (Fastlane).
+This nested `examples/android/metadata/` tree keeps the Triple-T text files
+in sync. Phone screenshots are only under root Fastlane.
 
-`[ADB]` capture screenshots on a physical device or emulator before release.
-
-Dummy, placeholder, sample, or tiny (≤8px) PNGs fail `scripts/check-fdroid-screenshots.sh`. Leave the folder empty until real captures exist.
+Dummy, placeholder, sample, or tiny (≤8px) PNGs fail `scripts/check-fdroid-screenshots.sh`.

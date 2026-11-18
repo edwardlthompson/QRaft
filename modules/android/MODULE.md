@@ -86,7 +86,7 @@ Requires `JAVA_HOME` locally; gate exits `2` when Java is missing.
 | CI Gradle compile / structure validation | AUTO |
 ## F-Droid Submission Dry-Run Checklist
 
-`[ADB]` dry-run before first F-Droid release. Full metadata lives under `examples/android/metadata/` when present.
+`[ADB]` dry-run before first F-Droid release. F-Droid scrapes repository-root `fastlane/metadata/android/` (Triple-T text is also kept under `examples/android/metadata/`).
 
 ### Build reproducibility
 
