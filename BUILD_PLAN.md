@@ -32,7 +32,6 @@ _No template gaps._
 ### Waiting on a person
 
 2. 🔲 [HUMAN] Confirm Pages URL after first green `pages.yml` deploy; update README pitch if needed
-- 🔲 [ADB] Test lock-screen glance panels with QPR2 widget editing (news P2, 2026-11-13) https://www.androidauthority.com/android-17-qpr2-stable-3733645/
 
 ### Local agent (This Computer)
 
@@ -41,7 +40,6 @@ Standing queue for This Computer. Rows: `🔲 [AGENT][LOCAL] … — scope: path
 <!-- local-agent-lane:begin -->
 - | 🔲 | Open |
 - | ❌ | Blocked (reason after the dash) |
-- 🔲 [AGENT][LOCAL] Audit the repo for wfx-loot IOCs — scope: .github/,scripts/ (news P1, 2026-11-14) https://blog.gitguardian.com/wfx-loot-a-ci-secret-stealer-pushed-with-stolen-github-credentials/
 <!-- local-agent-lane:end -->
 
 ### Cloud agent (Cursor Cloud)
@@ -51,6 +49,19 @@ Standing queue for Cursor Cloud. Rows: `🔲 [AGENT][CLOUD] … — scope: path`
 <!-- cloud-agent-lane:begin -->
 _No cloud agent items._
 <!-- cloud-agent-lane:end -->
+
+## Child Repo Playbook
+
+### Sprint News — News Bot follow-ups
+
+<!-- parallel_exception: independent news follow-ups; run sequentially -->
+
+1. 🔲 [AGENT] Audit the repo for wfx-loot IOCs — scope: .github/,scripts/ (news P1, 2026-11-14) https://blog.gitguardian.com/wfx-loot-a-ci-secret-stealer-pushed-with-stolen-github-credentials/
+
+#### Human & device (after automation)
+
+1. 🔲 [ADB] Test lock-screen glance panels with QPR2 widget editing (news P2, 2026-11-13) https://www.androidauthority.com/android-17-qpr2-stable-3733645/
+
 
 ## Archive
 
