@@ -58,10 +58,12 @@ _No cloud agent items._
 
 1. 🔲 [AGENT] Audit the repo for wfx-loot IOCs — scope: .github/,scripts/ (news P1, 2026-11-14) https://blog.gitguardian.com/wfx-loot-a-ci-secret-stealer-pushed-with-stolen-github-credentials/
 2. 🔲 [AGENT] Bump Compose BOM 2026.09.00 → 2026.11.01 (Compose 1.13 / Material3 1.5.0; needs Kotlin 2.2+ and compileSdk 37.1, check AGP) and fix Slider/RangeSlider call sites (`onValueChange` now required); fix 1 Slider/RangeSlider file(s) — scope: examples/android/ (news P2, 2026-11-19) https://developer.android.com/blog/posts/jetpack-compose-november-2026-release
+3. 🔲 [AGENT] Bump the Gradle wrapper 9.9.1 → 9.9.2 and commit the regenerated wrapper jar and distributionSha256Sum (4 High security fixes: SFTP host keys, snapshot dependency verification, TestKit temp dir, daemon registry) — scope: examples/android/gradle/wrapper/ (news P2, 2026-11-20) https://docs.gradle.org/9.9.2/release-notes.html
 
 #### Human & device (after automation)
 
 1. 🔲 [ADB] Test lock-screen glance panels with QPR2 widget editing (news P2, 2026-11-13) https://www.androidauthority.com/android-17-qpr2-stable-3733645/
+2. 🔲 [HUMAN] Decide on Android developer verification before January 2027: register package name(s) and signing-key SHA-256 in an Android Developer Console account, or add an advanced-flow install note to the README (news P2, 2026-11-20) https://developer.android.com/blog/posts/android-developer-verification-2027
 
 
 ## Archive
