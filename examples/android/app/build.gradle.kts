@@ -45,26 +45,28 @@ android {
         minSdk = 26
         targetSdk = 37
         versionCode = 4
-        versionName = "1.4.0"
+        versionName = "1.4.0" // x-release-please-version
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
+        // maybeCreate survives F-Droid's signingConfig strip (no prebuild sed).
+        val releaseSigning = maybeCreate("release")
         if (keystorePropsFile.exists()) {
-            create("release") {
-                storeFile = rootProject.file(keystoreProps.getProperty("storeFile"))
-                storePassword = keystoreProps.getProperty("storePassword")
-                keyAlias = keystoreProps.getProperty("keyAlias")
-                keyPassword = keystoreProps.getProperty("keyPassword")
-            }
+            releaseSigning.storeFile = rootProject.file(keystoreProps.getProperty("storeFile"))
+            releaseSigning.storePassword = keystoreProps.getProperty("storePassword")
+            releaseSigning.keyAlias = keystoreProps.getProperty("keyAlias")
+            releaseSigning.keyPassword = keystoreProps.getProperty("keyPassword")
         }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            if (keystorePropsFile.exists()) {
-                signingConfig = signingConfigs.getByName("release")
+            signingConfigs.findByName("release")?.let { cfg ->
+                if (keystorePropsFile.exists()) {
+                    signingConfig = cfg
+                }
             }
         }
     }

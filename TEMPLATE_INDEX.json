@@ -419,6 +419,13 @@
       "owner": "maintainer"
     },
     {
+      "path": "scripts/capture-fdroid-screenshots.sh",
+      "purpose": "Capture real QRaft PWA frames into root Fastlane phoneScreenshots",
+      "read_when": "milestone_boundary",
+      "update_when": "milestone_boundary",
+      "owner": "maintainer"
+    },
+    {
       "path": "docs/WINGET.md",
       "purpose": "Winget publish runbook for child desktop installers",
       "read_when": "milestone_boundary",

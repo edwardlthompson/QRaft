@@ -51,4 +51,4 @@ Official color stylesheet (generated): [`official-colors.css`](official-colors.c
 
 ## Store listing sizes
 
-See [`examples/android/metadata/en-US/images/README.md`](../examples/android/metadata/en-US/images/README.md) for `icon.png` and `featureGraphic.png`. Source art: `app-icon-512.svg` and `social-preview.svg`.
+See repository-root [`fastlane/metadata/android/en-US/images/`](../fastlane/metadata/android/en-US/images/) for F-Droid `icon.png`, `featureGraphic.png`, and phone screenshots. Source art: `app-icon-512.svg` and `social-preview.svg`.

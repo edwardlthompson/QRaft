@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+* **fdroid:** move store metadata to root Fastlane, tolerate F-Droid signingConfig strip, and add real listing screenshots.
+
 ## [1.4.0](https://github.com/edwardlthompson/QRaft/compare/v1.3.0...v1.4.0) (2026-10-21)
 
 

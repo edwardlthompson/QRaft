@@ -10,7 +10,7 @@ LIB = Path(__file__).resolve().parent.parent / "scripts" / "lib"
 if str(LIB) not in sys.path:
     sys.path.insert(0, str(LIB))
 
-from fdroid_screenshots import check_tree  # noqa: E402
+from fdroid_screenshots import ROOTS, check_tree  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 TINY_PNG = (
@@ -27,7 +27,7 @@ class FdroidScreenshotsTests(unittest.TestCase):
     def test_dummy_name_fails(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            folder = root / "examples/android/metadata/en-US/images/phoneScreenshots"
+            folder = root / "fastlane/metadata/android/en-US/images/phoneScreenshots"
             folder.mkdir(parents=True)
             (folder / "dummy.png").write_bytes(TINY_PNG)
             errors = check_tree(root)
@@ -36,11 +36,14 @@ class FdroidScreenshotsTests(unittest.TestCase):
     def test_tiny_png_fails(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            folder = root / "examples/android/metadata/en-US/images/phoneScreenshots"
+            folder = root / "fastlane/metadata/android/en-US/images/phoneScreenshots"
             folder.mkdir(parents=True)
             (folder / "home.png").write_bytes(TINY_PNG)
             errors = check_tree(root)
             self.assertTrue(any("1x1" in item for item in errors), errors)
+
+    def test_root_fastlane_is_scanned(self) -> None:
+        self.assertTrue(any(p.as_posix() == "fastlane/metadata/android" for p in ROOTS))
 
     def test_wired(self) -> None:
         text = (ROOT / "scripts" / "validate-bootstrap.sh").read_text(encoding="utf-8")

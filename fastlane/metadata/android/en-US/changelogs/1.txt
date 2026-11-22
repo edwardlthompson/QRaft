@@ -1,0 +1,1 @@
+Initial QRaft Android release: offline QR encode, Glance widgets, and wallpaper safe-zone.
