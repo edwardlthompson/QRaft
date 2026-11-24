@@ -93,12 +93,12 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":scan"))
 
-    val camera = "1.4.2"
+    val camera = "1.7.0"
     implementation("androidx.camera:camera-camera2:$camera")
     implementation("androidx.camera:camera-lifecycle:$camera")
     implementation("androidx.camera:camera-view:$camera")
 
-    val composeBom = platform("androidx.compose:compose-bom:2026.09.00")
+    val composeBom = platform("androidx.compose:compose-bom:2026.11.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
@@ -115,7 +115,7 @@ dependencies {
 
     testImplementation("androidx.test:core:1.7.0")
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.robolectric:robolectric:4.18")
+    testImplementation("org.robolectric:robolectric:4.18.1")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
 
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
